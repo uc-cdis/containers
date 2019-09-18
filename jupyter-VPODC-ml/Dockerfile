@@ -24,9 +24,7 @@ RUN npm install -g configurable-http-proxy && \
                  pycurl==7.43.0.3 \
                  oauthlib
 
-ADD model.ckpt-112000.data-00000-of-00001 /
-ADD model.ckpt-112000.index /
-ADD model.ckpt-112000.meta /
+
 ADD cull_idle_servers.py /usr/local/bin/cull_idle_servers.py
 
 ENTRYPOINT jupyterhub
