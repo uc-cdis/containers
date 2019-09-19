@@ -1,4 +1,4 @@
-FROM tf_docker/py3tensor:v1
+FROM tensorflow/tensorflow:latest-devel-gpu-py3
 RUN apt-get install -y openslide-tools && apt-get install -y python-openslide  
 
 RUN pip install openslide-python && pip install dicom && pip install oauthlib
