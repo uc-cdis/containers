@@ -26,10 +26,6 @@ RUN pip install .
 COPY jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
 
-# CMD ariba
-
-USER $NB_UID
-WORKDIR /home/jovyan
 
 # COPY premade notebook 
 RUN mkdir /home/jovyan/tb-notebook
@@ -37,3 +33,9 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/N
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/prediction_tool_visualization.ipynb /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_analysis_function.py /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
+RUN chmod -R 777 /home/jovyan/tb-notebook
+
+# CMD ariba
+
+USER $NB_UID
+WORKDIR /home/jovyan
