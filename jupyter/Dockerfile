@@ -1,6 +1,6 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-FROM jupyter/scipy-notebook:d4cbf2f80a2a 
+FROM jupyter/scipy-notebook:1386e2046833
 
 USER root
 
@@ -104,6 +104,7 @@ COPY resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
 
+RUN conda install -c r r-stringi
 RUN echo "load.lib<-c('httr','jsonlite','dplyr','gplots','ggplot2','ggpubr','RColorBrewer','xml2','repr','VennDiagram'); install.lib<-load.lib[!load.lib %in% installed.packages()]; install.packages(install.lib,dependencies=TRUE, repos='http://cran.us.r-project.org', type='source')" | R --no-save
 RUN echo 'if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager",dependencies=TRUE, repos="http://cran.us.r-project.org"); BiocManager::install(ask=FALSE)' | R --no-save
 RUN echo "load.s3<-c('maftools', 'phyloseq', 'DESeq2', 'dada2', 'vcfR'); install.s3<-load.s3[!load.s3 %in% installed.packages()]; for(s3 in install.s3) BiocManager::install(s3, ask=FALSE);" | R --no-save
