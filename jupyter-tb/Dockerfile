@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-notebook:latest
+FROM quay.io/cdis/jupyter-notebook:1.0.1
 
 USER root
 
