@@ -29,7 +29,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/N
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/prediction_tool_visualization.ipynb /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_analysis_function.py /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
-
+RUN chmod -R 777 /home/jovyan/tb-notebook
 
 # CMD ariba
 WORKDIR /home/jovyan
