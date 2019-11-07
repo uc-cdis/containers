@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-nde-base:fix_niaid-test
+FROM quay.io/cdis/jupyter-nde-base:chore_nde_base
 
 USER $NB_UID
 
