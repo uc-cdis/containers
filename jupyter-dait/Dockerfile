@@ -1,6 +1,6 @@
 FROM quay.io/cdis/jupyter-nde-base:chore_nde_base
 
-USER $NB_UID
+USER root
 
 # COPY premade notebook 
 RUN mkdir /home/jovyan/DAIT-notebook
@@ -11,4 +11,5 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook/ndh_analysis_functions.py /home/jovyan/DAIT-notebook/
 RUN chmod -R 777 /home/jovyan/tb-notebook
 
+USER $NB_UID
 WORKDIR /home/jovyan

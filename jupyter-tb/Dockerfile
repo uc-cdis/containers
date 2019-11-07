@@ -1,6 +1,6 @@
 FROM quay.io/cdis/jupyter-nde-base:chore_nde_base
 
-USER $NB_UID
+USER root
 
 RUN apt-get update && \
     apt-get install -y \
@@ -31,5 +31,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/t
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
 RUN chmod -R 777 /home/jovyan/tb-notebook
 
+
 # CMD ariba
+USER $NB_UID
 WORKDIR /home/jovyan
