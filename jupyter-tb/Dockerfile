@@ -31,7 +31,6 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/t
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
 RUN chmod -R 777 /home/jovyan/tb-notebook
 
-
 # CMD ariba
 USER $NB_UID
 WORKDIR /home/jovyan

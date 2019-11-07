@@ -10,7 +10,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DMID_notebook
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DMID_notebook/LHV_demo.ipynb /home/jovyan/DMID-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DMID_notebook/ndh_analysis_function_dmid.r /home/jovyan/DMID-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DMID_notebook/ndh_analysis_functions_dmid.py /home/jovyan/DMID-notebook/
-RUN chmod -R 777 /home/jovyan/tb-notebook
+RUN chmod -R 777 /home/jovyan/DMID-notebook
 
 USER $NB_UID
 WORKDIR /home/jovyan
