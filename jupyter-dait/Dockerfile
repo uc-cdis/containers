@@ -1,6 +1,6 @@
-FROM quay.io/cdis/jupyter-notebook:1.0.1
+FROM quay.io/cdis/jupyter-nde-base:fix_niaid-test
 
-USER root
+USER $NB_UID
 
 # COPY premade notebook 
 RUN mkdir /home/jovyan/DAIT-notebook
@@ -11,7 +11,4 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook/ndh_analysis_functions.py /home/jovyan/DAIT-notebook/
 
 
-RUN chmod -R 777 /home/jovyan/DAIT-notebook
-
-USER $NB_UID
 WORKDIR /home/jovyan

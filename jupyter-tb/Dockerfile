@@ -1,6 +1,6 @@
-FROM quay.io/cdis/jupyter-notebook:1.0.1
+FROM quay.io/cdis/jupyter-nde-base:fix_niaid-test
 
-USER root
+USER $NB_UID
 
 RUN apt-get update && \
     apt-get install -y \
@@ -22,10 +22,6 @@ RUN wget -O mykrobe-data.tar.gz https://bit.ly/2H9HKTU && tar -zxvf mykrobe-data
 
 RUN pip install .
 
-## Append custom settings to jupyter config file
-COPY jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
-RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
-
 
 # COPY premade notebook 
 RUN mkdir /home/jovyan/tb-notebook
@@ -33,9 +29,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/N
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/prediction_tool_visualization.ipynb /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_analysis_function.py /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
-RUN chmod -R 777 /home/jovyan/tb-notebook
+
 
 # CMD ariba
-
-USER $NB_UID
 WORKDIR /home/jovyan
