@@ -4,8 +4,20 @@ USER root
 
 RUN apt-get update && \
     apt-get install -y \
-    mummer
+    curl \
+    python3 \
+    python3-pip\
+    python3-dev\
+    python3-setuptools \
+    python3-tk \
+    python3-matplotlib \
+    libssl-dev libcurl4-openssl-dev \
+    git bzip2 nodejs\
     build-essential cd-hit curl\
+    libbz2-dev liblzma-dev \
+    mummer unzip wget \
+    zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 
 RUN python -m pip install pandas
