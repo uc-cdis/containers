@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-nde-base:chore_nde_base
+FROM quay.io/cdis/jupyter-nde-base:1.0.2
 
 USER root
 
