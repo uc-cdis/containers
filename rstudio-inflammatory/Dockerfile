@@ -9,5 +9,4 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/Inflammatory_
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/Inflammatory_RStudio/immune_marker.R /home/rstudio/inflammatory
 
 
-
 RUN chmod -R 777 /home/rstudio/inflammatory

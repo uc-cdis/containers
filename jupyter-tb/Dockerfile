@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-notebook:latest
+FROM quay.io/cdis/jupyter-nde-base:chore_nde_base
 
 USER root
 
@@ -22,10 +22,6 @@ RUN wget -O mykrobe-data.tar.gz https://bit.ly/2H9HKTU && tar -zxvf mykrobe-data
 
 RUN pip install .
 
-## Append custom settings to jupyter config file
-COPY jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
-RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
-
 
 # COPY premade notebook 
 RUN mkdir /home/jovyan/tb-notebook
@@ -36,6 +32,5 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/t
 RUN chmod -R 777 /home/jovyan/tb-notebook
 
 # CMD ariba
-
 USER $NB_UID
 WORKDIR /home/jovyan
