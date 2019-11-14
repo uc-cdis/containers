@@ -5,9 +5,11 @@ USER root
 RUN apt-get update && \
     apt-get install -y \
     mummer
+    build-essential cd-hit curl\
+
 
 RUN python -m pip install pandas
-
+:wq:
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 
 WORKDIR /
@@ -47,6 +49,8 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/N
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/prediction_tool_visualization.ipynb /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_analysis_function.py /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
+ADD https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/match_plot_sort_mycrobe.txt /home/jovyan/tb-notebook/
+https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/out.summary.csv /home/jovyan/tb-notebook/
 RUN chmod -R 777 /home/jovyan/tb-notebook
 
 # CMD ariba
