@@ -22,7 +22,7 @@ RUN apt-get update && \
 
 
 RUN python -m pip install pandas
-:wq:
+
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 
 WORKDIR /
