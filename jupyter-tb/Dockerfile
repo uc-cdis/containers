@@ -5,6 +5,7 @@ USER root
 RUN apt-get update && \
     apt-get install -y \
     curl \
+    mummer
     python3 \
     python3-pip\
     python3-dev\
@@ -62,7 +63,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/p
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_analysis_function.py /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
 ADD https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/match_plot_sort_mycrobe.txt /home/jovyan/tb-notebook/
-https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/out.summary.csv /home/jovyan/tb-notebook/
+ADD https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/out.summary.csv /home/jovyan/tb-notebook/
 RUN chmod -R 777 /home/jovyan/tb-notebook
 
 # CMD ariba
