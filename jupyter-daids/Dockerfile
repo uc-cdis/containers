@@ -9,6 +9,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIDS_noteboo
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIDS_notebook/ndh_analysis_functions.py /home/jovyan/daids-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIDS_notebook/readme.txt /home/jovyan/daids-notebook/
 RUN chmod -R 777 /home/jovyan/daids-notebook
+RUN touch -a /home/jovyan/daids-notebook/readme.txt
 
 USER $NB_UID
 WORKDIR /home/jovyan
