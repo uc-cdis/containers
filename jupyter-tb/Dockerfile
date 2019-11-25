@@ -56,12 +56,12 @@ RUN pip install .
 
 # COPY premade notebook 
 RUN mkdir /home/jovyan/tb-notebook
-ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/NIAID_plots_2.r /home/jovyan/tb-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/NIAID_plots.r /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/prediction_tool_visualization.ipynb /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_analysis_function.py /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
-ADD https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/match_plot_sort_mycrobe.txt /home/jovyan/tb-notebook/
-ADD https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/out.summary.csv /home/jovyan/tb-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/match_plot_sort_mykrobe.txt /home/jovyan/tb-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/out.summary.csv /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/readme.txt /home/jovyan/tb-notebook/
 RUN chmod -R 777 /home/jovyan/tb-notebook
 
