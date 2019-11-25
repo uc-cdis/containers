@@ -5,7 +5,6 @@ USER root
 RUN apt-get update && \
     apt-get install -y \
     curl \
-    mummer
     python3 \
     python3-pip\
     python3-dev\
@@ -19,7 +18,6 @@ RUN apt-get update && \
     mummer unzip wget \
     zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
-
 
 RUN python -m pip install pandas
 
@@ -37,7 +35,7 @@ ENV ARIBA_BOWTIE2=$PWD/bowtie2-2.2.9/bowtie2 ARIBA_CDHIT=cdhit-est MPLBACKEND="a
 
 RUN cd /usr/local/bin && ln -s /usr/bin/python3 python && cd
 
-RUN  mkdir /notebooks
+RUN mkdir /notebooks
 
 RUN git clone https://github.com/sanger-pathogens/ariba.git \
   && cd ariba \
