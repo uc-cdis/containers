@@ -9,6 +9,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook/Microbiome.ipynb /home/jovyan/DAIT-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook/microbiome.R /home/jovyan/DAIT-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook/ndh_analysis_functions.py /home/jovyan/DAIT-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIT_notebook/readme.txt /home/jovyan/DAIT-notebook/
 RUN chmod -R 777 /home/jovyan/DAIT-notebook
 
 USER $NB_UID

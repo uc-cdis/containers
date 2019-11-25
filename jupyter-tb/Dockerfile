@@ -64,6 +64,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/t
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
 ADD https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/match_plot_sort_mycrobe.txt /home/jovyan/tb-notebook/
 ADD https://github.com/uc-cdis/ndh-demo/blob/master/demo/TB_notebook/out.summary.csv /home/jovyan/tb-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/readme.txt /home/jovyan/tb-notebook/
 RUN chmod -R 777 /home/jovyan/tb-notebook
 
 # CMD ariba
