@@ -10,3 +10,8 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/Inflammatory_
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DMID_notebook/readme.txt /home/rstudio/inflammatory
 
 RUN chmod -R 777 /home/rstudio/inflammatory
+
+RUN touch /home/rstudio/inflammatory/Gen3AuthHelper.R
+RUN touch /home/rstudio/inflammatory/Gen3Submission.R
+RUN touch /home/rstudio/inflammatory/immune_marker.R
+RUN touch /home/rstudio/inflammatory/readme.txt

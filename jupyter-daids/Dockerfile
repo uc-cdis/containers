@@ -4,12 +4,13 @@ USER root
 
 # COPY premade notebook 
 RUN mkdir /home/jovyan/daids-notebook
-
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIDS_notebook/CHARLIE_demo.ipynb /home/jovyan/daids-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIDS_notebook/ndh_analysis_functions.py /home/jovyan/daids-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIDS_notebook/readme.txt /home/jovyan/daids-notebook/
 RUN chmod -R 777 /home/jovyan/daids-notebook
 RUN touch /home/jovyan/daids-notebook/readme.txt
+RUN touch /home/jovyan/daids-notebook/CHARLIE_demo.ipynb
+RUN touch /home/jovyan/daids-notebook/ndh_analysis_functions.py
 
 USER $NB_UID
 WORKDIR /home/jovyan
