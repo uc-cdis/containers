@@ -56,10 +56,10 @@ RUN pip install .
 
 # Mount premade notebook
 RUN mkdir /home/jovyan/tb-notebook
-ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/NIAID_plots.r /home/jovyan/tb-notebook/
-ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/prediction_tool_visualization.ipynb /home/jovyan/tb-notebook/
-ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_analysis_function.py /home/jovyan/tb-notebook/
-ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/tb_notebook.ipynb /home/jovyan/tb-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/nde_tb_function.r /home/jovyan/tb-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/nde_tb_rnb.ipynb /home/jovyan/tb-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/nde_tb_function.py /home/jovyan/tb-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/nde_tb_pynb.ipynb /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/match_plot_sort_mykrobe.txt /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/out.summary.csv /home/jovyan/tb-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/TB_notebook/readme.txt /home/jovyan/tb-notebook/
@@ -67,10 +67,10 @@ RUN chmod -R 777 /home/jovyan/tb-notebook
 RUN touch /home/jovyan/tb-notebook/readme.txt
 RUN touch /home/jovyan/tb-notebook/out.summary.csv
 RUN touch /home/jovyan/tb-notebook/match_plot_sort_mykrobe.txt
-RUN touch /home/jovyan/tb-notebook/tb_notebook.ipynb
-RUN touch /home/jovyan/tb-notebook/tb_analysis_function.py
-RUN touch /home/jovyan/tb-notebook/prediction_tool_visualization.ipynb
-RUN touch /home/jovyan/tb-notebook/NIAID_plots.r
+RUN touch /home/jovyan/tb-notebook/nde_tb_pynb.ipynb
+RUN touch /home/jovyan/tb-notebook/nde_tb_function.py
+RUN touch /home/jovyan/tb-notebook/nde_tb_rnb.ipynb
+RUN touch /home/jovyan/tb-notebook/nde_tb_function.r
 
 # CMD ariba
 USER $NB_UID
