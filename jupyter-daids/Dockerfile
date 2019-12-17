@@ -9,7 +9,7 @@ ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIDS_noteboo
 ADD https://raw.githubusercontent.com/uc-cdis/ndh-demo/master/demo/DAIDS_notebook/readme.txt /home/jovyan/daids-notebook/
 RUN chmod -R 777 /home/jovyan/daids-notebook
 RUN touch /home/jovyan/daids-notebook/readme.txt
-RUN touch /home/jovyan/daids-notebook/de_aids_pynb.ipynb
+RUN touch /home/jovyan/daids-notebook/nde_aids_pynb.ipynb
 RUN touch /home/jovyan/daids-notebook/nde_aids_function.py
 
 USER $NB_UID
