@@ -1,4 +1,4 @@
-FROM quay.io/occ_data/jupyternotebook:1.7.2
+FROM quay.io/cdis/jupyter-nde-base:1.0.2
 
 USER root
 
