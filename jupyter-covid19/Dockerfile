@@ -9,13 +9,15 @@ ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-noteb
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/kaggle-demographics/kaggle_data_analysis_04072020.ipynb /home/jovyan/covid19-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/feat/add_dependency/covid19-notebooks/readme.txt /home/jovyan/covid19-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/feat/add_dependency/covid19-notebooks/requirements.txt /home/jovyan/covid19-notebook/
-
+ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/feat/add_dependency/covid19-notebooks/chicago-seir-forecast/covid19_seir.ipynb /home/jovyan/covid19-notebook/
+ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/feat/add_dependency/covid19-notebooks/chicago-seir-forecast/Img/seir_diagram.png /home/jovyan/covid19-notebook/
 RUN chmod -R 777 /home/jovyan/covid19-notebook
 RUN touch /home/jovyan/covid19-notebook/COVID-19-JHU_data_analysis_04072020.ipynb
 RUN touch /home/jovyan/covid19-notebook/kaggle_data_analysis_04072020.ipynb
 RUN touch /home/jovyan/covid19-notebook/requirements.txt
 RUN touch /home/jovyan/covid19-notebook/readme.txt
-
+RUN touch /home/jovyan/covid19-notebook/covid19_seir.ipynb
+RUN touch /home/jovyan/covid19-notebook/seir_diagram.png
 
 USER $NB_UID
 WORKDIR /home/jovyan
