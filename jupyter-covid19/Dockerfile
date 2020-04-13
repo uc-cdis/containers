@@ -18,6 +18,7 @@ RUN touch /home/jovyan/covid19-notebook/requirements.txt
 RUN touch /home/jovyan/covid19-notebook/readme.txt
 RUN touch /home/jovyan/covid19-notebook/covid19_seir.ipynb
 RUN touch /home/jovyan/covid19-notebook/seir_diagram.png
+RUN pip install -r /home/jovyan/covid19-notebook/requirements.txt
 
 USER $NB_UID
 WORKDIR /home/jovyan
