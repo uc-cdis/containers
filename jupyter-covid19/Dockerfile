@@ -15,7 +15,7 @@ RUN chmod -R 777 /home/jovyan/covid19-notebook
 RUN touch /home/jovyan/covid19-notebook/COVID-19-JHU_data_analysis_04072020.ipynb
 RUN touch /home/jovyan/covid19-notebook/kaggle_data_analysis_04072020.ipynb
 RUN touch /home/jovyan/covid19-notebook/requirements.txt
-RUN touch /home/jovyan/covid19-notebook/README.md
+RUN touch /home/jovyan/covid19-notebook/readme.md
 RUN touch /home/jovyan/covid19-notebook/covid19_seir.ipynb
 RUN touch /home/jovyan/covid19-notebook/seir_diagram.png
 RUN pip install -r /home/jovyan/covid19-notebook/requirements.txt
