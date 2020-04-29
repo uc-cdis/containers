@@ -41,7 +41,9 @@ RUN apt-get update && \
     zlib1g-dev \
     libbz2-dev \
     libcurl4-gnutls-dev \
-    liblzma-dev 
+    liblzma-dev \
+    default-jre \
+    openjdk-8-jdk
     
 ## Now install R and littler, and create a link for littler in /usr/local/bin
 #RUN apt-get update \
