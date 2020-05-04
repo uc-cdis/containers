@@ -1,6 +1,6 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-FROM jupyter/scipy-notebook:1386e2046833
+FROM jupyter/scipy-notebook:d4cbf2f80a2a
 
 USER root
 
@@ -42,7 +42,6 @@ RUN apt-get update && \
     libbz2-dev \
     libcurl4-gnutls-dev \
     liblzma-dev \
-    default-jre \
     openjdk-8-jdk
     
 ## Now install R and littler, and create a link for littler in /usr/local/bin
