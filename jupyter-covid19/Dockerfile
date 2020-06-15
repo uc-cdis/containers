@@ -1,10 +1,5 @@
 FROM quay.io/cdis/jupyter-nde-base:1.0.2
-
 USER root
-
-USER $NB_UID
-WORKDIR /home/jovyan
-
 # COPY premade notebook
 RUN mkdir /home/jovyan/covid19-notebook
 
@@ -15,11 +10,9 @@ ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-noteb
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/requirements.txt /home/jovyan/covid19-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/chicago-seir-forecast/covid19_seir.ipynb /home/jovyan/covid19-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/chicago-seir-forecast/seir_diagram.png /home/jovyan/covid19-notebook/
-RUN touch /home/jovyan/covid19-notebook/COVID-19-JHU_data_analysis_04072020.ipynb
-RUN touch /home/jovyan/covid19-notebook/kaggle_data_analysis_04072020.ipynb
-RUN touch /home/jovyan/covid19-notebook/requirements.txt
-RUN touch /home/jovyan/covid19-notebook/readme.md
-RUN touch /home/jovyan/covid19-notebook/covid19_seir.ipynb
-RUN touch /home/jovyan/covid19-notebook/seir_diagram.png
+RUN chown -R jovyan:users /home/jovyan/covid19-notebook
+RUN chown -R jovyan:users /home/jovyan/welcome.html
 RUN pip install -r /home/jovyan/covid19-notebook/requirements.txt
 
+USER $NB_UID
+WORKDIR /home/jovyan
