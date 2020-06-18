@@ -3,7 +3,7 @@ USER root
 # COPY premade notebook
 RUN mkdir /home/jovyan/covid19-notebook
 
-ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/1.2.0/covid19-notebooks/welcome.html /home/jovyan/
+ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/3.1.0/covid19-notebooks/welcome.html /home/jovyan/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/jhu-summary-overview/COVID-19-JHU_data_analysis_04072020.ipynb /home/jovyan/covid19-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/kaggle-demographics/kaggle_data_analysis_04072020.ipynb /home/jovyan/covid19-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/readme.md /home/jovyan/covid19-notebook/
