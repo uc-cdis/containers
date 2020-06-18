@@ -11,7 +11,6 @@ ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-noteb
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/requirements.txt /home/jovyan/covid19-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/chicago-seir-forecast/covid19_seir.ipynb /home/jovyan/covid19-notebook/
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/chicago-seir-forecast/seir_diagram.png /home/jovyan/covid19-notebook/
-# premade notebooks dependencies
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/ctp_testing/CTP_testing.ipynb /home/jovyan/covid19-notebook/
 
 RUN chown -R jovyan:users /home/jovyan/covid19-notebook
