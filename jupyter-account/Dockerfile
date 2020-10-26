@@ -35,5 +35,3 @@ RUN cd vcftools-0.1.16 \
     && ./configure \
     && make \
     && make install \
-
-

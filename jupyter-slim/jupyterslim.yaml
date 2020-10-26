@@ -11,7 +11,7 @@ services:
         - "--NotebookApp.base_url=/lw-workspace/proxy"
         - "--NotebookApp.password=''"
         - "--NotebookApp.token=''"
-      ports: 
+      ports:
          - "${SERVICE_PORT}:8888"
       healthcheck:
         test: ["CMD", "curl", "-f", "http://localhost:8888/lw-workspace/proxy/"]
