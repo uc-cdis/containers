@@ -30,4 +30,3 @@ fi
 done
 done
 #cat $out | grep "has" |  awk -F/ ' { print $NF } ' | awk ' { print $1 } '| sort | uniq
-
