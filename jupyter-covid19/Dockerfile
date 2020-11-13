@@ -30,11 +30,14 @@ RUN touch /home/jovyan/covid19-notebook/seir_diagram.png
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/ctp_testing/CTP_testing.ipynb /home/jovyan/covid19-notebook/
 RUN touch /home/jovyan/covid19-notebook/CTP_testing.ipynb
 
-ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/TCGA_OV_COVID_tested.ipynb /home/jovyan/covid19-notebook/
-RUN touch /home/jovyan/covid19-notebook/TCGA_OV_COVID_tested.ipynb
+ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/TCGA_OV_COVID_0722.ipynb /home/jovyan/covid19-notebook/
+RUN touch /home/jovyan/covid19-notebook/TCGA_OV_COVID_0722.ipynb
 
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/symptoms_and_fatality_covid19_tested.ipynb /home/jovyan/covid19-notebook/
 RUN touch /home/jovyan/covid19-notebook/symptoms_and_fatality_covid19_tested.ipynb
+
+ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/SSR/SSR_notebook.ipynb /home/jovyan/covid19-notebook/
+RUN touch /home/jovyan/covid19-notebook/SSR_notebook.ipynb
 
 RUN chown -R jovyan:users /home/jovyan/covid19-notebook
 
