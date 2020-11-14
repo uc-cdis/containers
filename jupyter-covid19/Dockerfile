@@ -7,7 +7,7 @@ RUN touch /home/jovyan/welcome.html
 
 RUN chown -R jovyan:users /home/jovyan/welcome.html
 
-# copy notebooks readme and requirements
+# copy readme and notebooks requirements
 RUN mkdir /home/jovyan/covid19-notebook
 
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/readme.md /home/jovyan/covid19-notebook/
