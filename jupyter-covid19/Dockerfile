@@ -41,6 +41,16 @@ RUN touch /home/jovyan/covid19-notebook/symptoms_and_fatality_covid19.ipynb
 ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/SSR/SSR_notebook.ipynb /home/jovyan/covid19-notebook/
 RUN touch /home/jovyan/covid19-notebook/SSR_notebook.ipynb
 
+ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/X-ray/DarkCovidNet_binary_classes.ipynb /home/jovyan/covid19-notebook/
+RUN touch /home/jovyan/covid19-notebook/DarkCovidNet_binary_classes.ipynb
+
+ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/X-ray/DarkCovidNet_three_classes.ipynb /home/jovyan/covid19-notebook/
+RUN touch /home/jovyan/covid19-notebook/DarkCovidNet_three_classes.ipynb
+
+# peregrine helper script required by the X-ray notebooks
+ADD https://raw.githubusercontent.com/uc-cdis/covid19-tools/master/covid19-notebooks/X-ray/peregrine.py /home/jovyan/covid19-notebook/
+RUN touch /home/jovyan/covid19-notebook/peregrine.py
+
 RUN chown -R jovyan:users /home/jovyan/covid19-notebook
 
 # premade notebooks dependencies
