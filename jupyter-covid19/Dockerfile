@@ -56,7 +56,6 @@ RUN chown -R jovyan:users /home/jovyan/covid19-notebook
 # premade notebooks dependencies
 RUN pip install --upgrade 'pip<20.3' # pip 20.3 causes dependency resolution issues
 RUN pip install -r /home/jovyan/covid19-notebook/requirements.txt
-RUN pip freeze
 
 USER $NB_UID
 WORKDIR /home/jovyan
