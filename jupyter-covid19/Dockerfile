@@ -55,6 +55,7 @@ RUN chown -R jovyan:users /home/jovyan/covid19-notebook
 
 # premade notebooks dependencies
 RUN pip install -r /home/jovyan/covid19-notebook/requirements.txt
+RUN pip freeze
 
 USER $NB_UID
 WORKDIR /home/jovyan
