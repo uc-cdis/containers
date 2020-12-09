@@ -111,3 +111,5 @@ RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebo
 RUN echo "load.lib<-c('httr','jsonlite','dplyr','gplots','ggplot2','ggpubr','RColorBrewer','xml2','repr','VennDiagram'); install.lib<-load.lib[!load.lib %in% installed.packages()]; install.packages(install.lib,dependencies=TRUE, repos='http://cran.us.r-project.org', type='source')" | R --no-save
 RUN echo 'if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager",dependencies=TRUE, repos="http://cran.us.r-project.org"); BiocManager::install(ask=FALSE)' | R --no-save
 RUN echo "load.s3<-c('maftools', 'phyloseq', 'DESeq2', 'dada2', 'vcfR'); install.s3<-load.s3[!load.s3 %in% installed.packages()]; for(s3 in install.s3) BiocManager::install(s3, ask=FALSE);" | R --no-save
+
+RUN jupyter labextension install jupyterlab-plotly

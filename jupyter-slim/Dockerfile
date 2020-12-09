@@ -71,3 +71,5 @@ RUN wget https://github.com/arq5x/lumpy-sv/releases/download/0.3.0/lumpy-sv.tar.
 COPY --chown=jovyan:users resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
+
+RUN jupyter labextension install jupyterlab-plotly
