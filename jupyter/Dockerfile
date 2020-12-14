@@ -1,9 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-FROM jupyter/scipy-notebook:3b1f4f5e6cc1
+FROM quay.io/cdis/scipy-notebook:5cfa60996e84
 USER root
-
-RUN pip install --upgrade nbconvert==5.4.1
 
 #
 # R pre-requisites
@@ -16,32 +14,33 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
+ENV R_BASE_VERSION 3.6.3
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    autoconf \
-    ca-certificates \
-    fonts-dejavu \
-    fonts-texgyre \
-    gfortran \
-    gcc \
-    make \
-    automake \
-    perl \
-    less \
-    locales \
-    libssl1.0.0 \
-    libssl-dev \
-    tzdata \
-    vim \
-    zlib1g \
-    zlib1g-dev \
-    libbz2-dev \
-    libcurl4-gnutls-dev \
-    liblzma-dev \
-    openjdk-8-jdk
-
-ENV R_BASE_VERSION 3.6.3
+        autoconf \
+        ca-certificates \
+        fonts-dejavu \
+        fonts-texgyre \
+        gfortran \
+        gcc \
+        jq \
+        less \
+        libssl1.1 \
+        libssl-dev \
+        libbz2-dev \
+        libcurl4-gnutls-dev \
+        liblzma-dev \
+        locales \
+        openjdk-8-jdk \
+        make \
+        automake \
+        perl \
+        pkg-config \
+        tzdata \
+        vim \
+        zlib1g \
+        zlib1g-dev
 
 ## Now install R and littler, and create a link for littler in /usr/local/bin
 #RUN apt-get update \
@@ -60,6 +59,16 @@ ENV R_BASE_VERSION 3.6.3
 
 RUN apt-get clean \
  	&& rm -rf /var/lib/apt/lists/*
+
+#
+# !!!!!NOTE!!!!!
+# Do not install conda, python, pip, etc dependencies as root
+# It screws up directory permissions
+#
+USER $NB_UID
+WORKDIR /home/$NB_USER
+
+RUN pip install --upgrade nbconvert
 
 #
 # R packages including IRKernel which gets installed globally.
@@ -92,15 +101,8 @@ RUN conda config --set unsatisfiable_hints True && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-RUN wget https://github.com/arq5x/lumpy-sv/releases/download/0.3.0/lumpy-sv.tar.gz; \
-    tar -zxvf lumpy-sv.tar.gz lumpy-sv; rm lumpy-sv.tar.gz; \
-    cd lumpy-sv; make; cp bin/* /usr/local/bin/.; \
-    rm -rf data/ src/ .git;
-
-USER $NB_UID
-
-COPY resources/custom.js /home/$NB_USER/.jupyter/custom/
-COPY resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
+COPY --chown=jovyan:users resources/custom.js /home/$NB_USER/.jupyter/custom/
+COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
 
 # This fails ...
@@ -109,3 +111,5 @@ RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebo
 RUN echo "load.lib<-c('httr','jsonlite','dplyr','gplots','ggplot2','ggpubr','RColorBrewer','xml2','repr','VennDiagram'); install.lib<-load.lib[!load.lib %in% installed.packages()]; install.packages(install.lib,dependencies=TRUE, repos='http://cran.us.r-project.org', type='source')" | R --no-save
 RUN echo 'if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager",dependencies=TRUE, repos="http://cran.us.r-project.org"); BiocManager::install(ask=FALSE)' | R --no-save
 RUN echo "load.s3<-c('maftools', 'phyloseq', 'DESeq2', 'dada2', 'vcfR'); install.s3<-load.s3[!load.s3 %in% installed.packages()]; for(s3 in install.s3) BiocManager::install(s3, ask=FALSE);" | R --no-save
+
+RUN jupyter labextension install jupyterlab-plotly
