@@ -1,8 +1,8 @@
-FROM quay.io/cdis/jupyter-notebook:chore_jupyter-update
+FROM quay.io/cdis/jupyter-notebook:1.1.0
 
 USER $NB_USER
 WORKDIR /home/$NB_USER
-ARG COVID_TOOLS_BRANCH=chore/pip-unpin
+ARG COVID_TOOLS_BRANCH=master
 
 # copy welcome splash page
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/3.1.0/covid19-notebooks/welcome.html /home/$NB_USER/
