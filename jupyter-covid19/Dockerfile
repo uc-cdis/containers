@@ -2,7 +2,7 @@ FROM quay.io/cdis/jupyter-notebook:1.1.0
 
 USER $NB_USER
 WORKDIR /home/$NB_USER
-ARG COVID_TOOLS_BRANCH=update_gen3
+ARG COVID_TOOLS_BRANCH=chore/update_gen3
 
 # copy welcome splash page
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/welcome.html /home/$NB_USER/
