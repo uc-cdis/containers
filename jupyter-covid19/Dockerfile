@@ -2,7 +2,7 @@ FROM quay.io/cdis/jupyter-notebook:1.1.0
 
 USER $NB_USER
 WORKDIR /home/$NB_USER
-ARG COVID_TOOLS_BRANCH=chore/update_gen3
+ARG COVID_TOOLS_BRANCH=chore/pypfb_notebook
 
 # copy welcome splash page
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/welcome.html /home/$NB_USER/
@@ -50,6 +50,9 @@ RUN touch /home/$NB_USER/covid19-notebook/DarkCovidNet_three_classes.ipynb
 
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/google_mobility.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/google_mobility.ipynb
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/Exporting_PFB_Data_into_Workspace.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/Exporting_PFB_Data_into_Workspace.ipynb
 
 # peregrine helper script required by the X-ray notebooks
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/X-ray/peregrine.py /home/$NB_USER/covid19-notebook/
