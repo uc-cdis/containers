@@ -51,11 +51,11 @@ RUN touch /home/$NB_USER/covid19-notebook/DarkCovidNet_three_classes.ipynb
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/google_mobility.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/google_mobility.ipynb
 
-ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/Exporting_PFB_Data_into_Workspace.ipynb /home/$NB_USER/covid19-notebook/
-RUN touch /home/$NB_USER/covid19-notebook/Exporting_PFB_Data_into_Workspace.ipynb
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/PFB_example.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/PFB_example.ipynb
 
-ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/example.avro /home/$NB_USER/covid19-notebook/
-RUN touch /home/$NB_USER/covid19-notebook/example.avro
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/PFB_example.avro /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/PFB_example.avro
 
 # peregrine helper script required by the X-ray notebooks
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/X-ray/peregrine.py /home/$NB_USER/covid19-notebook/
