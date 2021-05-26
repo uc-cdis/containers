@@ -54,9 +54,6 @@ RUN touch /home/$NB_USER/covid19-notebook/google_mobility.ipynb
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/PFB_example.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/PFB_example.ipynb
 
-ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/nCoV-2019_data_analysis.ipynb /home/$NB_USER/covid19-notebook/
-RUN touch /home/$NB_USER/covid19-notebook/nCoV-2019_data_analysis.ipynb
-
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/IL_tab_charts.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/IL_tab_charts.ipynb
 
