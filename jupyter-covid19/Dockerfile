@@ -36,8 +36,8 @@ RUN touch /home/$NB_USER/covid19-notebook/CTP_testing.ipynb
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/TCGA_OV_COVID.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/TCGA_OV_COVID.ipynb
 
-ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/symptoms_and_fatality_covid19.ipynb /home/$NB_USER/covid19-notebook/
-RUN touch /home/$NB_USER/covid19-notebook/symptoms_and_fatality_covid19.ipynb
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/nCoV-2019_data_analysis.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/nCoV-2019_data_analysis.ipynb
 
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/SSR/SSR_notebook.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/SSR_notebook.ipynb
@@ -53,6 +53,9 @@ RUN touch /home/$NB_USER/covid19-notebook/google_mobility.ipynb
 
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/PFB_example.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/PFB_example.ipynb
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/IL_tab_charts.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/IL_tab_charts.ipynb
 
 # small pfb file
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/PFB_example.avro /home/$NB_USER/covid19-notebook/
