@@ -33,8 +33,8 @@ RUN touch /home/$NB_USER/covid19-notebook/seir_diagram.png
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/ctp_testing/CTP_testing.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/CTP_testing.ipynb
 
-ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/TCGA_OV_COVID.ipynb /home/$NB_USER/covid19-notebook/
-RUN touch /home/$NB_USER/covid19-notebook/TCGA_OV_COVID.ipynb
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/TCGA_COAD_COVID.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/TCGA_COAD_COVID.ipynb
 
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/nCoV-2019_data_analysis.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/nCoV-2019_data_analysis.ipynb
