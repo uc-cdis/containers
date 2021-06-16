@@ -5,8 +5,6 @@ WORKDIR /home/$NB_USER
 
 COPY ./resources/requirements.txt ${HOME}/
 
-# copy premade notebooks
-COPY ./resources/*.ipynb ${HOME}/
+COPY ./resources/HEAL_Workspace_Demo_BACPAC.ipynb ${HOME}/
 
-# premade notebooks dependencies
 RUN pip install -r ${HOME}/requirements.txt
