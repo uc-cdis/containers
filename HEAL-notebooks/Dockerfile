@@ -1,4 +1,4 @@
-FROM jupyter/minimal-notebook
+FROM jupyter/r-notebook
 
 ARG NOTEBOOK_DIR
 

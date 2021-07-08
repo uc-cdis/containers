@@ -1,7 +1,3 @@
-# PyPI
-pandas==1.1.5
-
-# R
 r-sf
 r-tidygeocoder
 r-tmap
