@@ -2,9 +2,11 @@
 touch /tmp/waiting.flag
 
 while [ ! -f /usr/local/stata17/stata.lic ]; do sleep 1; echo "Waiting for license."; done
+
 echo "Spawning Stata session."
 
 stata &
+sleep 5
 rm /usr/local/stata17/stata.lic
 
 # Entrypoint to jupyter notebook
