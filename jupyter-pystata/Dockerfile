@@ -28,7 +28,8 @@ RUN mkdir -p /home/$NB_USER/.ipython \
 COPY jupyter-pystata/resources/copy_license_on_startup.py \
 	/home/$NB_USER/.ipython/profile_default/startup/copy_license_on_startup.py
 
+# Entrypoint for a notebook to request a temporary license
+COPY jupyter-pystata/resources/wait_for_license.sh /tmp/
+
 USER $NB_USER
 RUN pip install --user stata_setup
-
-COPY jupyter-pystata/resources/wait_for_license.sh /tmp/wait_for_license.sh
