@@ -1,4 +1,4 @@
-FROM jupyter/r-notebook
+FROM quay.io/cdis/jupyter-notebook:1.1.0
 
 ARG NOTEBOOK_DIR
 
