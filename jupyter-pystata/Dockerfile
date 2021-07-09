@@ -31,4 +31,4 @@ COPY jupyter-pystata/resources/copy_license_on_startup.py \
 USER $NB_USER
 RUN pip install --user stata_setup
 
-# COPY jupyter-pystata/resources/wait_for_license.sh /tmp/wait_for_license.sh
+COPY jupyter-pystata/resources/wait_for_license.sh /tmp/wait_for_license.sh
