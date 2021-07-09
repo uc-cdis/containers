@@ -8,4 +8,4 @@ stata &
 rm /usr/local/stata17/stata.lic
 
 # Entrypoint to jupyter notebook
-start.sh
+start-notebook.sh
