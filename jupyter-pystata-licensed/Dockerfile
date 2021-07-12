@@ -8,9 +8,9 @@ RUN tar -xvzf geckodriver*
 RUN mv geckodriver /bin/
 RUN rm geckodriver*
 
-USER $NB_USER
-RUN pip3 install selenium
-
-
 COPY jupyter-pystata-licensed/resources/wait_for_license.sh /tmp/
 COPY jupyter-pystata-licensed/resources/init_licensed_stata_notebook.py /tmp/
+RUN chmod 777 /tmp/wait_for_license.sh /tmp/init_licensed_stata_notebook.py
+
+USER $NB_USER
+RUN pip3 install selenium

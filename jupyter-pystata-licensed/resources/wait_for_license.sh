@@ -5,7 +5,7 @@ while [ ! -f /usr/local/stata17/stata.lic ]; do sleep 1; echo "Waiting for licen
 
 echo "Received a license. Starting jupyter."
 
-start-notebook.sh --NotebookApp.token='' --NotebookApp.password='' &
+start-notebook.sh &
 sleep 5
 
 echo "Running Stata notebook init script."
