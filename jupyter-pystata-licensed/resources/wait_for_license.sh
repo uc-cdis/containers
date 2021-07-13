@@ -12,6 +12,8 @@ sleep 5
 echo "Running Stata notebook init script."
 python3 /tmp/init_licensed_stata_notebook.py
 
+rm geckodriver*
+
 echo "Init script done."
 rm /usr/local/stata17/stata.lic /tmp/waiting_for_license.flag
 

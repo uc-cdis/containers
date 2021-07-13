@@ -1,26 +1,24 @@
-## Stata Workspaces
+## Licensed Stata Workspaces
 
 ---
 
-### About
- Stata is a proprietary statistical computing language with many research applications. Gen3 Stata workspaces support Stata17 through Jupyter notebooks and Stata's [Python interoperability package](https://pypi.org/project/stata-setup/).
-
-### Images
-Since Stata is proprietary software, we do not include any of its components under version control, but instead under a protected S3 bucket. This requires that our images not be built with standard Quay hooks, but rather with a Github workflow, `push_stata_image`, which bundles Stata software into an image and pushes it to `stata-heal:{branch}` on Quay.
-
-Note: While we have received permission from Stata to keep these containers public in keeping with our usual practices, the Stata software bundled in these containers should not be used for any purpose outside of our Gen3 workspaces. If you need access to Stata, please reach out to them directly at www.stata.com.
-
+For general information about Gen3 Stata workspaces, see the [Stata workspaces README](https://github.com/uc-cdis/containers/tree/master/jupyter-pystata)
 
 ### Licensing
-Stata software requires a license to run. As a one-time step, workspace users should add their license files in their persistant workspace storage as `~/pd/stata.lic` . This file is checked via an iPython startup hook (triggered when a new notebook is opened) and copied to the appropriate location so that Stata can recognize it.
+Stata software requires a license to run. This container waits for a license to by provided by an external job, then runs
+a script which launces a jupyter notebook and runs its first cell in order to initialize a STATA session, then deletes the license.
+This is to prevent the user from accessing the license directly
 
 ### Local development
 To build, enter the root directory of this repo and run:
 ```
-docker build -t stata -f jupyter-pystata/Dockerfile .
+docker build -t stata-licensed -f jupyter-pystata-licensed/Dockerfile .
+
+docker run --name stata-licensed -p 8888:8888 stata-licensed /tmp/wait_for_license.sh --NotebookApp.base_url=/lw-workspace/proxy/ --NotebookApp.password='' --NotebookApp.token=''
 ```
 
-and to run this container:
+Then, with your license `stata.lic`,
+
 ```
-docker run -P 8888:8888 stata
+docker cp stata.lic stata-licensed:/usr/local/stata17/stata.lic
 ```
