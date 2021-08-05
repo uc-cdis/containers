@@ -1,1 +1,4 @@
-pandas==1.1.5
+r-sf
+r-tidygeocoder
+r-tmap
+r-tidyverse
