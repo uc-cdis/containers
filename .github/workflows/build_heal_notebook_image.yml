@@ -1,7 +1,6 @@
 name: Build and push HEAL notebook image
 
 on:
-  workflow_dispatch:
   push:
     paths:
     - HEAL-notebooks/*/**
@@ -9,7 +8,7 @@ on:
 jobs:
   push-image:
     runs-on: ubuntu-latest
-    steps:
+    steps:  
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -18,10 +17,10 @@ jobs:
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
-
+      
       - name: clean
-        run: sudo apt clean
-
+        run: sudo apt clean    
+      
       - name: Extract branch name
         shell: bash
         run: echo "::set-output name=branch::$(echo $(echo ${GITHUB_REF#refs/heads/} | tr / _))"
