@@ -1,6 +1,6 @@
 FROM quay.io/cdis/jupyter-superslim-r:feat_r-kernel
 
-ARG NOTEBOOK_DIR
+ARG NOTEBOOK_DIR=oeps/
 
 COPY $NOTEBOOK_DIR/ $HOME/
 
