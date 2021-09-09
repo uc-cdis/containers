@@ -5,6 +5,6 @@ WORKDIR /home/$NB_USER
 
 COPY ./resources/requirements.txt ${HOME}/
 
-COPY ./resources/NORC_JCOIN_data_demo.ipynb ${HOME}/
+COPY ./resources/JCOIN_Tracking_Opioid_Stigma.ipynb ${HOME}/
 
 RUN pip install -r ${HOME}/requirements.txt
