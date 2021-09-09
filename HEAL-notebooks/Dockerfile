@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:feat_r-kernel
+FROM quay.io/cdis/jupyter-superslim-r:master
 
 ARG NOTEBOOK_DIR=oeps/
 
