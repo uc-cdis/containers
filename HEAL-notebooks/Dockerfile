@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim:master
+FROM quay.io/cdis/jupyter-superslim-r:master
 
 ARG NOTEBOOK_DIR
 
