@@ -11,6 +11,6 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
-RUN pip install -r /opt/requirements.txt
+RUN pip install -r /opt/requirements.txt --upgrade 
 
 RUN echo "load.lib<-c('tinytex','rmarkdown','tidyverse','devtools'); install.lib<-load.lib[!load.lib %in% installed.packages()]; install.packages(install.lib,dependencies=TRUE, repos='http://cran.us.r-project.org', type='source')" | R --no-save

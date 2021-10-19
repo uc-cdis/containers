@@ -6,3 +6,4 @@ Jupyter/R base image with Python 3.9.5 and R 4.1.0, together with some commonly 
 ## Libraries installed
 * Python: `numpy`, `pandas`, `matplotlib`, `plotly`, `seaborn`
 * R: `tidyverse`, `rmarkdown`, `devtools`, `tinytex`
+* Gen3 SDK for Python: `gen3`
