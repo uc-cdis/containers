@@ -57,6 +57,39 @@ RUN touch /home/$NB_USER/covid19-notebook/PFB_example.ipynb
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/IL_tab_charts.ipynb /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/IL_tab_charts.ipynb
 
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/3D_Protein_Vis/3D_Protein_Vis.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/3D_Protein_Vis.ipynb
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/3D_Protein_Vis/3D_Protein_Vis_7D4F_gui.png /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/3D_Protein_Vis_7D4F_gui.png
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/3D_Protein_Vis/3D_Protein_Vis_7D4F_view.html /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/3D_Protein_Vis_7D4F_view.html
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/3D_Protein_Vis/3D_Protein_Vis_A_view.html /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/3D_Protein_Vis_A_view.html
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/3D_Protein_Vis/3D_Protein_Vis_B_view.html /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/3D_Protein_Vis_B_view.html
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/3D_Protein_Vis/3D_Protein_Vis_demo_view.html /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/3D_Protein_Vis_demo_view.html
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/ICU_prediction/Percentage_ICU_prediction.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/Percentage_ICU_prediction.ipynb
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/extended-seir/extended-seir.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/extended-seir.ipynb
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/extended-seir/extended-seir_diagram.png /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/extended-seir_diagram.png
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/extended-seir/extended-seir_parameters.png /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/extended-seir_parameters.png
+
+ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/seir-forecast/seir-forecast.ipynb /home/$NB_USER/covid19-notebook/
+RUN touch /home/$NB_USER/covid19-notebook/seir-forecast.ipynb
+
 # small pfb file
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/PFB_example.avro /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/PFB_example.avro
