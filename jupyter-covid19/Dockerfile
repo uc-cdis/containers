@@ -87,9 +87,6 @@ RUN touch /home/$NB_USER/covid19-notebook/extended-seir_diagram.png
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/extended-seir/extended-seir_parameters.png /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/extended-seir_parameters.png
 
-ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/seir-forecast/seir-forecast.ipynb /home/$NB_USER/covid19-notebook/
-RUN touch /home/$NB_USER/covid19-notebook/seir-forecast.ipynb
-
 # small pfb file
 ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/pypfb/PFB_example.avro /home/$NB_USER/covid19-notebook/
 RUN touch /home/$NB_USER/covid19-notebook/PFB_example.avro
