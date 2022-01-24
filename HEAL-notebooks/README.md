@@ -21,6 +21,10 @@ All contents within the directory will be copied into the home directory of the 
 If the directory contains a list of dependencies in `requirements.txt`, then those dependencies will be installed
 automatically (and the `requirements.txt` file won't be included in the image).
 
+We're currently switching to the 'combined_tutorials' directory for all HEAL tutorial notebooks. We're keeping the
+individual notebook directories for now incase they may be needed in the near future. Please apply all tutorial notebook
+updates to the 'combined_tutorials' directory.
+
 ## Adding a Notebook
 
 Create a new directory within `HEAL-notebooks`
