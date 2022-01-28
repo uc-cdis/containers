@@ -1,7 +1,7 @@
 pandas
 numpy
 scipy
-lckr-jupyterlab-variableinspector
+#lckr-jupyterlab-variableinspector
 jupyterlab-git
 jupyterlab_templates
 jupyterlab_latex
