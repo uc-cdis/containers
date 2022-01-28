@@ -1,8 +1,8 @@
 pandas
 numpy
 scipy
-#lckr-jupyterlab-variableinspector
 jupyterlab-git
 jupyterlab_templates
 jupyterlab_latex
 jupyterlab-spellchecker
+lckr-jupyterlab-variableinspector
