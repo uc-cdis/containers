@@ -1,9 +1,21 @@
-FROM jupyter/datascience-notebook:notebook-6.4.8
+FROM quay.io/cdis/datascience-notebook:notebook-6.4.8
 USER root
 
-USER $NB_UID
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        freetds-bin \
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /home/$NB_USER
+USER ${NB_UID}
 
-COPY --chown=jovyan:users resources/custom.js /home/$NB_USER/.jupyter/custom/
-COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/
+# install extra packages
+RUN mamba install --quiet --yes \
+    'pymssql' && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+WORKDIR /home/${NB_USER}
+
+COPY --chown=jovyan:users resources/custom.js /home/${NB_USER}/.jupyter/custom/
+COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/${NB_USER}/.jupyter/
