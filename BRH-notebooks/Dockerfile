@@ -5,8 +5,10 @@ ARG NOTEBOOK_DIR
 COPY $NOTEBOOK_DIR/ $HOME/
 
 RUN conda config --append channels conda-forge
+RUN conda config --add channels bioconda
 RUN conda install -c plotly plotly
 RUN conda update conda --all
+RUN conda install -c bioconda bioconductor-gdcrnatools
 
 
 RUN printf '\n\
