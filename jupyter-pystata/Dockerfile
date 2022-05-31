@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-notebook:1.1.0
+FROM quay.io/cdis/jupyter-superslim:1.0.1
 
 USER root
 RUN apt-get update
@@ -15,21 +15,33 @@ ENV PATH $PATH:/usr/local/stata17
 RUN cd /usr/local/stata17 && \
 	{ echo y; echo y; echo y; } | ./install
 
-COPY jupyter-pystata/resources/Stata.ipynb $NB_WORKDIR
-
-# Allow notebook to run withing an <iframe/>
-RUN echo "c.NotebookApp.tornado_settings = {\"headers\": {\"Content-Security-Policy\": \"frame-ancestors 'self'\"}}" \
-	>> /home/$NB_USER/.jupyter/jupyter_notebook_config.py
-
-# When an iPython session starts, check the ~/pd/ directory for a stata.lic license file and copy if present
-RUN mkdir -p /home/$NB_USER/.ipython \
-			 /home/$NB_USER/.ipython/profile_default/ \
-			 /home/$NB_USER/.ipython/profile_default/startup/
-COPY jupyter-pystata/resources/copy_license_on_startup.py \
-	/home/$NB_USER/.ipython/profile_default/startup/copy_license_on_startup.py
-
-# Entrypoint for a notebook to request a temporary license
-COPY jupyter-pystata/resources/wait_for_license.sh /tmp/
+COPY jupyter-pystata/resources/Stata.ipynb Stata-1.ipynb
+COPY jupyter-pystata/resources/Stata.ipynb Stata-2.ipynb
+COPY jupyter-pystata/resources/Stata.ipynb Stata-3.ipynb
+COPY jupyter-pystata/resources/Stata.ipynb Stata-4.ipynb
+COPY jupyter-pystata/resources/Stata.ipynb Stata-5.ipynb
+COPY jupyter-pystata/resources/welcome.html .
 
 USER $NB_USER
 RUN pip install --user stata_setup
+
+COPY jupyter-pystata/dockerstart.sh /usr/local/bin/
+
+USER root
+RUN apt-get update
+RUN apt-get install -y firefox
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
+RUN tar -xvzf geckodriver*.tar.gz
+RUN mv geckodriver /bin/
+RUN rm geckodriver*.tar.gz
+
+COPY jupyter-pystata/resources/setup_notebooks.py /tmp/
+
+USER $NB_USER
+RUN pip3 install selenium
+
+RUN mkdir /tmp/custom_api
+COPY jupyter-pystata/resources/custom_api/* /tmp/custom_api/
+ENV PYTHONPATH="${PYTHONPATH}:/tmp/"
+
+CMD /usr/local/bin/dockerstart.sh
