@@ -35,7 +35,7 @@ run R -e "BiocManager::install('TCGAbiolinks')"
 RUN printf '\n\
     if [ -f $HOME/requirements.txt ]; then \n\
     echo "Will install requirements.txt" \n\
-    conda install --file $HOME/requirements.txt \n\
+    pip3 install -r $HOME/requirements.txt \n\
     rm $HOME/requirements.txt \n\
     else \n\
     echo "No dependencies to install." \n\
