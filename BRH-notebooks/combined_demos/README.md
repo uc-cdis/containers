@@ -38,5 +38,5 @@ To pull data files for a project, the notebooks use the Gen3 software, an open s
 [Gen3 API's](https://gen3.org/resources/user/using-api/)
 [JupyterLab Documentation](https://jupyterlab.readthedocs.io/en/stable/)
 
-### Have a question? Contact Technical Support
+### Have a question? Please Contact Technical Support
 [Technical Support](support@datacommons.io)
