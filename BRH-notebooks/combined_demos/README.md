@@ -1,6 +1,6 @@
 # Biomedical Research Hub (BRH) workspace README
 
-Welcome to the BRH workspace! Here you will find many different tutorial python notebooks that you can run to familiarize yourself with the BRH mesh -- the available data and analysis tools.  This README will provide some basic background information useful for running these notebooks. Make sure to also review the "Guideline to get started in Workspaces" in BRH Documentation [here](https://brh.data-commons.org/dashboard/Public/index.html#GuidelineToGetStarted) that describes how to get started with analyses in workspaces.
+Welcome to the BRH workspace! Here you will find many different tutorial python notebooks that you can run to familiarize yourself with the BRH mesh -- the available data and analysis tools.  This README will provide some basic background information useful for running these notebooks. Make sure to also review the "Guideline to get started in Workspaces" in BRH Documentation [here](https://brh.data-commons.org/dashboard/Public/index.html#GuidelineToGetStarted) that describes how to get started with analyses in workspaces
 
 
 ### Login and authorization
