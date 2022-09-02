@@ -1,6 +1,10 @@
 
 BRH-notebooks/combined_demos/.DS_Store
+<<<<<<< HEAD
 
 # VSCode
 .vscode/
 .dccache
+=======
+BRH-notebooks/.DS_Store
+>>>>>>> 9515538 (Update .gitignore)
