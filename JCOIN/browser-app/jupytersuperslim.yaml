@@ -1,0 +1,19 @@
+version: '1'
+services:
+   webapp:
+      build: .
+      ports:
+         - "9888:8888"
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8888/lw-workspace/proxy/"]
+        interval: 1m30s
+        timeout: 10s
+        retries: 3
+      deploy:
+        resources:
+          limits:
+            cpus: '0.50'
+            memory: 256M
+          reservations:
+            cpus: '0.25'
+            memory: 128M
