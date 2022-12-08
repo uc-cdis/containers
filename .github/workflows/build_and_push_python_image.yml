@@ -13,7 +13,6 @@ jobs:
       DOCKERFILE_LOCATION: "./python3.9-data-science/Dockerfile"
       DOCKERFILE_BUILD_CONTEXT: "./python3.9-data-science"
       OVERRIDE_REPO_NAME: "python"
-      # Determine if we want to use the repo version number or something else
       OVERRIDE_TAG_NAME: "python3.9-data-science-0.1.0"
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
