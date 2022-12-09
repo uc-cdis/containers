@@ -1,0 +1,60 @@
+name: Build and push JCOIN images
+# We can't use the reusable workflow "uc-cdis/.github/.github/workflows/image_build_push.yaml"
+# to build the "browser-app" image because we need an extra step to create a secret file before
+# building the image.
+
+# TODO remove unused files
+
+on:
+  push:
+    paths:
+      - JCOIN/**
+
+jobs:
+  browser-app:
+    name: Browser app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Quay.io
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set passhprase
+        run: |
+          cat - > "./JCOIN/browser-app/secrets.toml" <<EOM
+          PASSPHRASE = "${{ secrets.JCOIN_BROWSER_APP_PASSPHRASE }}"
+          EOM
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set Variables
+        shell: bash
+        run: |
+          echo "IMAGE_TAG=$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+          echo "IMAGE_TAG=$(echo ${GITHUB_REF#refs/*/} | tr / _)" >> $GITHUB_ENV
+
+      - name: Build and push (Quay only)
+        uses: docker/build-push-action@v3
+        with:
+          context: ./JCOIN/browser-app
+          file: ./JCOIN/browser-app/Dockerfile
+          push: true
+          tags: |
+            quay.io/cdis/jcoin-browser-app:${{ env.IMAGE_TAG }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=quay.io/cdis/jcoin-browser-app:${{ env.IMAGE_TAG }}
+          cache-to: type=inline
+          platforms: linux/amd64, linux/arm64

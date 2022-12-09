@@ -50,8 +50,6 @@ WORKDIR "${HOME}"
 
 COPY app.py app.py
 COPY secrets.toml .streamlit/secrets.toml
-# For local testing
-# COPY credentials.json .gen3/credentials.json
 
 EXPOSE $STREAMLIT_SERVER_PORT
 ENV STREAMLIT_SERVER_PORT $STREAMLIT_SERVER_PORT
