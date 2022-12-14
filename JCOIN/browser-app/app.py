@@ -8,7 +8,6 @@ from gen3.auth import Gen3Auth
 from gen3.tools.download import drs_download
 
 
-HOSTNAME = "qa-jcoin.planx-pla.net"  # "jcoin.datacommons.io"
 ENCRYPTED_FILE_GUID = "dg.6VTS/ea37e427-f142-4ddc-a9d4-4c2a9d2b3385"
 ENCRYPTED_FILE_NAME = "uber-raw-data-sep14.csv.gz.gpg"
 DECRYPTED_FILE_NAME = "uber-raw-data-sep14.csv.gz"
@@ -16,9 +15,11 @@ DATE_COLUMN = "date/time"
 
 
 def download_data():
+    assert "HOSTNAME" in os.environ, "'HOSTNAME' env var is required"
+    assert "NAMESPACE" in os.environ, "'NAMESPACE' env var is required"  # for Gen3Auth
     auth = Gen3Auth()
     drs_download.download_drs_object(
-        hostname=HOSTNAME,
+        hostname=os.environ["HOSTNAME"],
         auth=auth,
         object_id=ENCRYPTED_FILE_GUID,
         output_dir=".",
@@ -51,6 +52,7 @@ def load_data(nrows):
 
 if __name__ == "__main__":
     st.title("Uber pickups in NYC")
+
     download_data()
     data_load_state = st.text("Loading data...")
     data = load_data(10000)
