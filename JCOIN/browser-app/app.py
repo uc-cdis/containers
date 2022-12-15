@@ -19,8 +19,8 @@ def download_data():
     auth = Gen3Auth()
     file = Gen3File(auth)
     file.download_single(object_id=ENCRYPTED_FILE_GUID, path=".")
-    if not os.path.exists(DECRYPTED_FILE_NAME):
-        raise Exception(f"Failed to download '{DECRYPTED_FILE_NAME}' (GUID '{ENCRYPTED_FILE_GUID}')")
+    if not os.path.exists(ENCRYPTED_FILE_NAME):
+        raise Exception(f"Failed to download '{ENCRYPTED_FILE_NAME}' (GUID '{ENCRYPTED_FILE_GUID}')")
     subprocess.run(
         [
             "gpg",
