@@ -5,7 +5,7 @@ import numpy as np
 import subprocess
 
 from gen3.auth import Gen3Auth
-from gen3.tools.download import drs_download
+from gen3.file import Gen3File
 
 
 ENCRYPTED_FILE_GUID = "dg.6VTS/ea37e427-f142-4ddc-a9d4-4c2a9d2b3385"
@@ -15,15 +15,10 @@ DATE_COLUMN = "date/time"
 
 
 def download_data():
-    assert "HOSTNAME" in os.environ, "'HOSTNAME' env var is required"
-    assert "NAMESPACE" in os.environ, "'NAMESPACE' env var is required"  # for Gen3Auth
+    assert "NAMESPACE" in os.environ, "'NAMESPACE' env var is required"  # for Gen3Auth init
     auth = Gen3Auth()
-    drs_download.download_drs_object(
-        hostname=os.environ["HOSTNAME"],
-        auth=auth,
-        object_id=ENCRYPTED_FILE_GUID,
-        output_dir=".",
-    )
+    file = Gen3File(auth)
+    file.download_single(object_id=ENCRYPTED_FILE_GUID, path=".")
     if not os.path.exists(DECRYPTED_FILE_NAME):
         raise Exception(f"Failed to download '{DECRYPTED_FILE_NAME}' (GUID '{ENCRYPTED_FILE_GUID}')")
     subprocess.run(
