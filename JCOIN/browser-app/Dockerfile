@@ -26,10 +26,6 @@ RUN apt install -y gnupg
 # Fix DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Copy a script that we will use to correct permissions after running certain commands
-COPY resources/scripts/fix-permissions /usr/local/bin/fix-permissions
-RUN chmod a+rx /usr/local/bin/fix-permissions
-
 # Configure environment
 ENV NB_USER="${NB_USER}" \
     NB_UID=${NB_UID} \
@@ -42,8 +38,7 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" && \
     chmod g+w /etc/passwd && \
     mkdir "${HOME}/.gen3" && \
-    mkdir "${HOME}/.streamlit" && \
-    fix-permissions "${HOME}"
+    mkdir "${HOME}/.streamlit"
 
 USER ${NB_UID}
 WORKDIR "${HOME}"

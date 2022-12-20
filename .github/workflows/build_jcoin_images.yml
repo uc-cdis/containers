@@ -3,8 +3,6 @@ name: Build and push JCOIN images
 # to build the "browser-app" image because we need an extra step to create a secret file before
 # building the image.
 
-# TODO remove unused files
-
 on:
   push:
     paths:
