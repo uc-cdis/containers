@@ -14,6 +14,7 @@ DECRYPTED_FILE_NAME = "uber-raw-data-sep14.csv.gz"
 DATE_COLUMN = "date/time"
 
 
+# TODO cache this, but not for too long, in case access to the data file is revoked
 def download_data():
     assert "NAMESPACE" in os.environ, "'NAMESPACE' env var is required"  # for Gen3Auth init
     auth = Gen3Auth()
@@ -46,6 +47,7 @@ def load_data(nrows):
 
 
 if __name__ == "__main__":
+    # TODO do not display error tracebacks to the user
     st.title("Uber pickups in NYC")
 
     download_data()
