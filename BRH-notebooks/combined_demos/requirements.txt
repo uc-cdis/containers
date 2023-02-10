@@ -7,7 +7,6 @@ scikit-learn==1.1.1
 tableone==0.7.12
 lifelines==0.27.4
 bioinfokit==2.1.0
-cyvcf2==0.30.18
 r-geojsonio
 r-sf
 r-tidygeocoder
