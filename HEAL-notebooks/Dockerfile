@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:markdown_preview
+FROM quay.io/cdis/jupyter-superslim-r:1.0.2
 
 ARG NOTEBOOK_DIR
 
