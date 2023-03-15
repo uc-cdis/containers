@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:feat_gh-action
+FROM quay.io/cdis/jupyter-superslim-r:master
 
 ARG NOTEBOOK_DIR
 
@@ -7,6 +7,7 @@ COPY $NOTEBOOK_DIR/ $HOME/
 RUN conda config --append channels conda-forge
 RUN conda install -c plotly plotly
 RUN conda update conda --all
+RUN conda install jupyterhub=2 jupyterhub-base=2
 
 
 RUN printf '\n\
