@@ -101,7 +101,7 @@ RUN conda config --set unsatisfiable_hints True && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-RUN conda install nextflow
+RUN conda install -c bioconda nextflow
 
 COPY --chown=jovyan:users resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
