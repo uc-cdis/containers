@@ -101,8 +101,6 @@ RUN conda config --set unsatisfiable_hints True && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-RUN conda install -c bioconda nextflow
-
 COPY --chown=jovyan:users resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
@@ -115,3 +113,5 @@ RUN echo 'if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages
 RUN echo "load.s3<-c('maftools', 'phyloseq', 'DESeq2', 'dada2', 'vcfR'); install.s3<-load.s3[!load.s3 %in% installed.packages()]; for(s3 in install.s3) BiocManager::install(s3, ask=FALSE);" | R --no-save
 
 RUN jupyter labextension install jupyterlab-plotly
+
+RUN conda install -c bioconda nextflow
