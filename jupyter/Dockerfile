@@ -26,13 +26,13 @@ RUN apt-get update && \
         gcc \
         jq \
         less \
-        libssl1.1 \
+        libssl3 \
         libssl-dev \
         libbz2-dev \
         libcurl4-gnutls-dev \
         liblzma-dev \
         locales \
-        openjdk-8-jdk \
+        openjdk-11-jdk \
         make \
         automake \
         perl \
