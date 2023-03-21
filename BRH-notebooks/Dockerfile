@@ -32,14 +32,16 @@ RUN conda install -c conda-forge scikit-allel
 run R -e "BiocManager::install('DESeq2')"
 run R -e "BiocManager::install('TCGAbiolinks')"
 
+RUN conda install jupyterhub=2 jupyterhub-base=2 jupyter_server=1
+
 RUN printf '\n\
-    if [ -f $HOME/requirements.txt ]; then \n\
+if [ -f $HOME/requirements.txt ]; then \n\
     echo "Will install requirements.txt" \n\
     conda install --file $HOME/requirements.txt \n\
     rm $HOME/requirements.txt \n\
-    else \n\
+else \n\
     echo "No dependencies to install." \n\
-    fi \n\
-    ' | bash
+fi \n\
+' | bash
 
 RUN echo 'function ve(){ mkdir virtualenv; cd virtualenv; VENV="$1"; python3 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python -m ipykernel install --user --name=$VENV; deactivate;}' >> ~/.bashrc
