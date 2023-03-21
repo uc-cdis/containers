@@ -1,6 +1,6 @@
 # Biomedical Research Hub (BRH) workspace README
 
-Welcome to the BRH workspace! Here you will find many different tutorial python notebooks that you can run to familiarize yourself with the BRH mesh -- the available data and analysis tools.  This README will provide some basic background information useful for running these notebooks. Make sure to also review the "Guideline to get started in Workspaces" in BRH Documentation [here](https://brh.data-commons.org/dashboard/Public/index.html#GuidelineToGetStarted) that describes how to get started with analyses in workspaces.
+Welcome to the BRH workspace! Here you will find many different tutorial python notebooks that you can run to familiarize yourself with the BRH mesh -- the available data and analysis tools.  This README will provide some basic background information useful for running these notebooks. Make sure to also review the "Guideline to get started in Workspaces" in BRH Documentation [here](https://brh.data-commons.org/dashboard/Public/index.html#GuidelineToGetStarted) that describes how to get started with analyses in workspaces
 
 
 ### Login and authorization
@@ -27,7 +27,7 @@ This file you are viewing is a README markdown file which can be rendered by jup
 
 ### Controlled access and open access notebooks
 
-Both controlled access and open access data are presented in this workspace. The two notebooks that use controlled access data are `AccessClinicalData_ACTT1_notebook.ipynb` and `JCOIN_Tracking_Opioid_Stigma.ipynb`. You need access to these studies to be able to run these notebooks.
+Both controlled access and open access data are presented in this workspace. The two notebooks that use controlled access data are `ACTT1_accessclinical.ipynb` and `JCOIN_Tracking_Opioid_Stigma.ipynb`. You need access to these studies to be able to run these notebooks.
 
 
 ### Gen3 and GUIDs
