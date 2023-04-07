@@ -32,8 +32,6 @@ RUN conda install -c conda-forge scikit-allel
 run R -e "BiocManager::install('DESeq2')"
 run R -e "BiocManager::install('TCGAbiolinks')"
 
-RUN conda install jupyterhub=2 jupyterhub-base=2 jupyter_server=1
-
 RUN printf '\n\
 if [ -f $HOME/requirements.txt ]; then \n\
     echo "Will install requirements.txt" \n\
