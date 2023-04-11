@@ -1,4 +1,5 @@
-FROM quay.io/cdis/datascience-notebook:notebook-6.4.8
+FROM quay.io/cdis/datascience-notebook:2023-04-10
+
 USER root
 
 RUN apt-get update && \
