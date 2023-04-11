@@ -92,6 +92,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: jupyter-vadc
+          context: ./jupyter-vadc/
           tags:
             ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
             ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
