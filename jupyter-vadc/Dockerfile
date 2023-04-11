@@ -2,6 +2,7 @@ FROM quay.io/cdis/datascience-notebook:2023-04-10
 
 USER root
 
+# this is absolutely necessary for pymssql
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         freetds-bin \
