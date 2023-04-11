@@ -3,7 +3,7 @@ name: Build and push VADC notebook image
 on:
   push:
     paths:
-    - jupyter-vadc/*/**
+    - jupyter-vadc/**
 
 jobs:
   push-image:
