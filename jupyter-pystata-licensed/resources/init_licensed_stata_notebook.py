@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common import keys
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
@@ -13,6 +14,6 @@ browser = webdriver.Firefox(options=opts)
 browser.get("http://127.0.0.1:8888/lw-workspace/proxy/notebooks/dockerHome/licensed_stata_session.ipynb")
 time.sleep(1)
 
-form = browser.find_element_by_css_selector(FIRST_CELL_SELECTOR)
+form = browser.find_element(By.CSS_SELECTOR,FIRST_CELL_SELECTOR)
 form.send_keys(Keys.CONTROL + Keys.ENTER)
 time.sleep(1)
