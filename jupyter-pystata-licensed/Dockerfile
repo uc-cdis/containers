@@ -1,4 +1,4 @@
-FROM quay.io/cdis/stata-heal:master
+FROM quay.io/cdis/stata-heal:george-patch
 
 USER root
 RUN apt-get update
@@ -8,11 +8,16 @@ RUN tar -xvzf geckodriver*
 RUN mv geckodriver /bin/
 
 COPY jupyter-pystata-licensed/resources/wait_for_license.sh /tmp/
-COPY jupyter-pystata-licensed/resources/init_licensed_stata_notebook.py /tmp/
-RUN chmod 777 /tmp/wait_for_license.sh /tmp/init_licensed_stata_notebook.py
+COPY jupyter-pystata-licensed/resources/setup_licensed_notebook.py /tmp/
+RUN chmod 777 /tmp/wait_for_license.sh /tmp/setup_licensed_notebook.py
 
 USER $NB_USER
 RUN pip3 install selenium
 
-RUN rm $HOME/Stata.ipynb
+# Pin stata_setup to avoid error on splash parameter
+RUN pip3 uninstall --yes stata-setup
+RUN pip3 install stata-setup==0.1.2
+
+# Remove the 5 notebooks created in jupyter-pystata
+RUN rm $HOME/Stata-[12345].ipynb
 COPY jupyter-pystata-licensed/resources/licensed_stata_session.ipynb $HOME

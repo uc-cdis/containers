@@ -10,7 +10,7 @@ start-notebook.sh $@ &
 sleep 5
 
 echo "Running Stata notebook init script."
-python3 /tmp/init_licensed_stata_notebook.py
+python3 /tmp/setup_licensed_notebook.py
 
 rm geckodriver*
 
