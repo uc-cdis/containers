@@ -17,8 +17,7 @@ browser = webdriver.Firefox(options=opts)
 print("Loading jupyterlab...")
 # This gets a 302 code
 browser.get("http://127.0.0.1:8888/lw-workspace/proxy/notebooks")
-time.sleep(10)
-
+time.sleep(2)
 
 print("Reading .lic file")
 with open("/usr/local/stata17/stata.lic", "r") as lic_file:
@@ -32,7 +31,7 @@ actions.click(on_element = element)
 actions.perform()
 print("Notebook is opened")
 
-actions.pause(10)
+actions.pause(5)
 
 # Down-arrow to get to the second cell in the notebook
 actions.send_keys(Keys.DOWN)
@@ -45,7 +44,7 @@ actions.key_down(Keys.SHIFT)
 actions.send_keys(Keys.ENTER)
 actions.key_up(Keys.SHIFT)
 actions.perform()
-actions.pause(20)
+actions.pause(5)
 
 # Save notebook with output
 print("Ready to save notebook")
