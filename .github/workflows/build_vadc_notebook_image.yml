@@ -23,7 +23,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "::set-output name=branch::$(echo $(echo ${GITHUB_REF#refs/heads/} | tr / _))"
+        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
         id: extract_branch
 
       - name: Checkout repo
@@ -84,7 +84,7 @@ jobs:
         id: sanitize_name
         run: |
           IMAGE_NAME=$( sed 's/[^[:alnum:]]/_/g' <<< ${{ steps.parse_image.outputs.build_target }} );
-          echo "::set-output name=image_name::$IMAGE_NAME"
+          echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Build image
