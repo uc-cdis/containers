@@ -29,7 +29,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "::set-output name=branch::$(echo $(echo ${GITHUB_REF#refs/heads/} | tr / _))"
+        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
         id: extract_branch
 
       - name: Build Image
