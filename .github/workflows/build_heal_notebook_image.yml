@@ -8,7 +8,7 @@ on:
 jobs:
   push-image:
     runs-on: ubuntu-latest
-    steps:  
+    steps:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -17,10 +17,10 @@ jobs:
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
-      
+
       - name: clean
-        run: sudo apt clean    
-      
+        run: sudo apt clean
+
       - name: Extract branch name
         shell: bash
         run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
@@ -77,7 +77,8 @@ jobs:
 
           build_target = buildable_images[0]
           print(f"Will trigger build for: {build_target}")
-          print(f"::set-output name=build_target::{build_target}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+            print(f'build_target={build_target}', file=fh)
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Sanitize image name

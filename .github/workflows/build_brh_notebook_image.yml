@@ -77,7 +77,8 @@ jobs:
 
           build_target = buildable_images[0]
           print(f"Will trigger build for: {build_target}")
-          print(f"::set-output name=build_target::{build_target}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+            print(f'build_target={build_target}', file=fh)
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Sanitize image name
