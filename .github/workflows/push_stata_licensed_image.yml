@@ -29,15 +29,35 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "::set-output name=branch::$(echo $(echo ${GITHUB_REF#refs/heads/} | tr / _))"
+        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
         id: extract_branch
+
+      - name: Determine image to build
+        id: parse_image
+        shell: python
+        run: |
+
+          build_target = "jupyter-pystata-licensed"
+          print(f"Will trigger build for: {build_target}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+            print(f'build_target={build_target}', file=fh)
+
+      - if: ${{ steps.parse_image.outputs.build_target }}
+        name: Sanitize image name
+        id: sanitize_name
+        run: |
+          IMAGE_NAME=$( sed 's/[^[:alnum:]]/_/g' <<< ${{ steps.parse_image.outputs.build_target }} );
+          echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
       - name: Build Image
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
           image: stata-heal
-          tags: ${{ steps.extract_branch.outputs.branch }} ${{ github.sha }}
+          tags:
+            ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
+            ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
+            ${{ steps.sanitize_name.outputs.image_name }}__latest
           dockerfiles: ./jupyter-pystata-licensed/Dockerfile
 
       - name: Push To quay.io
