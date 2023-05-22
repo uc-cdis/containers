@@ -36,6 +36,7 @@ jobs:
         id: parse_image
         shell: python
         run: |
+          import os
 
           build_target = "jupyter-pystata-licensed"
           print(f"Will trigger build for: {build_target}")
