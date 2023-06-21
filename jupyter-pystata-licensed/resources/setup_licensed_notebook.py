@@ -7,21 +7,17 @@ import time
 import os
 
 
-print("Configuring headless webdriver...")
 opts = Options()
 opts.headless = True
-print("Setting browser")
 browser = webdriver.Firefox(options=opts)
 
 
 print("Loading jupyterlab...")
-# This gets a 302 code
 browser.get("http://127.0.0.1:8888/lw-workspace/proxy/notebooks")
 time.sleep(2)
 
 print("Reading .lic file")
 with open("/usr/local/stata17/stata.lic", "r") as lic_file:
-    # print("Stata license", lic_file.read())
     print("Found stata.lic file")
 
 print("Ready to open notebook")
