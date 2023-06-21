@@ -11,7 +11,7 @@ FIRST_CELL_SELECTOR="div.cell:nth-child(2) > div:nth-child(1) > div:nth-child(2)
 opts = Options()
 opts.headless = True
 browser = webdriver.Firefox(options=opts)
-browser.get("http://127.0.0.1:8888/lw-workspace/proxy/notebooks/dockerHome/licensed_stata_session.ipynb")
+browser.get("http://127.0.0.1:8888/lw-workspace/proxy/notebooks/licensed_stata_session.ipynb")
 time.sleep(1)
 
 form = browser.find_element(By.CSS_SELECTOR,FIRST_CELL_SELECTOR)
