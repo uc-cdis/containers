@@ -3,30 +3,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
-import time
-import os
 
 
 opts = Options()
 opts.headless = True
 browser = webdriver.Firefox(options=opts)
 
-
-print("Loading jupyterlab...")
-browser.get("http://127.0.0.1:8888/lw-workspace/proxy/notebooks")
-time.sleep(2)
-
-print("Reading .lic file")
+print("Checking for .lic file")
 with open("/usr/local/stata17/stata.lic", "r") as lic_file:
     print("Found stata.lic file")
 
 print("Ready to open notebook")
-element = browser.find_element(By.LINK_TEXT, "licensed_stata_session.ipynb")
-actions = ActionChains(browser)
-actions.click(on_element = element)
-actions.perform()
+browser.get("http://127.0.0.1:8888/lw-workspace/proxy/notebooks/licensed_stata_session.ipynb")
 print("Notebook is opened")
 
+actions = ActionChains(browser)
 actions.pause(5)
 
 # Down-arrow to get to the second cell in the notebook
