@@ -31,7 +31,7 @@ actions.key_down(Keys.SHIFT)
 actions.send_keys(Keys.ENTER)
 actions.key_up(Keys.SHIFT)
 actions.perform()
-actions.pause(10)
+actions.pause(5)
 
 # Save notebook with output
 print("Ready to save notebook")
