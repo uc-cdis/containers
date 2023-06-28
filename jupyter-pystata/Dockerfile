@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim:1.0.1
+FROM quay.io/cdis/jupyter-superslim:1.0.5
 
 USER root
 RUN apt-get update
@@ -23,7 +23,7 @@ COPY jupyter-pystata/resources/Stata.ipynb Stata-5.ipynb
 COPY jupyter-pystata/resources/welcome.html .
 
 USER $NB_USER
-RUN pip install --user stata_setup
+RUN pip install --user stata_setup==0.1.2
 
 COPY jupyter-pystata/dockerstart.sh /usr/local/bin/
 
