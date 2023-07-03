@@ -22,6 +22,13 @@ COPY jupyter-pystata/resources/Stata.ipynb Stata-4.ipynb
 COPY jupyter-pystata/resources/Stata.ipynb Stata-5.ipynb
 COPY jupyter-pystata/resources/welcome.html .
 
+# When an iPython session starts, check the ~/pd/ directory for a stata.lic license file and copy if present
+RUN mkdir -p /home/$NB_USER/.ipython \
+			 /home/$NB_USER/.ipython/profile_default/ \
+			 /home/$NB_USER/.ipython/profile_default/startup/
+COPY jupyter-pystata/resources/copy_license_on_startup.py \
+	/home/$NB_USER/.ipython/profile_default/startup/copy_license_on_startup.py
+
 USER $NB_USER
 RUN pip install --user stata_setup==0.1.2
 
