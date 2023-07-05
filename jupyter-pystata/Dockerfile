@@ -15,11 +15,7 @@ ENV PATH $PATH:/usr/local/stata17
 RUN cd /usr/local/stata17 && \
 	{ echo y; echo y; echo y; } | ./install
 
-COPY jupyter-pystata/resources/Stata.ipynb Stata-1.ipynb
-COPY jupyter-pystata/resources/Stata.ipynb Stata-2.ipynb
-COPY jupyter-pystata/resources/Stata.ipynb Stata-3.ipynb
-COPY jupyter-pystata/resources/Stata.ipynb Stata-4.ipynb
-COPY jupyter-pystata/resources/Stata.ipynb Stata-5.ipynb
+COPY jupyter-pystata/resources/Stata.ipynb .
 COPY jupyter-pystata/resources/welcome.html .
 
 # When an iPython session starts, check the ~/pd/ directory for a stata.lic license file and copy if present

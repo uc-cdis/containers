@@ -12,7 +12,7 @@ Note: While we have received permission from Stata to keep these containers publ
 
 
 ### Licensing
-Stata software requires a license to run. As a one-time step, workspace users should add their license files in their persistant workspace storage as `~/pd/stata.lic` . This file is checked via an iPython startup hook (triggered when a new notebook is opened) and copied to the appropriate location so that Stata can recognize it.
+Stata software requires a license to run. As a one-time step, workspace users should add their license files in their persistant workspace storage as `~/pd/stata.lic`. The notebook has a few lines of python code to check for the license file and copy it to the appropriate location so that Stata can recognize it.
 
 ### Local development
 To build, enter the root directory of this repo and run:
