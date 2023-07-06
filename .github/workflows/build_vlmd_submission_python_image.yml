@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - vlmd-submission-tools/**
+    - .github/workflows/build_vlmd_submission_python_image.yml
 
 jobs:
   ci:
