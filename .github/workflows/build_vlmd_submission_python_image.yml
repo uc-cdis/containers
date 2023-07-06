@@ -3,7 +3,7 @@ name: Build Python Image and Push to Quay and ECR
 on:
   push:
     paths:
-    - vlmd-submission-tools
+    - vlmd-submission-tools/**
 
 jobs:
   ci:
