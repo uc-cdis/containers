@@ -31,8 +31,6 @@ RUN tar -xvzf geckodriver*.tar.gz
 RUN mv geckodriver /bin/
 RUN rm geckodriver*.tar.gz
 
-COPY jupyter-pystata/resources/setup_notebooks.py /tmp/
-
 USER $NB_USER
 RUN pip3 install selenium
 
