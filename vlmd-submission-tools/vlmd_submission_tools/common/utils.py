@@ -12,14 +12,24 @@ def get_client_secret(
     client_secret_config=config.CLIENT_KEY_CONFIG,
     namespace=config.NAMESPACE
 ):
-    kubernetes.config.load_kube_config()
-    v1 = kubernetes.client.CoreV1Api()
+    kube_client = get_kube_client()
     print(f"Ready to read secret from {client_secret_name}")
-    secret = v1.read_namespaced_secret(client_secret_name, namespace).data
+    secret = kube_client.read_namespaced_secret(client_secret_name, namespace).data
     client_id = base64.b64decode(secret[client_id_config]).decode('ascii')
     client_secret = base64.b64decode(secret[client_secret_config]).decode('ascii')
 
     return client_id, client_secret
+
+
+def get_kube_client():
+    # Use this for running in cluster
+    kubernetes.config.load_incluster_config()
+    # Use this for running locally
+    # kubernetes.config.load_kube_config()
+
+    kube_client = kubernetes.client.CoreV1Api()
+
+    return kube_client
 
 
 def check_mds_study_id(study_id, hostname=config.HOST_NAME):
