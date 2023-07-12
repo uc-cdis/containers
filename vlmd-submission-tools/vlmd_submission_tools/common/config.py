@@ -1,7 +1,7 @@
 import os
 
 HOST_NAME = os.environ.get('GEN3_HOSTNAME')
-NAMESPACE="default"
+NAMESPACE="argo"
 BASE_IMAGE = "quay.io/cdis/python:python3.9-data-science-master"
 
 # Client-credentials secrets names/keys should also be in the configmap
