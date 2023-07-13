@@ -55,10 +55,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: jupyter-pystata-gen3-licensed
-          tags:
-            ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
-            ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
-            ${{ steps.sanitize_name.outputs.image_name }}__latest
+          tags: ${{ steps.extract_branch.outputs.branch }} ${{ github.sha }}
           dockerfiles: ./jupyter-pystata-licensed/Dockerfile
 
       - name: Push To quay.io
