@@ -1,6 +1,8 @@
 """Placeholder method for testing argo workflows.
 """
 
+import json
+
 from argparse import ArgumentParser, Namespace
 
 from vlmd_submission_tools.common.logger import Logger
@@ -20,6 +22,15 @@ class HelloWorld(Subcommand):
             default="VLMD",
             help=(
                 "Optional flag for testing in workflow."
+            ),
+        )
+        parser.add_argument(
+            "-o",
+            "--output",
+            required=True,
+            type=str,
+            help=(
+                "Path to write out the JSON response, the hello-world message."
             ),
         )
 
@@ -44,5 +55,10 @@ class HelloWorld(Subcommand):
 
         logger.info(f"From flag = {options.from_flag}.")
         logger.info(f"Output string = {output_string}")
+        record_json = {"message": output_string}
+
+        with open(options.output, 'w', encoding='utf-8') as o:
+            json.dump(record_json, o, ensure_ascii=False, indent=4)
+        logger.info(f"JSON response saved in {options.output}")
 
         return output_string
