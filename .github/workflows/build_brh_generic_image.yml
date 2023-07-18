@@ -43,7 +43,7 @@ jobs:
         run: |
           import os, json, re
 
-          notebook_dir = "brh-generic"
+          notebook_dir = "brh-notebooks/brh-tutorials"
           changed_brh_notebook_files = json.loads(os.environ['CHANGES'])
           print(f"Changed files {changed_brh_notebook_files}")
 
