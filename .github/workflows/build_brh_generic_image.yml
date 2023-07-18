@@ -45,7 +45,7 @@ jobs:
 
           notebook_dir = "brh-generic"
           changed_brh_notebook_files = json.loads(os.environ['CHANGES'])
-          print(f"Changed files {changed_brh_generic_files}")
+          print(f"Changed files {changed_brh_notebook_files}")
 
           # build an image for every subdir of BRH-generic with a changed file
           subdirs = list(

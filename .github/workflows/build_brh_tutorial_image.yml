@@ -45,7 +45,7 @@ jobs:
 
           notebook_dir = "brh-tutorials"
           changed_brh_notebook_files = json.loads(os.environ['CHANGES'])
-          print(f"Changed files {changed_brh_tutorial_files}")
+          print(f"Changed files {changed_brh_notebook_files}")
 
           # build an image for every subdir of BRH-notebooks with a changed file
           subdirs = list(
@@ -68,7 +68,7 @@ jobs:
           )
 
           if not len(buildable_images):
-            print(f"None of {changed_brh_tutorial_files} triggers a build for any of {subdirs}. Done.")
+            print(f"None of {changed_brh_notebook_files} triggers a build for any of {subdirs}. Done.")
             exit(0)
           elif len(buildable_images) > 1:
             print("Found multiple directories with changes: {buildable_images}")
