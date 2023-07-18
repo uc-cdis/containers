@@ -3,7 +3,7 @@ name: Build and push BRH tutorial image
 on:
   push:
     paths:
-    - brh-notebooks/brh-generic/*
+    - brh-notebooks/*/**
 
 jobs:
   push-image:
@@ -43,7 +43,7 @@ jobs:
         run: |
           import os, json, re
 
-          notebook_dir = "brh-notebooks/brh-tutorials"
+          notebook_dir = "brh-notebooks"
           changed_brh_notebook_files = json.loads(os.environ['CHANGES'])
           print(f"Changed files {changed_brh_notebook_files}")
 
