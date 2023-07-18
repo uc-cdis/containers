@@ -3,7 +3,7 @@ name: Build and push BRH generic image
 on:
   push:
     paths:
-    - brh-generic/*/**
+    - brh-notebooks/brh-tutorials/*
 
 jobs:
   push-image:

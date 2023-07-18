@@ -3,7 +3,7 @@ name: Build and push BRH tutorial image
 on:
   push:
     paths:
-    - brh-tutorials/*/**
+    - brh-notebooks/brh-generic/*
 
 jobs:
   push-image:
@@ -91,14 +91,14 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: brh-tutorials
+          image: brh-notebooks
           tags:
             ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
             ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
             ${{ steps.sanitize_name.outputs.image_name }}__latest
-          dockerfiles: ./brh-tutorials/Dockerfile
+          dockerfiles: ./brh-notebooks/Dockerfile
           build-args:
-            NOTEBOOK_DIR=brh-tutorials/${{ steps.parse_image.outputs.build_target }}
+            NOTEBOOK_DIR=brh-notebooks/${{ steps.parse_image.outputs.build_target }}
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Push To quay.io
