@@ -1,2 +1,2 @@
-gen3==4.19.1
+gen3==4.19.1 -U
 # trigger build
