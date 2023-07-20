@@ -1,9 +1,9 @@
 """Placeholder method for testing argo workflows.
 """
 
-import json
 
 from argparse import ArgumentParser, Namespace
+import json
 
 from vlmd_submission_tools.common.logger import Logger
 from vlmd_submission_tools.subcommands import Subcommand

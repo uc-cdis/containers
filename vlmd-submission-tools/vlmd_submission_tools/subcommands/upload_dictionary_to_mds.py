@@ -51,6 +51,16 @@ class UploadDictionaryToMds(Subcommand):
             ),
         )
 
+        parser.add_argument(
+            "-o",
+            "--output",
+            required=True,
+            type=str,
+            help=(
+                "Path to write out the JSON response with upload_status."
+            ),
+        )
+
 
     @classmethod
     def __get_description__(cls) -> str:
@@ -60,6 +70,7 @@ class UploadDictionaryToMds(Subcommand):
         return (
             "Takes a dictionary, the dictionary name and a study id. "
             "Adds the dictionary to the study id metadata."
+            "Writes JSON output with the MDS upload_status."
         )
 
     @classmethod
@@ -125,7 +136,15 @@ class UploadDictionaryToMds(Subcommand):
             logger.error("Error in updating study ID")
             raise Exception("Could not update name+guid in study ID metadata")
 
-        upload_status = f"status: ok, dictionary_name: {options.dictionary_name}, guid: {guid}"
+        upload_status = "ok"
         logger.info(f"MDS upload status={upload_status}")
 
-        return upload_status
+        # save the upload_status, dictionary_name and MDS guid output parameters
+        record_json = {
+            "upload_status": upload_status,
+            "dictionary_name": options.dictionary_name,
+            "mds_guid": guid
+            }
+        with open(options.output, 'w', encoding='utf-8') as o:
+            json.dump(record_json, o, ensure_ascii=False, indent=4)
+        logger.info(f"JSON response saved in {options.output}")

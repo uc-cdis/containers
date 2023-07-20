@@ -58,6 +58,16 @@ class ReadAndValidateDictionary(Subcommand):
             ),
         )
 
+        parser.add_argument(
+            "-o",
+            "--output",
+            required=True,
+            type=str,
+            help=(
+                "Path to write out the JSON response with json_local_path and is_valid_dictionary."
+            ),
+        )
+
     @classmethod
     def __get_description__(cls) -> str:
         """
@@ -65,9 +75,9 @@ class ReadAndValidateDictionary(Subcommand):
         """
         return (
             "Takes a presigned url and fetches the data dictionary. "
-            "Converts any csv/tsv to json. "
+            "Converts any csv/tsv to json and saves to local file system. "
             "Validates the dictionary against the provided schema. "
-            "Returns True or False for valid dictionary."
+            "Writes JSON output with json_local_path and is_valid_dictionary."
         )
 
     @classmethod
@@ -80,7 +90,7 @@ class ReadAndValidateDictionary(Subcommand):
 
         logger.info(f"URL {options.dictionary_url}")
 
-        # Get file type from filename
+        # get file type from filename
         if options.file_name.lower().endswith('.json'):
             file_type = 'json'
         elif options.file_name.lower().endswith('.csv'):
@@ -91,7 +101,7 @@ class ReadAndValidateDictionary(Subcommand):
             raise Exception("Could not get file type suffix from filename")
         local_file_path = f"{options.local_file_path}/{options.file_name}"
 
-        # Pull in schema
+        # pull in schema
         schema = schemas.heal['data_dictionary']
         data_dictionary_props = schema['properties']
         data_dictionary = {"title": "dictionary title"}
@@ -159,12 +169,15 @@ class ReadAndValidateDictionary(Subcommand):
             is_valid_dictionary = False
             traceback.print_exc()
             raise Exception("Not a valid dictionary")
+        logger.info(f"Valid={is_valid_dictionary}")
 
-        # Save locally or as output artifact
+        # save the data dictionary
         with open(json_local_path, 'w', encoding='utf-8') as o:
             json.dump(data_dictionary, o, ensure_ascii=False, indent=4)
-        logger.info(f"JSON response saved in {json_local_path}")
+        logger.info(f"JSON data dictionary saved in {json_local_path}")
 
-        logger.info(f"json_local_path={json_local_path}")
-        logger.info(f"Valid={is_valid_dictionary}")
-        return (json_local_path, is_valid_dictionary)
+        # save the json_local_path and is_valid_dictionary output parameters
+        record_json = {"json_local_path": json_local_path, "is_valid_dictionary": is_valid_dictionary}
+        with open(options.output, 'w', encoding='utf-8') as o:
+            json.dump(record_json, o, ensure_ascii=False, indent=4)
+        logger.info(f"JSON response saved in {options.output}")

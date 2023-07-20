@@ -6,6 +6,7 @@
 """
 
 from argparse import ArgumentParser, Namespace
+import json
 import os
 import requests
 
@@ -29,6 +30,15 @@ class GetDictionaryUrl(Subcommand):
                 "The indexd Globally Unique Identifier (GUID) for the data dictionary."
             ),
         )
+        parser.add_argument(
+            "-o",
+            "--output",
+            required=True,
+            type=str,
+            help=(
+                "Path to write out the JSON response with file_name and dictionary_url."
+            ),
+        )
 
     @classmethod
     def __get_description__(cls) -> str:
@@ -38,7 +48,8 @@ class GetDictionaryUrl(Subcommand):
         return (
             "Takes an indexd guid and checks that the guid exists in indexd. "
             "Queries fence to get a presigned url for the data dictionary. "
-            "Requires fence credentials: either user or client credentials."
+            "Requires fence credentials: either user or client credentials. "
+            "Writes JSON output with file_name and dictionary_url."
         )
 
     @classmethod
@@ -49,8 +60,6 @@ class GetDictionaryUrl(Subcommand):
         logger = Logger.get_logger(cls.__tool_name__())
         logger.info(cls.__get_description__())
 
-        # config.HOST_NAME="qa-heal.planx-pla.net"
-        # data_dict_guid="852b5e42-eb24-49a9-baa8-d565fd1b0b8b"
         logger.info(f"Searching indexd for guid.")
         try:
             url = f"https://{config.HOST_NAME}/index/index/{options.data_dict_guid}"
@@ -90,5 +99,8 @@ class GetDictionaryUrl(Subcommand):
         except:
             raise Exception("Could not get pre-signed url from fence")
 
-        # return file_name and pre-signed url
-        return (file_name, dictionary_url)
+        # save the file_name and pre-signed url output parameters
+        record_json = {"file_name": file_name, "dictionary_url": dictionary_url}
+        with open(options.output, 'w', encoding='utf-8') as o:
+            json.dump(record_json, o, ensure_ascii=False, indent=4)
+        logger.info(f"JSON response saved in {options.output}")
