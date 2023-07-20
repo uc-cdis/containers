@@ -1,13 +1,13 @@
 # vlmd-submission-tools
 
-Python CLI with various subcommands to support the argo HEAL workflows.
+Python CLI with subcommands to support argo workflows for VLMD submission.
 
 ## Installation
 
 1. Install poetry if you don't already have it (https://python-poetry.org/)
 2. Install package `poetry install` (Note: poetry can manage environments but you can also generate a virtual environment yourself; regardless always build in a venv).
 
-## Basic usage
+## Running locally
 
 To see the available subcommands:
 
@@ -23,20 +23,37 @@ vlmd-submission-tools <subcommand> -h
 
 The Gen3 commons hostname (eg, `qa-heal.planx-pla.net`) should be set as the environment variable `GEN3_HOSTNAME`.
 
+The fence client-credentials are read from JSON in an environment variable, with format
+
+```
+{
+    config.CLIENT_ID_CONFIG: <client_id>,
+    config.CLIENT_SECRET_CONFIG: <client_secret>
+}
+```
+
+For a production environment your credentials secret can be
+deployed via `g3auto` or rotatated periodically via a `cloud-automation` job.
+
 ### Submission workflow
 
 The following subcommands are executed for the VLMD dictionary submission and validation:
 
 ```
-vlmd-submission-tools GetDictionaryUrl -d <indexd guid>
-vlmd-submission-tools ReadAndValidateDictionary -f <dictionary file name> -l <local file path> -u <dictionary url>
-vlmd-submission-tools UploadDictionaryToMds -j <path to json dictionary> -n <dictionary name> -s <mds studyid>
+vlmd-submission-tools GetDictionaryUrl -d <indexd guid> -o <local json output>
+vlmd-submission-tools ReadAndValidateDictionary -f <dictionary file name> -l <local file path> -u <dictionary url> -o <local json output>
+vlmd-submission-tools UploadDictionaryToMds -j <path to json dictionary> -n <dictionary name> -s <mds studyid> -o <local json output>
 ```
+
+Each task requires a `-o` parameter to specify the local JSON output artifact, eg
+
+`-o /tmp/url_parameters.json`
 
 ### Fence client credentials
 
-Some of the subcommands utilize fence client credentials. The
-credentials are currently read from a kubernetes secret. The secret name and keys are configured in `common/config.py`.
+Some of the subcommands utilize fence client-credentials.
+The credentials are currently read from an environment variable.
+The name and keys for the secret are specified in `common/config.py`.
 
 The fence client will need some permissions set in the user.yaml file.
 For example, use the following if your fence client name is `vlmd_client` and the `authz` of the indexd upload is `/programs/DEV`:
