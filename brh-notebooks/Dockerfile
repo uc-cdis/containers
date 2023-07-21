@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN conda config --append channels conda-forge
 RUN pip uninstall -y gen3
+RUN pip3 install gen3
 #RUN conda config --add channels bioconda
 #RUN conda install -c plotly plotly
 #RUN conda install -c bioconda bioconductor-gdcrnatools
