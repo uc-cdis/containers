@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN conda config --append channels conda-forge
+#RUN conda config --append channels conda-forge
 RUN pip uninstall -y gen3
 RUN pip3 install gen3
 #RUN conda config --add channels bioconda
