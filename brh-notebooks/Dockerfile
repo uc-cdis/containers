@@ -23,19 +23,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN conda remove gen3
 RUN conda config --append channels conda-forge
-RUN conda config --add channels bioconda
-RUN conda install -c plotly plotly
-RUN conda install -c bioconda bioconductor-gdcrnatools
-RUN conda install -c conda-forge scikit-allel
-run R -e "BiocManager::install('DESeq2')"
-run R -e "BiocManager::install('TCGAbiolinks')"
+#RUN conda config --add channels bioconda
+#RUN conda install -c plotly plotly
+#RUN conda install -c bioconda bioconductor-gdcrnatools
+#RUN conda install -c conda-forge scikit-allel
+#run R -e "BiocManager::install('DESeq2')"
+#run R -e "BiocManager::install('TCGAbiolinks')"
 
 
 RUN printf '\n\
 if [ -f $HOME/requirements.txt ]; then \n\
     echo "Will install requirements.txt" \n\
-    conda update --file $HOME/requirements.txt \n\
+    conda install --file $HOME/requirements.txt \n\
     rm $HOME/requirements.txt \n\
 else \n\
     echo "No dependencies to install." \n\
