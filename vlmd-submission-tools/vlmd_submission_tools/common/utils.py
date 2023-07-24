@@ -1,17 +1,51 @@
+import base64
 import json
 import os
 import requests
 
+import kubernetes
 
 from vlmd_submission_tools.common import config
 
-def get_client_secret():
-    """The fence client-credentials are read from JSON in an environment variable"""
-    fence_client_secret = json.loads(os.environ.get(config.CLIENT_SECRET_NAME))
-    client_id = fence_client_secret[config.CLIENT_ID_CONFIG]
-    client_secret = fence_client_secret[config.CLIENT_KEY_CONFIG]
+
+def get_client_secret(
+    client_secret_name=config.CLIENT_SECRET_NAME,
+    client_secret_key=config.CLIENT_SECRET_KEY_CONFIG,
+    client_id_config=config.CLIENT_ID_CONFIG,
+    client_secret_config=config.CLIENT_KEY_CONFIG,
+    namespace=config.NAMESPACE
+):
+    """
+    Read fence client_id and client_secret from kubernetes secret with the following format
+    {
+        client_secret_key:
+        {
+          client_id_config: <client_id>,
+          client_secret_config: <client_secret>
+        }
+    }
+    """
+    kube_client = get_kube_client()
+    print(f"Ready to read secret from {client_secret_name}")
+    secret = kube_client.read_namespaced_secret(client_secret_name, namespace).data[client_secret_key]
+    secret_json = json.loads(base64.b64decode(secret).decode('ascii'))
+    client_id = secret_json[client_id_config]
+    client_secret = secret_json[client_secret_config]
 
     return client_id, client_secret
+
+
+def get_kube_client():
+    if os.environ.get('KUBERNETES_SERVICE_HOST'):
+        # Use this for running in cluster
+        kubernetes.config.load_incluster_config()
+    else:
+        # Use this for running locally
+        kubernetes.config.load_kube_config()
+
+    kube_client = kubernetes.client.CoreV1Api()
+
+    return kube_client
 
 
 def check_mds_study_id(study_id, hostname=config.HOST_NAME):
