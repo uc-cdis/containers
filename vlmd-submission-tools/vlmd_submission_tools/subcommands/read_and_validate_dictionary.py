@@ -10,6 +10,7 @@ import json
 import jsonschema
 import os
 import traceback
+from urllib.parse import unquote
 
 from frictionless import Resource
 import petl as etl
@@ -88,7 +89,10 @@ class ReadAndValidateDictionary(Subcommand):
         logger = Logger.get_logger(cls.__tool_name__())
         logger.info(cls.__get_description__())
 
-        logger.info(f"URL {options.dictionary_url}")
+        dictionary_url = options.dictionary_url
+        dictionary_url = unquote(dictionary_url)
+
+        logger.info(f"URL {dictionary_url}")
 
         # get file type from filename
         if options.file_name.lower().endswith('.json'):
@@ -110,11 +114,11 @@ class ReadAndValidateDictionary(Subcommand):
         logger.info(f"Fetching dictionary from s3 url.")
         if file_type == 'csv' or file_type == 'tsv':
             try:
-                source = Resource(options.dictionary_url).to_petl()
+                source = Resource(dictionary_url).to_petl()
             except:
                 is_valid_dictionary = False
                 traceback.print_exc()
-                raise Exception(f"Could not read dictionary from url {options.dictionary_url}")
+                raise Exception(f"Could not read dictionary from url {dictionary_url}")
 
             logger.info(f"Converting {file_type} file to json")
             logger.info(f"Column names in petl: {source.fieldnames()}")
@@ -141,7 +145,7 @@ class ReadAndValidateDictionary(Subcommand):
         else:
             # JSON format is read directly without conversion
             try:
-                response = requests.get(options.dictionary_url)
+                response = requests.get(dictionary_url)
                 data_dictionary_json = response.text
                 data_dictionary_json = json.loads(data_dictionary_json)
                 data_dictionary['data_dictionary'] = data_dictionary_json
@@ -149,7 +153,7 @@ class ReadAndValidateDictionary(Subcommand):
             except:
                 is_valid_dictionary = False
                 traceback.print_exc()
-                raise Exception(f"Could not read dictionary from url {options.dictionary_url}")
+                raise Exception(f"Could not read dictionary from url {dictionary_url}")
 
         logger.info("Reading schema into schema_array")
         schema_array = {

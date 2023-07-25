@@ -9,6 +9,7 @@ from argparse import ArgumentParser, Namespace
 import json
 import os
 import requests
+from urllib.parse import quote
 
 from vlmd_submission_tools.common import config
 from vlmd_submission_tools.common.logger import Logger
@@ -94,6 +95,7 @@ class GetDictionaryUrl(Subcommand):
             response = requests.get(url, headers=headers)
             logger.info(f"Fence query status code = {response.status_code}")
             dictionary_url = response.json().get("url", None)
+            dictionary_url = quote(dictionary_url)
             logger.info(f"Dictionary url: {dictionary_url}")
 
         except:
