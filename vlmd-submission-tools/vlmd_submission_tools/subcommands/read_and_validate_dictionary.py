@@ -40,12 +40,12 @@ class ReadAndValidateDictionary(Subcommand):
         )
 
         parser.add_argument(
-            "-l",
-            "--local_file_path",
-            required=False,
+            "-j",
+            "--json_local_path",
+            required=True,
             type=str,
             help=(
-                "Local path for storing the json dictionary, eg /mnt/vol."
+                "Full path for saving the dictionary in json, eg /mnt/vol/dict.json."
             ),
         )
 
@@ -91,7 +91,6 @@ class ReadAndValidateDictionary(Subcommand):
 
         dictionary_url = options.dictionary_url
         dictionary_url = unquote(dictionary_url)
-
         logger.info(f"URL {dictionary_url}")
 
         # get file type from filename
@@ -103,7 +102,7 @@ class ReadAndValidateDictionary(Subcommand):
             file_type = 'tsv'
         else:
             raise Exception("Could not get file type suffix from filename")
-        local_file_path = f"{options.local_file_path}/{options.file_name}"
+        json_local_path = options.json_local_path
 
         # pull in schema
         schema = schemas.heal['data_dictionary']
@@ -137,7 +136,6 @@ class ReadAndValidateDictionary(Subcommand):
 
             try:
                 data_dictionary['data_dictionary'] = [mapping_utils.convert_rec_to_json(rec) for rec in etl.dicts(template_tbl)]
-                json_local_path = os.path.splitext(local_file_path)[0] + '.json'
             except:
                 is_valid_dictionary = False
                 traceback.print_exc()
@@ -149,7 +147,6 @@ class ReadAndValidateDictionary(Subcommand):
                 data_dictionary_json = response.text
                 data_dictionary_json = json.loads(data_dictionary_json)
                 data_dictionary['data_dictionary'] = data_dictionary_json
-                json_local_path = local_file_path
             except:
                 is_valid_dictionary = False
                 traceback.print_exc()
