@@ -9,9 +9,21 @@ jobs:
   push-image:
     runs-on: ubuntu-latest
     steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 30000
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+
+      - name: clean
+        run: sudo apt clean
+
       - name: Extract branch name
         shell: bash
-        run: echo "::set-output name=branch::$(echo $(echo ${GITHUB_REF#refs/heads/} | tr / _))"
+        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
         id: extract_branch
 
       - name: Checkout repo
@@ -65,14 +77,15 @@ jobs:
 
           build_target = buildable_images[0]
           print(f"Will trigger build for: {build_target}")
-          print(f"::set-output name=build_target::{build_target}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+            print(f'build_target={build_target}', file=fh)
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Sanitize image name
         id: sanitize_name
         run: |
           IMAGE_NAME=$( sed 's/[^[:alnum:]]/_/g' <<< ${{ steps.parse_image.outputs.build_target }} );
-          echo "::set-output name=image_name::$IMAGE_NAME"
+          echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Build image

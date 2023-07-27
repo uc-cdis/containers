@@ -1,8 +1,12 @@
-FROM quay.io/cdis/jupyter-notebook:1.1.0
+FROM quay.io/cdis/jupyter-superslim-r:1.0.4
 
 ARG NOTEBOOK_DIR
 
 COPY $NOTEBOOK_DIR/ $HOME/
+
+RUN conda config --append channels conda-forge
+RUN conda install -c plotly plotly
+
 
 RUN printf '\n\
 if [ -f $HOME/requirements.txt ]; then \n\

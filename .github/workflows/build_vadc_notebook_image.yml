@@ -1,0 +1,114 @@
+name: Build and push VADC notebook image
+
+on:
+  push:
+    paths:
+    - jupyter-vadc/**
+
+jobs:
+  push-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 30000
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+
+      - name: clean
+        run: sudo apt clean
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Get changed files
+        id: get_changed_files
+        uses: jitterbit/get-changed-files@v1
+        with:
+          format: 'json'
+
+      - name: Determine image to build
+        id: parse_image
+        shell: python
+        env:
+          CHANGES: ${{ steps.get_changed_files.outputs.added_modified }}
+        run: |
+          import os, json, re
+
+          notebook_dir = "jupyter-vadc"
+          changed_vadc_notebook_files = json.loads(os.environ['CHANGES'])
+          print(f"Changed files {changed_vadc_notebook_files}")
+
+          # build an image for every subdir of jupyter-vadc with a changed file
+          subdirs = list(
+            filter(
+              lambda d: os.path.isdir(f"{os.environ['GITHUB_WORKSPACE']}/{notebook_dir}/{d}"),
+              os.listdir(notebook_dir)
+            )
+          )
+
+          print(f"Scanning subdirs for changed files: {subdirs}")
+
+          buildable_images = list(
+            filter(
+              lambda subdir: any(
+                changed_file.startswith(f"{notebook_dir}/{subdir}")
+                for changed_file in changed_vadc_notebook_files
+              ),
+              subdirs
+            )
+          )
+
+          if not len(buildable_images):
+            print(f"None of {changed_vadc_notebook_files} triggers a build for any of {subdirs}. Done.")
+            exit(0)
+          elif len(buildable_images) > 1:
+            print("Found multiple notebook directories with changes: {buildable_images}")
+            print("Only one image can be built at a time. Exiting.")
+            exit(1)
+
+          build_target = buildable_images[0]
+          print(f"Will trigger build for: {build_target}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+            print(f'build_target={build_target}', file=fh)
+
+      - if: ${{ steps.parse_image.outputs.build_target }}
+        name: Sanitize image name
+        id: sanitize_name
+        run: |
+          IMAGE_NAME=$( sed 's/[^[:alnum:]]/_/g' <<< ${{ steps.parse_image.outputs.build_target }} );
+          echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
+
+      - if: ${{ steps.parse_image.outputs.build_target }}
+        name: Build image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: jupyter-vadc
+          context: ./jupyter-vadc/
+          tags:
+            ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
+            ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
+            ${{ steps.sanitize_name.outputs.image_name }}__latest
+          dockerfiles: ./jupyter-vadc/Dockerfile
+          build-args:
+            NOTEBOOK_DIR=jupyter-vadc/${{ steps.parse_image.outputs.build_target }}
+
+      - if: ${{ steps.parse_image.outputs.build_target }}
+        name: Push To quay.io
+        id: push-to-quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: quay.io/cdis
+          username: ${{ secrets.QUAY_SERVICE_ACCOUNT_USER }}
+          password: ${{ secrets.QUAY_SERVICE_ACCOUNT_PASSWORD }}

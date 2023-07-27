@@ -5,6 +5,6 @@ WORKDIR /home/$NB_USER
 
 COPY ./resources/requirements.txt ${HOME}/
 
-COPY ./resources/HEAL_Workspace_Demo_BACPAC.ipynb ${HOME}/
+COPY ./resources/BACPAC_Synthetic_Data_Analysis.ipynb ${HOME}/
 
 RUN pip install -r ${HOME}/requirements.txt
