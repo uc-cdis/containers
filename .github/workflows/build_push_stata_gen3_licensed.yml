@@ -1,4 +1,4 @@
-name: Push Stata Image to quay
+name: Push Stata Gen3-licensed Image to quay
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOURCE: 's3://ctds-stata/Stata17Linux64.tar.gz'
-          DEST: './jupyter-pystata-licensed/resources/'
+          DEST: './jupyter-pystata-gen3-licensed/resources/'
 
       - name: Extract branch name
         shell: bash
@@ -56,7 +56,7 @@ jobs:
         with:
           image: jupyter-pystata-gen3-licensed
           tags: ${{ steps.extract_branch.outputs.branch }} ${{ github.sha }}
-          dockerfiles: ./jupyter-pystata-licensed/Dockerfile
+          dockerfiles: ./jupyter-pystata-gen3-licensed/Dockerfile
 
       - name: Push To quay.io
         id: push-to-quay
