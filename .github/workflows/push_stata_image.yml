@@ -1,0 +1,51 @@
+name: Push Stata Image to quay
+
+on:
+  push:
+    paths:
+      - jupyter-pystata/**
+      - .github/workflows/push_stata_image.yml
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 30000
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+      - uses: actions/checkout@v2
+      - uses: prewk/s3-cp-action@v0.1.1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE: 's3://ctds-stata/Stata17Linux64.tar.gz'
+          DEST: './jupyter-pystata/resources/'
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: stata-heal
+          tags: ${{ steps.extract_branch.outputs.branch }} ${{ github.sha }}
+          dockerfiles: ./jupyter-pystata/Dockerfile
+
+      - name: Push To quay.io
+        id: push-to-quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: quay.io/cdis
+          username: ${{ secrets.QUAY_SERVICE_ACCOUNT_USER }}
+          password: ${{ secrets.QUAY_SERVICE_ACCOUNT_PASSWORD }}
