@@ -7,45 +7,7 @@ Python CLI with subcommands to support argo workflows for VLMD submission.
 1. Install poetry if you don't already have it (https://python-poetry.org/)
 2. Install package `poetry install` (Note: poetry can manage environments but you can also generate a virtual environment yourself; regardless always build in a venv).
 
-## Running locally
-
-To see the available subcommands:
-
-```
-vlmd-submission-tools
-```
-
-To access the help documentation for a particular subcommand:
-
-```
-vlmd-submission-tools <subcommand> -h
-```
-
-The Gen3 commons hostname (eg, `qa-heal.planx-pla.net`) should be set as the environment variable `GEN3_HOSTNAME`.
-
-The fence client-credentials are read from JSON in a kubernetes secret.
-You could run Rancher Desktop locally for storing and retrieving the kubernetes secret.
-The local storage should mimic the structure of a secret stored by `g3auto`.
-In particular, if the secret is generated from a file, the main key for the secret would match the file name.
-
-For example, if your fence credentials are in the JSON file `credentials.json`,
-use the following to create a secret that matches the `g3auto` structure:
-
-```
-kubectl create secret generic <CLIENT_SECRET_NAME> --from-file=credentials.json=credentials.json
-```
-
-You will need to set environment variables for the secret name, for example
-
-```
-export CLIENT_SECRET_NAME=vlmd-fence-client-g3auto
-export CLIENT_SECRET_KEY_CONFIG=credentials.json
-export CLIENT_SECRET_NAMESPACE=default
-```
-
-The namespace will be `default` for your local environment and will likely be `argo` for a qa/production environment.
-
-### Submission workflow
+## Submission workflow
 
 The following subcommands are executed for the VLMD dictionary submission and validation:
 
@@ -55,7 +17,7 @@ vlmd-submission-tools ReadAndValidateDictionary -f <dictionary file name> -j <pa
 vlmd-submission-tools UploadDictionaryToMds -j <path to json dictionary> -n <dictionary name> -s <mds studyid> -o <local json output>
 ```
 
-Each task requires a `-o` parameter to specify the local JSON output artifact, eg
+Each task requires a `-o` parameter to specify the local JSON output parameter file, eg
 
 `-o /tmp/url_parameters.json`
 
@@ -85,7 +47,7 @@ then your secret should have the following structure:
 ``````
 
 The name and keys for the kubernetes secret are specified in
-environment variables that are read in the `common/config.py` module.
+environment variables that are read by the `common/config.py` module.
 
 The fence client will need some permissions set in the user.yaml file.
 For example, use the following if your fence client name is `vlmd_client` and the `authz` of the indexd upload is `/programs/DEV`:
@@ -142,3 +104,41 @@ For example, use the following if your fence client name is `vlmd_client` and th
 7. Create unit tests.
 
 If you need to add dependencies you must use the `poetry add ...` functionality.
+
+## Running locally
+
+To see the available subcommands:
+
+```
+vlmd-submission-tools
+```
+
+To access the help documentation for a particular subcommand:
+
+```
+vlmd-submission-tools <subcommand> -h
+```
+
+The Gen3 commons hostname (eg, `qa-heal.planx-pla.net`) should be set as the environment variable `GEN3_HOSTNAME`.
+
+The fence client-credentials are read from JSON in a kubernetes secret.
+You could run Rancher Desktop locally for storing and retrieving the kubernetes secret.
+The local storage should mimic the structure of a secret stored by `g3auto`.
+In particular, if the secret is generated from a file, the main key for the secret would match the file name.
+
+For example, if your fence credentials are in the JSON file `credentials.json`,
+use the following to create a secret that matches the `g3auto` structure:
+
+```
+kubectl create secret generic <CLIENT_SECRET_NAME> --from-file=credentials.json=credentials.json
+```
+
+You will need to set environment variables for the secret name, for example
+
+```
+export CLIENT_SECRET_NAME=vlmd-fence-client-g3auto
+export CLIENT_SECRET_KEY_CONFIG=credentials.json
+export CLIENT_SECRET_NAMESPACE=default
+```
+
+The namespace will be `default` for your local environment and will likely be `argo` for a qa/production environment.

@@ -3,8 +3,8 @@ import os
 HOST_NAME = os.environ.get('GEN3_HOSTNAME')
 BASE_IMAGE = "quay.io/cdis/python:python3.9-data-science-master"
 
-# Client-credentials secrets names/keys could also be stored in the configmap.
-# These might be rotated by the cloud-auto cron job client-create-rotate.
+# Names and keys for client-credentials secrets stored in a kubernetes secret.
+# Example values:
 # CLIENT_SECRET_NAME="vlmd-fence-client-g3auto"
 # CLIENT_SECRET_KEY_CONFIG="fence_client_credentials.json"
 # NAMESPACE="default"
