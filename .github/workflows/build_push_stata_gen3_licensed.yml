@@ -3,7 +3,7 @@ name: Push Stata Image to quay
 on:
   push:
     paths:
-      - jupyter-pystata-licensed/**
+      - jupyter-pystata-gen3-licensed/**
       - .github/workflows/build_push_stata_gen3_licensed.yml
   workflow_dispatch:
 
