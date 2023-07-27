@@ -7,7 +7,7 @@ RUN apt-get update
 RUN	apt-get install -y libncurses5
 
 RUN mkdir /usr/local/stata17
-COPY jupyter-pystata/resources/Stata17Linux64.tar.gz /tmp/Stata17Linux64.tar.gz
+COPY jupyter-pystata-user-licensed/resources/Stata17Linux64.tar.gz /tmp/Stata17Linux64.tar.gz
 RUN cd /usr/local/stata17 && tar -xvf /tmp/Stata17Linux64.tar.gz
 
 RUN chown $NB_USER /usr/local/stata17/
@@ -35,13 +35,13 @@ COPY jupyter-pystata/dockerstart.sh /usr/local/bin/
 # RUN mv geckodriver /bin/
 # RUN rm geckodriver*.tar.gz
 
-# COPY jupyter-pystata/resources/setup_notebooks.py /tmp/
+# COPY jupyter-pystata-user-licensed/resources/setup_notebooks.py /tmp/
 
 # USER $NB_USER
 # RUN pip3 install selenium
 
 # RUN mkdir /tmp/custom_api
-# COPY jupyter-pystata/resources/custom_api/* /tmp/custom_api/
+# COPY jupyter-pystata-user-licensed/resources/custom_api/* /tmp/custom_api/
 # ENV PYTHONPATH="${PYTHONPATH}:/tmp/"
 
 # CMD /usr/local/bin/dockerstart.sh
