@@ -1,4 +1,4 @@
-FROM quay.io/cdis/stata-heal:george-patch
+FROM quay.io/cdis/jupyter-pystata-user-licensed:feat_stata-license
 
 USER root
 RUN apt-get update
@@ -18,6 +18,6 @@ RUN pip3 install selenium
 RUN pip3 uninstall --yes stata-setup
 RUN pip3 install stata-setup==0.1.2
 
-# Remove the 5 notebooks created in jupyter-pystata
-RUN rm $HOME/Stata-[12345].ipynb
+# Remove the notebook created in jupyter-pystata-user-licensed
+RUN rm $HOME/Stata.ipynb
 COPY jupyter-pystata-licensed/resources/licensed_stata_session.ipynb $HOME
