@@ -23,17 +23,6 @@ RUN pip install --user stata_setup==0.1.2
 
 COPY jupyter-pystata-user-licensed/dockerstart.sh /usr/local/bin/
 
-USER root
-RUN apt-get update
-RUN apt-get install -y firefox
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
-RUN tar -xvzf geckodriver*.tar.gz
-RUN mv geckodriver /bin/
-RUN rm geckodriver*.tar.gz
-
-USER $NB_USER
-RUN pip3 install selenium
-
 RUN mkdir /tmp/custom_api
 COPY jupyter-pystata-user-licensed/resources/custom_api/* /tmp/custom_api/
 ENV PYTHONPATH="${PYTHONPATH}:/tmp/"
