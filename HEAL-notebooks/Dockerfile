@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:1.0.1
+FROM quay.io/cdis/jupyter-superslim-r:1.0.4
 
 ARG NOTEBOOK_DIR
 
@@ -6,7 +6,6 @@ COPY $NOTEBOOK_DIR/ $HOME/
 
 RUN conda config --append channels conda-forge
 RUN conda install -c plotly plotly
-RUN conda update conda --all
 
 
 RUN printf '\n\

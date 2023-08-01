@@ -20,7 +20,7 @@ jobs:
           remove-android: 'true'
           remove-haskell: 'true'
       - uses: actions/checkout@v2
-      - uses: prewk/s3-cp-action@master
+      - uses: prewk/s3-cp-action@v0.1.1
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -29,7 +29,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "::set-output name=branch::$(echo $(echo ${GITHUB_REF#refs/heads/} | tr / _))"
+        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
         id: extract_branch
 
       - name: Build Image

@@ -41,3 +41,5 @@ RUN printf '\n\
     echo "No dependencies to install." \n\
     fi \n\
     ' | bash
+
+RUN echo 'function ve(){ mkdir virtualenv; cd virtualenv; VENV="$1"; python3 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python -m ipykernel install --user --name=$VENV; deactivate;}' >> ~/.bashrc
