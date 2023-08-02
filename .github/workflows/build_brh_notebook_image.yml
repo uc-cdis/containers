@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - BRH-notebooks/*/**
+    - .github/workflows/build_brh_notebook_image.yml
 
 jobs:
   push-image:

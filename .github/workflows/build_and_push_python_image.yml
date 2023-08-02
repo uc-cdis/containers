@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - python3.9-data-science/Dockerfile
+    - .github/workflows/build_and_push_python_image.yml
 
 jobs:
   python_3-9:
