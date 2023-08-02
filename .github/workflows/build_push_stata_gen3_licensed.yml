@@ -29,7 +29,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
+        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/*/} | tr / _))" >> $GITHUB_OUTPUT
         id: extract_branch
 
       - name: Determine image to build
@@ -55,7 +55,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: jupyter-pystata-gen3-licensed
-          tags: ${{ steps.extract_branch.outputs.branch }} ${{ github.sha }}
+          tags: ${{ steps.extract_branch.outputs.branch }}
           dockerfiles: ./jupyter-pystata-gen3-licensed/Dockerfile
 
       - name: Push To quay.io
