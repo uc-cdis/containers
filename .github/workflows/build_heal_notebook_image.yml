@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - HEAL-notebooks/*/**
+    - .github/workflows/build_heal_notebook_image.yml
 
 jobs:
   push-image:
