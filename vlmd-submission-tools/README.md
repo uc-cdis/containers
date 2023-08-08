@@ -25,8 +25,8 @@ Each task requires a `-o` parameter to specify the local JSON output parameter f
 
 Some of the subcommands utilize fence client-credentials.
 
-The credentials can be generated with the `fence-create` command. These can then be written to a json file and deployed
-as a kubernetes secret.
+The credentials can be generated with the `fence-create` command.
+These can then be written to a json file and deployed as a kubernetes secret.
 
 For a production environment your credentials secret can be
 deployed via `g3auto` or rotatated periodically via a `cloud-automation` job.

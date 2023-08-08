@@ -61,7 +61,7 @@ class GetDictionaryUrl(Subcommand):
         logger = Logger.get_logger(cls.__tool_name__())
         logger.info(cls.__get_description__())
 
-        logger.info(f"Searching indexd for guid.")
+        logger.info(f"Searching indexd for guid in {config.HOST_NAME}.")
         try:
             url = f"https://{config.HOST_NAME}/index/index/{options.data_dict_guid}"
             response = requests.get(url)
