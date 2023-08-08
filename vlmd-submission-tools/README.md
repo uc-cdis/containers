@@ -49,7 +49,7 @@ then your secret should have the following structure:
 The name and keys for the kubernetes secret are specified in
 environment variables that are read by the `common/config.py` module.
 
-The fence client will need some permissions set in the user.yaml file.
+The fence client will need some permissions set in the `user.yaml` file.
 For example, use the following if your fence client name is `vlmd_client` and the `authz` of the indexd upload is `/programs/DEV`:
 
 ```
@@ -60,6 +60,13 @@ For example, use the following if your fence client name is `vlmd_client` and th
     - audit_reader
     - requestor_admin
     - programs.DEV-admin
+```
+
+Include the following line in the `fence-config.yaml` to enable the vlmd fence client
+to get a presigned-url from the fence `download` endpoint:
+
+```
+CLIENT_CREDENTIALS_ON_DOWNLOAD_ENABLED: True
 ```
 
 ## Adding a new subcommand
