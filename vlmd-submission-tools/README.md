@@ -44,13 +44,18 @@ then your secret should have the following structure:
         config.CLIENT_SECRET_CONFIG: <client_secret>
     }
 }
-``````
+```
 
 The name and keys for the kubernetes secret are specified in
 environment variables that are read by the `common/config.py` module.
 
+The kubernetes secret will likely need to be deployed to the `argo` namespace.
+If you have multiple commons accessing the same `argo` namespace (eg, `preprod` and `prod`)
+then each secret will need a distinct name.
+
 The fence client will need some permissions set in the `user.yaml` file.
-For example, use the following if your fence client name is `vlmd_client` and the `authz` of the indexd upload is `/programs/DEV`:
+For example, use the following if your fence client name is `vlmd_client` and
+the `authz` of the indexd upload is `/programs/DEV`:
 
 ```
   vlmd_client:
@@ -68,6 +73,8 @@ to get a presigned-url from the fence `download` endpoint:
 ```
 CLIENT_CREDENTIALS_ON_DOWNLOAD_ENABLED: True
 ```
+
+The fence version in your commons should be `9.2.0` or higher.
 
 ## Adding a new subcommand
 
