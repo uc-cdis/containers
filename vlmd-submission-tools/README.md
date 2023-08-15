@@ -152,9 +152,8 @@ vlmd-submission-tools <subcommand> -h
 The Gen3 commons hostname (eg, `qa-heal.planx-pla.net`) should be set as the environment variable `GEN3_HOSTNAME`.
 
 The fence client-credentials are read from JSON in a local kubernetes secret.
-You could run Rancher Desktop locally for storing and retrieving the kubernetes secret.
-The local secret should mimic the structure of a kubernetes secret
-stored by `g3auto` in your commons, ie,
+You could run Rancher Desktop locally for storing the kubernetes secret.
+The secret should mimic the structure of the `g3auto` secret in your commons, ie,
 there is a main key that is derived from the name of the file
 that stores the secrets.
 
