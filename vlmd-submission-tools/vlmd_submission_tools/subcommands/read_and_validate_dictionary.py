@@ -145,8 +145,7 @@ class ReadAndValidateDictionary(Subcommand):
             try:
                 response = requests.get(dictionary_url)
                 data_dictionary_json = response.text
-                data_dictionary_json = json.loads(data_dictionary_json)
-                data_dictionary['data_dictionary'] = data_dictionary_json
+                data_dictionary = json.loads(data_dictionary_json)
             except:
                 is_valid_dictionary = False
                 traceback.print_exc()
