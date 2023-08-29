@@ -1,0 +1,22 @@
+name: Build Python Image and Push to Quay and ECR
+
+on:
+  push:
+    paths:
+    - vlmd-submission-tools/**
+    - .github/workflows/build_vlmd_submission_python_image.yml
+
+jobs:
+  ci:
+    name: Build Image and Push to Quay
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      DOCKERFILE_LOCATION: "./vlmd-submission-tools/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./vlmd-submission-tools"
+      OVERRIDE_REPO_NAME: "vlmd-submission-tools"
+      OVERRIDE_TAG_NAME: "vlmd-submission-tools-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
