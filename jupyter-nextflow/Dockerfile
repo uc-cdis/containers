@@ -3,60 +3,56 @@
 FROM quay.io/cdis/amazonlinux:latest
 USER root
 
-#
-# R pre-requisites
-#  https://github.com/rocker-org/rocker/blob/master/r-base/Dockerfile
-#
-## Configure default locale, see https://github.com/rocker-org/rocker/issues/19
-RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
-	&& locale-gen en_US.utf8 \
-	&& /usr/sbin/update-locale LANG=en_US.UTF-8
+RUN  dnf install -y glibc-locale-source && localedef -i en_US -f UTF-8 en_US.UTF-8
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
-ENV R_BASE_VERSION 3.6.3
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        autoconf \
-        ca-certificates \
-        fonts-dejavu \
-        fonts-texgyre \
-        gfortran \
-        gcc \
-        jq \
-        less \
-        libssl3 \
-        libssl-dev \
-        libbz2-dev \
-        libcurl4-gnutls-dev \
-        liblzma-dev \
-        locales \
-        openjdk-11-jdk \
-        make \
-        automake \
-        perl \
-        pkg-config \
-        tzdata \
-        vim \
-        zlib1g \
-        zlib1g-dev
+ENV R_BASE_VERSION=3.6.3
 
-RUN apt-get clean \
- 	&& rm -rf /var/lib/apt/lists/*
 
-#
-# !!!!!NOTE!!!!!
-# Do not install conda, python, pip, etc dependencies as root
-# It screws up directory permissions
-#
+RUN dnf upgrade && \
+    dnf install -y \
+    autoconf \
+    ca-certificates \
+    dejavu-fonts-all \
+    texlive-tex-gyre \
+    gfortran \
+    gcc \
+    jq \
+    less \
+    openssl \
+    openssl-devel \
+    bzip2-devel \
+    libcurl-devel \
+    gnutls-devel \
+    xz-devel \
+    glibc-locale-source \
+    java-11-amazon-corretto \
+    make \
+    automake \
+    perl \
+    pkg-config \
+    tzdata \
+    vim \
+    zlib \
+    zlib-devel
+
+
+RUN dnf clean all
+ENV NB_UID jovyan
+ENV NB_USER jovyan
+
+RUN adduser -r -g users $NB_UID
 USER $NB_UID
 WORKDIR /home/$NB_USER
 
-RUN pip install --upgrade nbconvert
+RUN python3 -m venv .venv \
+    && source .venv/bin/activate \
+    && python3 -m pip install --upgrade pip \
+    && pip install --upgrade nbconvert
+
 
 COPY --chown=jovyan:users resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
-RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
-
-RUN conda install -c bioconda nextflow
+RUN ls -l
