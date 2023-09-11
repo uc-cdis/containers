@@ -13,7 +13,7 @@ jobs:
     with:
       DOCKERFILE_LOCATION: "./azlinux-jupyter-nextflow/Dockerfile"
       DOCKERFILE_BUILD_CONTEXT: "./azlinux-jupyter-nextflow"
-      OVERRIDE_REPO_NAME: "azlinux-jupyter-notebook"
+      OVERRIDE_REPO_NAME: "azlinux-jupyter-nextflow"
       OVERRIDE_TAG_NAME: "nextflow-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
