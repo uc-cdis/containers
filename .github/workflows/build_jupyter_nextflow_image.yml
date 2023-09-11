@@ -3,6 +3,7 @@ name: Build Push to Quay and ECR
 on:
   push:
     paths:
+    - azlinux-jupyter-nextflow/Dockerfile
     - jupyter-nextflow/Dockerfile
     - .github/workflows/build_jupyter_nextflow_image.yml
 
