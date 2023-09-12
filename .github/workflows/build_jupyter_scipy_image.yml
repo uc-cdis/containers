@@ -11,7 +11,7 @@ jobs:
     name: Build and Push(Quay Only) AmazonLinux jupyter-scipy
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
-      DOCKERFILE_LOCATION: "./azlinux-jupyter-sciy/Dockerfile"
+      DOCKERFILE_LOCATION: "./azlinux-jupyter-scipy/Dockerfile"
       DOCKERFILE_BUILD_CONTEXT: "./azlinux-jupyter-scipy"
       OVERRIDE_REPO_NAME: "azlinux-jupyter-scipy"
       OVERRIDE_TAG_NAME: "scipy-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
