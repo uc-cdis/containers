@@ -1,4 +1,4 @@
-name: Build Push to Quay and ECR
+name: Build Push to Quay
 
 on:
   push:
@@ -15,6 +15,7 @@ jobs:
       DOCKERFILE_BUILD_CONTEXT: "./azlinux-jupyter-nextflow"
       OVERRIDE_REPO_NAME: "azlinux-jupyter-nextflow"
       OVERRIDE_TAG_NAME: "nextflow-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+      USE_QUAY_ONLY: true
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
