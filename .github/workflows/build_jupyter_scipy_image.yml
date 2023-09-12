@@ -1,0 +1,23 @@
+name: Build Push to Quay
+
+on:
+  push:
+    paths:
+    - azlinux-jupyter-scipy/Dockerfile
+    - .github/workflows/build_jupyter_scipy_image.yml
+
+jobs:
+  jupyter-nextflow:
+    name: Build and Push(Quay Only) AmazonLinux jupyter-scipy
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      DOCKERFILE_LOCATION: "./azlinux-jupyter-sciy/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./azlinux-jupyter-scipy"
+      OVERRIDE_REPO_NAME: "azlinux-jupyter-scipy"
+      OVERRIDE_TAG_NAME: "scipy-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+      USE_QUAY_ONLY: true
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
