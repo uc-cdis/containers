@@ -40,10 +40,11 @@ RUN dnf upgrade && \
     zlib \
     zlib-devel
 
+#Installing BouncyCastle and adding them in Java libraries
+RUN wget https://downloads.bouncycastle.org/fips-java/bc-fips-1.0.2.3.jar && \
+        mv bc-fips-1.0.2.3.jar $JAVA_HOME/lib/
 
 RUN dnf clean all
-ENV NB_UID jovyan
-ENV NB_USER jovyan
 
 USER $NB_UID
 WORKDIR /home/$NB_USER
@@ -55,7 +56,5 @@ COPY --chown=jovyan:users resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_server_config.py && rm /home/$NB_USER/.jupyter/tmp.py
-
-#TODO: need to install bounty castle
 
 RUN mamba install -yc bioconda nextflow==22.10.6
