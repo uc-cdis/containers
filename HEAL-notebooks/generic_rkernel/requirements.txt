@@ -1,3 +1,2 @@
 scipy==1.9.2
-healdata-utils == 0.2.1
 # trigger build
