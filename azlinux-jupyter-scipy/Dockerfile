@@ -25,6 +25,10 @@ RUN dnf upgrade &&\
     wget \
     # tar is not available by default in al2023 [Amazon linux 2023]
     tar \
+    # shadow-utils is needed to run the `useradd` command
+    shadow-utils \
+    # findutils is needed to run the `find` command
+    findutils \
     # - pandoc is used to convert notebooks to html files
     #CTDS NOTES:
     #   It is not available in AL2023 (https://github.com/amazonlinux/amazon-linux-2023/issues/379)
@@ -135,7 +139,6 @@ RUN mamba install --quiet --yes 'tini=0.18.0' && \
 
 # # Configure container startup
 ENTRYPOINT ["tini", "-g", "--"]
-# CMD ["start.sh"]
 
 # Copy local files as late as possible to avoid cache busting
 COPY run-hooks.sh start.sh /usr/local/bin/
@@ -200,8 +203,6 @@ WORKDIR "${HOME}"
 
 
 # # ############################## Dockerfile for azlinux-minimal ########################
-# # ARG BASE_CONTAINER=jupyter/base-notebook
-# # FROM $BASE_CONTAINER
 USER root
 
 RUN dnf install -yq \
