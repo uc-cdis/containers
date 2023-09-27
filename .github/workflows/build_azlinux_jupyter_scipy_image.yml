@@ -4,7 +4,7 @@ on:
   push:
     paths:
     - azlinux-jupyter-scipy/Dockerfile
-    - .github/workflows/build_jupyter_scipy_image.yml
+    - .github/workflows/build_azlinux_jupyter_scipy_image.yml
 
 jobs:
   jupyter-nextflow:
@@ -13,9 +13,8 @@ jobs:
     with:
       DOCKERFILE_LOCATION: "./azlinux-jupyter-scipy/Dockerfile"
       DOCKERFILE_BUILD_CONTEXT: "./azlinux-jupyter-scipy"
-      OVERRIDE_REPO_NAME: "azlinux-jupyter-scipy"
-      OVERRIDE_TAG_NAME: "scipy-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
-      USE_QUAY_ONLY: true
+      OVERRIDE_REPO_NAME: "jupyter-notebook"
+      OVERRIDE_TAG_NAME: "azlinux-scipy-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
