@@ -13,7 +13,7 @@ import requests
 
 
 from vlmd_submission_tools.subcommands import ReadAndValidateDictionary
-from utils import captured_output, cleanup_files
+from utils import cleanup_files
 
 class MockArgs(NamedTuple):
     file_name: str
@@ -59,7 +59,7 @@ class TestReadAndValidateDictionarySubcommand:
         }
 
         try:
-            result = ReadAndValidateDictionary.main(options=args)
+            ReadAndValidateDictionary.main(options=args)
 
             # The converted json dictionary
             assert Path(args.json_local_path).resolve().is_file()

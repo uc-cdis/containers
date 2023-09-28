@@ -33,7 +33,6 @@ class TestGetDictionaryUrlSubcommand:
 
         args = self.get_mock_args()
 
-        hostname = "mycommons.planx-pla.net"
         data_dict_guid = args.data_dict_guid
         dictionary_file_name="data_dictionary.csv"
         expected_url=f"s3://devplanetv1-mycommons-upload/{data_dict_guid}/{dictionary_file_name}"
