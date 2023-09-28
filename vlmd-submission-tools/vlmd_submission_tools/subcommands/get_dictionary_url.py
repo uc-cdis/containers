@@ -79,7 +79,11 @@ class GetDictionaryUrl(Subcommand):
             raise ValueError(f"File urls missing for guid {options.data_dict_guid} in indexd")
 
         logger.info("Getting fence client token")
-        client_id, client_secret = utils.get_client_secret()
+        try:
+            client_id, client_secret = utils.get_client_secret()
+        except:
+            raise Exception("Kubernetes could not read client secret")
+
         logger.info("Using secret to get token")
         token = utils.get_client_token(
             hostname = config.HOST_NAME,
@@ -87,7 +91,6 @@ class GetDictionaryUrl(Subcommand):
             client_secret = client_secret)
 
         logger.info("Got fence client token")
-
         logger.info(f"Querying fence for pre-signed url")
         try:
             url = f"https://{config.HOST_NAME}/user/data/download/{options.data_dict_guid}?protocol=s3"
@@ -97,7 +100,6 @@ class GetDictionaryUrl(Subcommand):
             dictionary_url = response.json().get("url", None)
             dictionary_url = quote(dictionary_url)
             logger.info(f"Dictionary url: {dictionary_url}")
-
         except:
             raise Exception("Could not get pre-signed url from fence")
 

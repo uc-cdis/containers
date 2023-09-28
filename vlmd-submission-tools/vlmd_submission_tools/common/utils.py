@@ -26,7 +26,8 @@ def get_client_secret(
     }
     """
     kube_client = get_kube_client()
-    secret = kube_client.read_namespaced_secret(client_secret_name, namespace).data[client_secret_key]
+    secret = kube_client.read_namespaced_secret(client_secret_name, namespace)
+    secret = secret.data[client_secret_key]
     secret_json = json.loads(base64.b64decode(secret).decode('ascii'))
     client_id = secret_json[client_id_config]
     client_secret = secret_json[client_secret_config]
