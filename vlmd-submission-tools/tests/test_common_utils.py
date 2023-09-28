@@ -9,8 +9,9 @@ from vlmd_submission_tools.common import utils
 
 class TestCommonsUtils():
 
+    @patch('kubernetes.config.load_kube_config')
     @patch('kubernetes.client.CoreV1Api.read_namespaced_secret')
-    def test_get_client_secret(self, mocked_kube_client):
+    def test_get_client_secret(self, mocked_kube_client, mocked_kube_config):
         # method should parse out the client_id and client_secret from the kubernetes secret
         client_secret_name="my_g3auto_secret"
         client_secret_key="fence_client_credentials.json"
@@ -28,6 +29,7 @@ class TestCommonsUtils():
         mocked_kube_secret = json.dumps(expected_secret_json).encode('utf-8')
         mocked_kube_secret = base64.b64encode(mocked_kube_secret)
         mocked_kube_client.return_value = MagicMock(data={client_secret_key: mocked_kube_secret})
+        mocked_kube_config.return_value = MagicMock()
 
         response = utils.get_client_secret(
             client_secret_name, client_secret_key, client_id_config, client_secret_config, namespace
@@ -104,5 +106,4 @@ class TestCommonsUtils():
         mocked_post.return_value = mock_fence_response
 
         result = utils.get_client_token(hostname, client_id, client_secret)
-        print(f"Result={result}")
         assert result == expected_token
