@@ -1,5 +1,5 @@
 ############################ Jupyter-nextflow With AzLinux ###################
-ARG ROOT_CONTAINER=quay.io/cdis/azlinux-jupyter-scipy:azlinux-scipy-master
+ARG ROOT_CONTAINER=quay.io/cdis/jupyter-notebook:azlinux-scipy-master
 
 ARG BASE_CONTAINER=$ROOT_CONTAINER
 FROM $BASE_CONTAINER
