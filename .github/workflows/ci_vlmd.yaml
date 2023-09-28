@@ -3,7 +3,8 @@ name: CI Workflow
 on:
   push:
     paths:
-      - vlmd-submission-tools/
+      - vlmd-submission-tools/**
+      - .github/workflows/ci_vlmd.yaml
   pull_request:
     paths:
       - vlmd-submission-tools/
