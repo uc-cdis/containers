@@ -1,4 +1,4 @@
-name: Build Push to Quay
+name: Build and push AmazonLinux jupyter-scipy
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   jupyter-nextflow:
-    name: Build and Push(Quay Only) AmazonLinux jupyter-scipy
+    name: Build and Push AmazonLinux jupyter-scipy
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
       DOCKERFILE_LOCATION: "./azlinux-jupyter-scipy/Dockerfile"

@@ -1,4 +1,4 @@
-name: Build Push to Quay and ECR
+name: Build and Push Jupyter-Nextflow image
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   jupyter-nextflow:
-    name: Build and Push jupyter-nextflow
+    name: Build and Push jupyter-nextflow image
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
       DOCKERFILE_LOCATION: "./jupyter-nextflow/Dockerfile"
