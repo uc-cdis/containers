@@ -191,6 +191,7 @@ CMD ["start-notebook.sh"]
 
 
 RUN mv /opt/downloads/start-notebook.sh /opt/downloads/start-singleuser.sh /usr/local/bin/ && \
+chmod a+rx /usr/local/bin/* && \
 mkdir -p /etc/jupyter && \
 mv /opt/downloads/jupyter_server_config.py /opt/downloads/docker_healthcheck.py /etc/jupyter/ && \
 fix-permissions /etc/jupyter/
