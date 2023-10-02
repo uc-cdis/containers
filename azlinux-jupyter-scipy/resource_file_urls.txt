@@ -1,0 +1,8 @@
+https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/docker-stacks-foundation/fix-permissions
+https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/docker-stacks-foundation/initial-condarc
+https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/docker-stacks-foundation/run-hooks.sh
+https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/docker-stacks-foundation/start.sh
+https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/base-notebook/docker_healthcheck.py
+https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/base-notebook/jupyter_server_config.py
+https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/base-notebook/start-notebook.sh
+https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/base-notebook/start-singleuser.sh

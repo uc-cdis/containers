@@ -55,9 +55,13 @@ ENV CONDA_DIR=/opt/conda \
 ENV PATH="${CONDA_DIR}/bin:${PATH}" \
     HOME="/home/${NB_USER}"
 
+RUN mkdir /opt/downloads
 # Copy a script that we will use to correct permissions after running certain commands
-COPY fix-permissions /usr/local/bin/fix-permissions
-RUN chmod a+rx /usr/local/bin/fix-permissions
+COPY resource_file_urls.txt /opt/downloads
+RUN cd /opt/downloads && \
+    wget -i resource_file_urls.txt && \
+    mv fix-permissions /usr/local/bin/fix-permissions && \
+    chmod a+rx /usr/local/bin/fix-permissions && cd /
 
 # Enable prompt color in the skeleton .bashrc before creating the default NB_USER
 # hadolint ignore=SC2016
@@ -76,7 +80,9 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     chown "${NB_USER}:${NB_GID}" "${CONDA_DIR}" && \
     chmod g+w /etc/passwd && \
     fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
+    fix-permissions "/home/${NB_USER}" && \
+    mv /opt/downloads/initial-condarc ${CONDA_DIR}/.condarc && \
+    chown ${NB_UID}:${NB_GID} ${CONDA_DIR}/.condarc
 
 USER ${NB_UID}
 
@@ -96,7 +102,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
 # Correct permissions
 # Do all this in a single RUN command to avoid duplicating all of the
 # files across image layers when the permissions change
-COPY --chown="${NB_UID}:${NB_GID}" initial-condarc "${CONDA_DIR}/.condarc"
+
 
 
 WORKDIR /tmp
@@ -140,10 +146,9 @@ RUN mamba install --quiet --yes 'tini=0.18.0' && \
 # # Configure container startup
 ENTRYPOINT ["tini", "-g", "--"]
 
-# Copy local files as late as possible to avoid cache busting
-COPY run-hooks.sh start.sh /usr/local/bin/
-
 USER root
+
+RUN mv /opt/downloads/run-hooks.sh /opt/downloads/start.sh /usr/local/bin/
 
 # Create dirs for startup hooks
 RUN mkdir /usr/local/bin/start-notebook.d && \
@@ -178,17 +183,17 @@ RUN mamba install --yes \
 ENV JUPYTER_PORT=8888
 EXPOSE $JUPYTER_PORT
 
+# Fix permissions on /etc/jupyter as root
+USER root
 
 # Configure container startup
 CMD ["start-notebook.sh"]
 
-# Copy local files as late as possible to avoid cache busting
-COPY start-notebook.sh start-singleuser.sh /usr/local/bin/
-COPY jupyter_server_config.py docker_healthcheck.py /etc/jupyter/
 
-# Fix permissions on /etc/jupyter as root
-USER root
-RUN fix-permissions /etc/jupyter/
+RUN mv /opt/downloads/start-notebook.sh /opt/downloads/start-singleuser.sh /usr/local/bin/ && \
+mkdir -p /etc/jupyter && \
+mv /opt/downloads/jupyter_server_config.py /opt/downloads/docker_healthcheck.py /etc/jupyter/ && \
+fix-permissions /etc/jupyter/
 
 # HEALTHCHECK documentation: https://docs.docker.com/engine/reference/builder/#healthcheck
 # This healtcheck works well for `lab`, `notebook`, `nbclassic`, `server` and `retro` jupyter commands
