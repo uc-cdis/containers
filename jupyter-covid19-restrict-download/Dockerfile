@@ -24,7 +24,7 @@ ARG miniforge_python="Mambaforge"
 # Miniforge archive to install
 ARG miniforge_version="${conda_version}-${miniforge_patch_number}"
 
-# Install all OS dependencies for notebook server that starts but lacks all
+# Install all OS dependencies for the notebook server that starts but lacks all
 # features (e.g., download as all possible file formats)
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update --yes && \
@@ -45,25 +45,45 @@ RUN apt-get update --yes && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
-RUN pip3 install JPype1 jupyter pandas numpy seaborn scipy matplotlib pyNetLogo SALib
+# Set Python 3.9 as the default Python version
+RUN ln -s /usr/bin/python3.9 /usr/bin/python
+
+# Add the Python 3.9 executable path to the PATH environment variable
+ENV PATH="/usr/bin/python3.9:$PATH"
+
+# Upgrade pip to ensure it's associated with Python 3.9.5
+RUN python3.9 -m pip install --upgrade pip
+
+# Remove /usr/bin/pip3 if it exists
+RUN rm -f /usr/bin/pip3
+
+# Create a symbolic link from pip3 to pip
+RUN ln -s /usr/bin/pip /usr/bin/pip3
+
+RUN pip install JPype1 jupyter
 
 RUN jupyter notebook --generate-config
-
-RUN useradd -ms /bin/bash jupyter
-
 
 RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
     && jupyter labextension disable @jupyterlab/filebrowser-extension:download
 
+RUN pip install pandas numpy seaborn scipy matplotlib pyNetLogo SALib boto3
+
 
 RUN pip uninstall nbconvert --yes
+# Create a non-root user for Jupyter without copying /bin or /bin/bash
+ARG NB_USER=jupyter
+ARG NB_UID=1000
+RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER
 
-USER jupyter
-WORKDIR /home/jupyter
+# Expose port 8888 for JupyterLab
 EXPOSE 8888
 
 ARG COVID_TOOLS_BRANCH=master
-ADD --chown=jupyter:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/welcome.html /home/jupyter/
-RUN touch /home/jupyter/welcome.html
+ADD --chown=$NB_USER:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/welcome.html /home/$NB_USER/
+RUN touch /home/$NB_USER/welcome.html
 
-ENTRYPOINT ["jupyter", "lab","--allow-root","--ip=0.0.0.0","--port=8888","--no-browser"]
+# Set the default command to start JupyterLab
+USER $NB_USER
+WORKDIR /home/$NB_USER
+ENTRYPOINT ["jupyter", "lab", "--allow-root", "--ip=0.0.0.0", "--port=8888", "--no-browser"]
