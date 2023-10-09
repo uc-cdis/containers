@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgsl* \
     libudunits2-dev \
     libgs-dev \
+    unzip \
     wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
