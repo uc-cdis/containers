@@ -17,7 +17,7 @@ class TestHelloWorldSubcommand:
     def get_mock_args(self):
         return MockArgs(
             from_flag="VLMD",
-            output="tmp.json",
+            output="hello_output.json",
         )
 
     def test_hello_world(self):
