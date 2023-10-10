@@ -122,7 +122,7 @@ class UploadDictionaryToMds(Subcommand):
         if response.status_code != 200 and response.status_code != 201:
             logger.error("Error in uploading dictionary to MDS")
 
-        # add this name+guid to the study ID metadata
+        # add this name and guid to the study ID metadata
         logger.info(f"Adding dictionary_name '{options.dictionary_name}' to study ID = {options.study_id}")
 
         try:
@@ -134,7 +134,7 @@ class UploadDictionaryToMds(Subcommand):
             logger.info("Success")
         except:
             logger.error("Error in updating study ID")
-            raise Exception("Could not update name+guid in study ID metadata")
+            raise Exception("Could not update data_dictionaries in study ID metadata")
 
         upload_status = "ok"
         logger.info(f"MDS upload status={upload_status}")

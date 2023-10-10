@@ -12,7 +12,7 @@ import os
 import traceback
 from urllib.parse import unquote
 
-from frictionless import Resource
+from frictionless import Resource, FrictionlessException
 import petl as etl
 import requests
 
@@ -93,15 +93,7 @@ class ReadAndValidateDictionary(Subcommand):
         dictionary_url = unquote(dictionary_url)
         logger.info(f"URL {dictionary_url}")
 
-        # get file type from filename
-        if options.file_name.lower().endswith('.json'):
-            file_type = 'json'
-        elif options.file_name.lower().endswith('.csv'):
-            file_type = 'csv'
-        elif options.file_name.lower().endswith('.tsv'):
-            file_type = 'tsv'
-        else:
-            raise Exception("Could not get file type suffix from filename")
+        file_type = cls._get_file_type_from_filename(options.file_name)
         json_local_path = options.json_local_path
 
         # pull in schema
@@ -113,26 +105,31 @@ class ReadAndValidateDictionary(Subcommand):
         logger.info(f"Fetching dictionary from s3 url.")
         if file_type == 'csv' or file_type == 'tsv':
             try:
-                source = Resource(dictionary_url).to_petl()
+                source = Resource(dictionary_url)
+                source = source.to_petl()
+
+                logger.info(f"Converting {file_type} file to json")
+                logger.info(f"Column names in petl: {source.fieldnames()}")
+                fields_to_add = [
+                    (field,'')
+                    for field in mappings.keys()
+                    if not field in source.fieldnames()
+                ]
+                template_tbl = (
+                    source
+                    .addfields(fields_to_add) # add fields from mappings not in the csv template to allow convert fxns to work
+                    .convert(mappings)
+                    .convertnumbers()
+                    .cut(source.fieldnames()) # want to include only fields in csv
+                )
+            except FrictionlessException:
+                is_valid_dictionary = False
+                traceback.print_exc()
+                raise FrictionlessException(f"Frictionless could not read dictionary from url {dictionary_url}")
             except:
                 is_valid_dictionary = False
                 traceback.print_exc()
                 raise Exception(f"Could not read dictionary from url {dictionary_url}")
-
-            logger.info(f"Converting {file_type} file to json")
-            logger.info(f"Column names in petl: {source.fieldnames()}")
-            fields_to_add = [
-                (field,'')
-                for field in mappings.keys()
-                if not field in source.fieldnames()
-            ]
-            template_tbl = (
-                source
-                .addfields(fields_to_add) # add fields from mappings not in the csv template to allow convert fxns to work
-                .convert(mappings)
-                .convertnumbers()
-                .cut(source.fieldnames()) # want to include only fields in csv
-            )
 
             try:
                 data_dictionary['data_dictionary'] = [mapping_utils.convert_rec_to_json(rec) for rec in etl.dicts(template_tbl)]
@@ -181,3 +178,16 @@ class ReadAndValidateDictionary(Subcommand):
         with open(options.output, 'w', encoding='utf-8') as o:
             json.dump(record_json, o, ensure_ascii=False, indent=4)
         logger.info(f"JSON response saved in {options.output}")
+
+
+    @classmethod
+    def _get_file_type_from_filename(cls, file_name: str):
+        if file_name.lower().endswith('.json'):
+            file_type = 'json'
+        elif file_name.lower().endswith('.csv'):
+            file_type = 'csv'
+        elif file_name.lower().endswith('.tsv'):
+            file_type = 'tsv'
+        else:
+            raise Exception("Could not get file type suffix from filename")
+        return file_type
