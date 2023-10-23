@@ -9,21 +9,6 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 USER root
 
-# ---- Miniforge installer ----
-# Default values can be overridden at build time
-# (ARGS are in lower case to distinguish them from ENV)
-# Check https://github.com/conda-forge/miniforge/releases
-# Conda version
-ARG conda_version="4.14.0"
-# Miniforge installer patch version
-ARG miniforge_patch_number="2"
-# Package Manager and Python implementation to use (https://github.com/conda-forge/miniforge)
-# - conda only: either Miniforge3 to use Python or Miniforge-pypy3 to use PyPy
-# - conda + mamba: either Mambaforge to use Python or Mambaforge-pypy3 to use PyPy
-ARG miniforge_python="Mambaforge"
-# Miniforge archive to install
-ARG miniforge_version="${conda_version}-${miniforge_patch_number}"
-
 # Install all OS dependencies for the notebook server that starts but lacks all
 # features (e.g., download as all possible file formats)
 ENV DEBIAN_FRONTEND noninteractive
@@ -67,14 +52,20 @@ RUN jupyter notebook --generate-config
 RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
     && jupyter labextension disable @jupyterlab/filebrowser-extension:download
 
-RUN pip install pandas numpy seaborn scipy matplotlib pyNetLogo SALib boto3
+RUN pip install pandas numpy seaborn scipy matplotlib pyNetLogo SALib boto3 awscli --upgrade
 
+# RUN pip install PyYAML==5.3.1 --upgrade
+RUN pip install gen3==4.18.0 --upgrade
+
+RUN pip install jupyter --upgrade
 
 RUN pip uninstall nbconvert --yes
 # Create a non-root user for Jupyter without copying /bin or /bin/bash
 ARG NB_USER=jupyter
 ARG NB_UID=1000
 RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER
+RUN chown -R $NB_USER:users /home/$NB_USER
+RUN chmod -R u+rwx /home/$NB_USER
 
 # Expose port 8888 for JupyterLab
 EXPOSE 8888
@@ -82,6 +73,16 @@ EXPOSE 8888
 ARG COVID_TOOLS_BRANCH=master
 ADD --chown=$NB_USER:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/welcome.html /home/$NB_USER/
 RUN touch /home/$NB_USER/welcome.html
+
+# Add local files as late as possible to avoid cache busting
+COPY start.sh /usr/local/bin/
+COPY start-notebook.sh /usr/local/bin/
+COPY start-singleuser.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/*.sh
+
+COPY resources/custom.js /home/$NB_USER/.jupyter/custom/
+COPY resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
+RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
 
 # Set the default command to start JupyterLab
 USER $NB_USER

@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-notebook:1.1.0
+FROM quay.io/cdis/jupyter-covid19-restrict-download:1.1.0
 
 USER $NB_USER
 WORKDIR /home/$NB_USER
@@ -96,5 +96,6 @@ ADD --chown=jovyan:users https://raw.githubusercontent.com/uc-cdis/covid19-tools
 RUN touch /home/$NB_USER/covid19-notebook/peregrine.py
 
 # premade notebooks dependencies
-RUN pip install --upgrade 'pip<20.3' # pip 20.3 causes dependency resolution issues
-RUN pip install -r /home/$NB_USER/covid19-notebook/requirements.txt
+# RUN pip install --upgrade 'pip<20.3' # pip 20.3 causes dependency resolution issues
+# COPY requirements.txt /home/$NB_USER/covid19-notebook/requirements.txt
+# RUN pip install -r /home/$NB_USER/covid19-notebook/requirements.txt --upgrade
