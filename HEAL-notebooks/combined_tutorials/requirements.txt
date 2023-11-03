@@ -8,3 +8,4 @@ r-tidygeocoder
 r-tmap
 r-tidyverse
 #trigger build
+pillow>=10.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
