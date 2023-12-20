@@ -7,7 +7,7 @@ ls -l /data
 echo "Contents of stata17"
 ls -l /usr/local/stata17
 
-cp /data/stata.lic /user/local/stata17/stata.lic
+cp /data/stata.lic /usr/local/stata17/stata.lic
 
 while [ ! -f /usr/local/stata17/stata.lic ]; do sleep 1; echo "Waiting for license."; done
 
