@@ -3,7 +3,7 @@ touch /tmp/waiting_for_license.flag
 
 # check contents of pod
 echo "Contents of data"
-ls -l pd/data
+ls -l /data
 echo "Contents of stata17"
 ls -l /usr/local/stata17
 
