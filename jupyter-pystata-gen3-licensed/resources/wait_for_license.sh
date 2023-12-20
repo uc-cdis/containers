@@ -1,6 +1,12 @@
 # Signal to the distributor cron job that we want a license
 touch /tmp/waiting_for_license.flag
 
+# check contents of pod
+echo "Contents of data"
+ls -l pd/data
+echo "Contents of stata17"
+ls -l /usr/local/stata17
+
 while [ ! -f /usr/local/stata17/stata.lic ]; do sleep 1; echo "Waiting for license."; done
 
 echo "Received a license. Starting jupyter."
