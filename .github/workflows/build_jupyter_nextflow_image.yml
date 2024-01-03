@@ -3,7 +3,7 @@ name: Build and Push Jupyter-Nextflow image
 on:
   push:
     paths:
-    - jupyter-nextflow/Dockerfile
+    - jupyter-nextflow
     - .github/workflows/build_jupyter_nextflow_image.yml
 
 jobs:
