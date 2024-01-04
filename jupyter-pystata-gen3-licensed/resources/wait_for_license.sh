@@ -1,6 +1,12 @@
 # Signal to the distributor cron job that we want a license
 touch /tmp/waiting_for_license.flag
 
+echo "DEBUG:"
+date
+ls -l /data
+ls -l /home/jovian/pd
+echo "Checking for license copied by sidecar"
+
 if [ -f /data/stata.lic ]; then
   mv /data/stata.lic /usr/local/stata17/stata.lic
 else
