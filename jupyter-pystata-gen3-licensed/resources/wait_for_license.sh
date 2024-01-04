@@ -4,19 +4,29 @@ touch /tmp/waiting_for_license.flag
 echo "DEBUG:"
 date
 ls -l /data
-ls -l /home/jovian/pd
+ls -l /home/jovyan/pd/data
 echo "Checking for license copied by sidecar"
 
-if [ -f /data/stata.lic ]; then
-  mv /data/stata.lic /usr/local/stata17/stata.lic
-else
-  echo "Error: Missing license file /data/stata.lic"
-  # rm /tmp/waiting_for_license.flag
-  # exit 0
-fi
+# if [ -f /data/stata.lic ]; then
+#   mv /data/stata.lic /usr/local/stata17/stata.lic
+# else
+#   echo "Error: Missing license file /data/stata.lic"
+#   # rm /tmp/waiting_for_license.flag
+#   # exit 0
+# fi
+while [ ! -f /usr/local/stata17/stata.lic ];
+do
+    sleep 5
+    echo "Checking for license"
+    if [ -f /data/stata.lic ]; then
+        mv /data/stata.lic /usr/local/stata17/stata.lic
+    fi
+done
+
+
 
 # TODO: remove this after the distribute-licenses job is disabled
-while [ ! -f /usr/local/stata17/stata.lic ]; do sleep 1; echo "Waiting for license."; done
+# while [ ! -f /usr/local/stata17/stata.lic ]; do sleep 1; echo "Waiting for license."; done
 
 echo "Received a license. Starting jupyter."
 
