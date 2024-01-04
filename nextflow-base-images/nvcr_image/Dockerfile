@@ -24,6 +24,13 @@ RUN ./Configure enable-fips && \
 # give precedence to OpenSSL 3.0.8 library files over the 3.0.2
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
+# Make config changes ti ensure FIPS compliance
+RUN sed -i 's$# .include fipsmodule.cnf$.include /usr/local/ssl/fipsmodule.cnf$g' /usr/local/ssl/openssl.cnf
+RUN sed -i 's$providers = provider_sect$providers = provider_sect\nalg_section = algorithm_sect$g' /usr/local/ssl/openssl.cnf
+RUN sed -i 's$# fips = fips_sect$fips = fips_sect$g' /usr/local/ssl/openssl.cnf
+RUN sed -i -e 's$# activate = 1$activate = 1 \n\n[algorithm_sect]\ndefault_properties = fips=yes$g' /usr/local/ssl/openssl.cnf
+
+
 # Clean up the temporary directory
 WORKDIR /
 RUN rm -rf /tmp/openssl-3.0.8
