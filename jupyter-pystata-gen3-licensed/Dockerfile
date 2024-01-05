@@ -3,7 +3,7 @@ FROM quay.io/cdis/jupyter-pystata-user-licensed:1.2.0
 USER root
 RUN apt-get update
 RUN apt-get install -y firefox
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
 RUN tar -xvzf geckodriver*
 RUN mv geckodriver /bin/
 
