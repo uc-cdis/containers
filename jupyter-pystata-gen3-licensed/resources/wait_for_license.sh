@@ -1,5 +1,5 @@
 # Signal to the distributor cron job that we want a license
-touch /tmp/waiting_for_license.flag
+# touch /tmp/waiting_for_license.flag
 
 echo "DEBUG:"
 date
@@ -19,7 +19,11 @@ do
     sleep 5
     echo "Checking for license"
     if [ -f /data/stata.lic ]; then
-        mv /data/stata.lic /usr/local/stata17/stata.lic
+        echo "Found license"
+        ls -l /data
+        cp /data/stata.lic /usr/local/stata17/stata.lic
+        echo "Copied license"
+        ls -l /usr/local/stata17/
     fi
 done
 
