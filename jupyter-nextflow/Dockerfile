@@ -56,3 +56,7 @@ COPY --chown=jovyan:users resources/jupyter_notebook_config.py /home/$NB_USER/.j
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
 
 RUN mamba install -yc bioconda nextflow==22.10.6
+
+# welcome page
+ADD --chown=jovyan:users nextflow-welcome.html /home/$NB_USER/
+RUN touch /home/$NB_USER/nextflow-welcome.html
