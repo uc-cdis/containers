@@ -8,10 +8,8 @@ do
     echo "Checking for license"
     if [ -f /data/stata.lic ]; then
         echo "Found license"
-        ls -l /data
         cp /data/stata.lic /usr/local/stata17/stata.lic
         echo "Copied license"
-        ls -l /usr/local/stata17/
     fi
 done
 
