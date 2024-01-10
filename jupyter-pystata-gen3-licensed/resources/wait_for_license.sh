@@ -8,7 +8,7 @@ do
     echo "Checking for license"
     if [ -f /data/stata.lic ]; then
         echo "Found license"
-        cp /data/stata.lic /usr/local/stata17/stata.lic
+        mv /data/stata.lic /usr/local/stata17/stata.lic
         echo "Copied license"
     fi
 done
@@ -25,6 +25,6 @@ python3 /tmp/setup_licensed_notebook.py
 rm geckodriver*
 
 echo "Init script done."
-rm /usr/local/stata17/stata.lic /data/stata.lic
+rm /usr/local/stata17/stata.lic
 
 while true; do sleep 1; done
