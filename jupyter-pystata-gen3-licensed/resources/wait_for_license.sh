@@ -1,10 +1,6 @@
 # Signal to the distributor cron job that we want a license
 # touch /tmp/waiting_for_license.flag
 
-echo "DEBUG:"
-date
-ls -l /data
-ls -l /home/jovyan/pd/data
 echo "Checking for license copied by sidecar"
 
 # if [ -f /data/stata.lic ]; then
@@ -14,6 +10,7 @@ echo "Checking for license copied by sidecar"
 #   # rm /tmp/waiting_for_license.flag
 #   # exit 0
 # fi
+
 while [ ! -f /usr/local/stata17/stata.lic ];
 do
     sleep 5
@@ -27,8 +24,6 @@ do
     fi
 done
 
-
-
 # TODO: remove this after the distribute-licenses job is disabled
 # while [ ! -f /usr/local/stata17/stata.lic ]; do sleep 1; echo "Waiting for license."; done
 
@@ -41,9 +36,9 @@ sleep 20
 echo "Running Stata notebook init script."
 python3 /tmp/setup_licensed_notebook.py
 
-# rm geckodriver*
+rm geckodriver*
 
 echo "Init script done."
-rm /usr/local/stata17/stata.lic /tmp/waiting_for_license.flag
+rm /usr/local/stata17/stata.lic /data/stata.lic
 
 while true; do sleep 1; done

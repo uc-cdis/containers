@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-pystata-user-licensed:1.2.0
+FROM quay.io/cdis/jupyter-pystata-user-licensed:1.2.1
 
 USER root
 RUN apt-get update
