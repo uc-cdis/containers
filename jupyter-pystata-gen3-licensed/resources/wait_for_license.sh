@@ -1,15 +1,6 @@
-# Signal to the distributor cron job that we want a license
-# touch /tmp/waiting_for_license.flag
+# Wait for license, start jupyter, initialize notebook, remove license
 
 echo "Checking for license copied by sidecar"
-
-# if [ -f /data/stata.lic ]; then
-#   mv /data/stata.lic /usr/local/stata17/stata.lic
-# else
-#   echo "Error: Missing license file /data/stata.lic"
-#   # rm /tmp/waiting_for_license.flag
-#   # exit 0
-# fi
 
 while [ ! -f /usr/local/stata17/stata.lic ];
 do
@@ -23,9 +14,6 @@ do
         ls -l /usr/local/stata17/
     fi
 done
-
-# TODO: remove this after the distribute-licenses job is disabled
-# while [ ! -f /usr/local/stata17/stata.lic ]; do sleep 1; echo "Waiting for license."; done
 
 echo "Received a license. Starting jupyter."
 
