@@ -49,6 +49,7 @@ RUN pip install JPype1 jupyter
 
 RUN jupyter notebook --generate-config
 
+# this is where we disable downloads
 RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
     && jupyter labextension disable @jupyterlab/filebrowser-extension:download
 

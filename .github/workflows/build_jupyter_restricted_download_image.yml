@@ -1,21 +1,20 @@
-name: Build and push PRC images
+name: Build and Push jupyter-restricted-download
 
 on:
   push:
     paths:
-    - jupyter-restricted-download/Dockerfile
-    - .github/workflows/build_jupyter_restricted_download.yml
+    - jupyter-restricted-download/**
+    - .github/workflows/build_jupyter_restricted_download_image.yml
 
 jobs:
-  jupyter-covid19-restricted-download:
+  jupyter-restricted-download:
     name: Build and Push jupyter-restricted-download
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
       DOCKERFILE_LOCATION: "./jupyter-restricted-download/Dockerfile"
       DOCKERFILE_BUILD_CONTEXT: "./jupyter-restricted-download"
-      OVERRIDE_REPO_NAME: "jupyter-covid19"
+      OVERRIDE_REPO_NAME: "jupyter-notebook"
       OVERRIDE_TAG_NAME: "restricted-download-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
-      USE_QUAY_ONLY: true
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
