@@ -3,7 +3,7 @@ name: Build and push AmazonLinux jupyter-scipy
 on:
   push:
     paths:
-    - azlinux-jupyter-scipy/Dockerfile
+    - azlinux-jupyter-scipy/**
     - .github/workflows/build_azlinux_jupyter_scipy_image.yml
 
 jobs:
