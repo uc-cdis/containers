@@ -59,6 +59,8 @@ RUN pip install pandas numpy seaborn scipy matplotlib pyNetLogo SALib boto3 awsc
 RUN pip install gen3==4.18.0 --upgrade
 
 RUN pip install jupyter --upgrade
+# This is needed to fix an error that cropped up
+RUN pip install jsonschema==4.20.0
 
 RUN pip uninstall nbconvert --yes
 # Create a non-root user for Jupyter without copying /bin or /bin/bash
