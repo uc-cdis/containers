@@ -59,8 +59,6 @@ RUN pip install pandas numpy seaborn scipy matplotlib pyNetLogo SALib boto3 awsc
 RUN pip install gen3==4.18.0 --upgrade
 
 RUN pip install jupyter --upgrade
-# This is needed to fix an error that cropped up
-RUN pip install jsonschema==4.20.0
 
 RUN pip uninstall nbconvert --yes
 # Create a non-root user for Jupyter without copying /bin or /bin/bash
@@ -86,6 +84,10 @@ RUN chmod +x /usr/local/bin/*.sh
 COPY resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
+
+# Putting this all the way down here, to make sure its the last thing done
+# The image can't function with jsonschema version 3.20.0, which some dependency installs
+RUN pip install jsonschema==4.20.0
 
 # Set the default command to start JupyterLab
 USER $NB_USER
