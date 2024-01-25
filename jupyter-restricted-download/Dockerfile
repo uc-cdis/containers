@@ -94,7 +94,7 @@ USER $NB_USER
 
 # Putting this all the way down here, to make sure its the last thing done
 # The image can't function with jsonschema version 3.2.0, which some dependency installs
-RUN pip install jsonschema==4.20.0
+RUN pip install jsonschema==4.20.0 --upgrade
 
 WORKDIR /home/$NB_USER
 ENTRYPOINT ["jupyter", "lab", "--allow-root", "--ip=0.0.0.0", "--port=8888", "--no-browser"]
