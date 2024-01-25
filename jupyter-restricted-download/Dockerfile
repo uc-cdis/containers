@@ -85,11 +85,11 @@ COPY resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
 
-USER $NB_USER
-
 # Putting this all the way down here, to make sure its the last thing done
 # The image can't function with jsonschema version 3.2.0, which some dependency installs
 RUN pip install jsonschema==4.20.0 --upgrade
+
+USER $NB_USER
 
 # Set the default command to start JupyterLab
 WORKDIR /home/$NB_USER
