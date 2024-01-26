@@ -22,7 +22,7 @@ RUN ./Configure enable-fips && \
 
 # Changing adding `/usr/local/lib` as a prefix to LD_LIBRARY_PATH will
 # give precedence to OpenSSL 3.0.8 library files over the 3.0.2
-ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:$LD_LIBRARY_PATH
 
 # Make config changes ti ensure FIPS compliance
 RUN sed -i 's$# .include fipsmodule.cnf$.include /usr/local/ssl/fipsmodule.cnf$g' /usr/local/ssl/openssl.cnf
