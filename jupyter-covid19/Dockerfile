@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-notebook:restricted-download-master
+FROM quay.io/cdis/jupyter-notebook:restricted-download-jupyter-covid19-restrict-download
 
 USER $NB_USER
 WORKDIR /home/$NB_USER
