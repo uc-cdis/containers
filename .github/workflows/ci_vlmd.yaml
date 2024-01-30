@@ -1,0 +1,36 @@
+name: CI Workflow
+
+on:
+  push:
+    paths:
+      - vlmd-submission-tools/**
+      - .github/workflows/ci_vlmd.yaml
+  pull_request:
+    paths:
+      - vlmd-submission-tools/
+
+jobs:
+  vlmd-wf-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - uses: actions/cache@v3
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ hashFiles(format('{0}{1}', github.workspace, '/poetry.lock')) }}
+        restore-keys: |
+          ${{ runner.os }}-poetry-
+    - name: Install dependencies
+      working-directory: ./vlmd-submission-tools
+      run: |
+        pip install poetry
+        poetry install -vv --no-interaction
+        poetry show -vv
+    - name: Test with pytest
+      working-directory: ./vlmd-submission-tools
+      run: |
+        poetry run pytest -vv --cov=vlmd_submission_tools tests

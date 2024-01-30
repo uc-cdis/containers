@@ -1,10 +1,10 @@
-name: Build and push HEAL notebook image
+name: Build and push VADC notebook image
 
 on:
   push:
     paths:
-    - HEAL-notebooks/*/**
-    - .github/workflows/build_heal_notebook_image.yml
+    - jupyter-vadc/**
+    - .github/workflows/build_vadc_notebook_image.yml
 
 jobs:
   push-image:
@@ -44,11 +44,11 @@ jobs:
         run: |
           import os, json, re
 
-          notebook_dir = "HEAL-notebooks"
-          changed_heal_notebook_files = json.loads(os.environ['CHANGES'])
-          print(f"Changed files {changed_heal_notebook_files}")
+          notebook_dir = "jupyter-vadc"
+          changed_vadc_notebook_files = json.loads(os.environ['CHANGES'])
+          print(f"Changed files {changed_vadc_notebook_files}")
 
-          # build an image for every subdir of HEAL-notebooks with a changed file
+          # build an image for every subdir of jupyter-vadc with a changed file
           subdirs = list(
             filter(
               lambda d: os.path.isdir(f"{os.environ['GITHUB_WORKSPACE']}/{notebook_dir}/{d}"),
@@ -62,14 +62,14 @@ jobs:
             filter(
               lambda subdir: any(
                 changed_file.startswith(f"{notebook_dir}/{subdir}")
-                for changed_file in changed_heal_notebook_files
+                for changed_file in changed_vadc_notebook_files
               ),
               subdirs
             )
           )
 
           if not len(buildable_images):
-            print(f"None of {changed_heal_notebook_files} triggers a build for any of {subdirs}. Done.")
+            print(f"None of {changed_vadc_notebook_files} triggers a build for any of {subdirs}. Done.")
             exit(0)
           elif len(buildable_images) > 1:
             print("Found multiple notebook directories with changes: {buildable_images}")
@@ -93,14 +93,15 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: heal-notebooks
+          image: jupyter-vadc
+          context: ./jupyter-vadc/
           tags:
             ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
             ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
             ${{ steps.sanitize_name.outputs.image_name }}__latest
-          dockerfiles: ./HEAL-notebooks/Dockerfile
+          dockerfiles: ./jupyter-vadc/Dockerfile
           build-args:
-            NOTEBOOK_DIR=HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}
+            NOTEBOOK_DIR=jupyter-vadc/${{ steps.parse_image.outputs.build_target }}
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Push To quay.io
