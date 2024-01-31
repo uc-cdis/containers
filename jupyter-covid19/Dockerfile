@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-notebook:restricted-download-jupyter-covid19-restrict-download
+FROM quay.io/cdis/jupyter-notebook:restricted-download-master
 
 USER $NB_USER
 WORKDIR /home/$NB_USER
@@ -97,3 +97,10 @@ RUN touch /home/$NB_USER/covid19-notebook/peregrine.py
 
 # premade notebooks dependencies
 RUN pip install -U -r /home/$NB_USER/covid19-notebook/requirements.txt
+
+# The image can't function (see error below) with `jsonschema` version 3.2.0. Some dependencies are
+# preventing `jsonschema` from being upgraded to a more recent version. Updating it here as a quick fix.
+#   File "/usr/local/lib/python3.9/dist-packages/jupyter_events/validators.py", line 44, in <module>
+#     JUPYTER_EVENTS_SCHEMA_VALIDATOR = Draft7Validator(
+# TypeError: __init__() got an unexpected keyword argument 'registry'
+RUN pip install jsonschema==4.20.0 --upgrade
