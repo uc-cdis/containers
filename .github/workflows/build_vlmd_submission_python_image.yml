@@ -1,4 +1,4 @@
-name: Build Python Image and Push to Quay and ECR
+name: Build VLMD Image
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Build Image and Push to Quay
+    name: Build VLMD Image
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
       DOCKERFILE_LOCATION: "./vlmd-submission-tools/Dockerfile"
