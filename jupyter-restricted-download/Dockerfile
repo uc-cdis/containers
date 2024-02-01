@@ -62,11 +62,12 @@ RUN pip install jupyter --upgrade
 
 RUN pip uninstall nbconvert --yes
 # Create a non-root user for Jupyter without copying /bin or /bin/bash
-ARG NB_USER=jupyter
+ARG NB_USER=jovyan
 ARG NB_UID=1000
-RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER
-RUN chown -R $NB_USER:users /home/$NB_USER
-RUN chmod -R u+rwx /home/$NB_USER
+RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
+    chown -R $NB_USER:users /home/$NB_USER && \
+    chmod -R u+rwx /home/$NB_USER && \
+    mkdir -p /home/$NB_USER/pd
 
 # Expose port 8888 for JupyterLab
 EXPOSE 8888
@@ -85,11 +86,8 @@ COPY resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
 
-# Putting this all the way down here, to make sure its the last thing done
-# The image can't function with jsonschema version 3.20.0, which some dependency installs
-RUN pip install jsonschema==4.20.0
+USER $NB_USER
 
 # Set the default command to start JupyterLab
-USER $NB_USER
 WORKDIR /home/$NB_USER
 ENTRYPOINT ["jupyter", "lab", "--allow-root", "--ip=0.0.0.0", "--port=8888", "--no-browser"]
