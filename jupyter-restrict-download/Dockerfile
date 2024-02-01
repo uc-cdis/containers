@@ -61,11 +61,12 @@ RUN pip install jupyter --upgrade
 
 RUN pip uninstall nbconvert --yes
 # Create a non-root user for Jupyter without copying /bin or /bin/bash
-ARG NB_USER=jupyter
+ARG NB_USER=jovyan
 ARG NB_UID=1000
-RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER
-RUN chown -R $NB_USER:users /home/$NB_USER
-RUN chmod -R u+rwx /home/$NB_USER
+RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
+    chown -R $NB_USER:users /home/$NB_USER && \
+    chmod -R u+rwx /home/$NB_USER && \
+    mkdir -p /home/$NB_USER/pd
 
 # Expose port 8888 for JupyterLab
 EXPOSE 8888
