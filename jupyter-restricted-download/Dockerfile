@@ -54,29 +54,37 @@ RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
     && jupyter labextension disable @jupyterlab/filebrowser-extension:download
 
 RUN pip install pandas numpy seaborn scipy matplotlib pyNetLogo SALib boto3 awscli --upgrade
-
-# RUN pip install PyYAML==5.3.1 --upgrade
 RUN pip install gen3==4.18.0 --upgrade
-
 RUN pip install jupyter --upgrade
-
 RUN pip uninstall nbconvert --yes
+
 # Create a non-root user for Jupyter without copying /bin or /bin/bash
 ARG NB_USER=jovyan
 ARG NB_UID=1000
+ARG NB_GID=100
 RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
     chown -R $NB_USER:users /home/$NB_USER && \
     chmod -R u+rwx /home/$NB_USER && \
     mkdir -p /home/$NB_USER/pd
 
+# Configure environment
+ENV CONDA_DIR=/opt/conda \
+    PATH=/usr/local/bin:$PATH \
+    SHELL=/bin/bash \
+    NB_USER=${NB_USER} \
+    NB_UID=${NB_UID} \
+    NB_GID=${NB_GID} \
+    HOME=/home/$NB_USER \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8
+
 # Expose port 8888 for JupyterLab
 EXPOSE 8888
 
-ARG COVID_TOOLS_BRANCH=master
-ADD --chown=$NB_USER:users https://raw.githubusercontent.com/uc-cdis/covid19-tools/$COVID_TOOLS_BRANCH/covid19-notebooks/welcome.html /home/$NB_USER/
-RUN touch /home/$NB_USER/welcome.html
-
 # Add local files as late as possible to avoid cache busting
+RUN wget https://raw.githubusercontent.com/jupyter/docker-stacks/7e1a19a8427f99652c75d1d4fda3df780721b574/images/docker-stacks-foundation/fix-permissions
+RUN mv fix-permissions /usr/local/bin/fix-permissions.sh
 COPY start.sh /usr/local/bin/
 COPY start-notebook.sh /usr/local/bin/
 COPY start-singleuser.sh /usr/local/bin/
@@ -85,6 +93,8 @@ RUN chmod +x /usr/local/bin/*.sh
 COPY resources/custom.js /home/$NB_USER/.jupyter/custom/
 COPY resources/jupyter_notebook_config.py /home/$NB_USER/.jupyter/tmp.py
 RUN cat /home/$NB_USER/.jupyter/tmp.py >> /home/$NB_USER/.jupyter/jupyter_notebook_config.py && rm /home/$NB_USER/.jupyter/tmp.py
+
+RUN fix-permissions.sh "/home/${NB_USER}"
 
 USER $NB_USER
 
