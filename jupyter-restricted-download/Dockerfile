@@ -49,13 +49,14 @@ RUN pip install JPype1 jupyter
 
 RUN jupyter notebook --generate-config
 
-# this is where we disable downloads
+# step 1 to disable downloads:
 RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
     && jupyter labextension disable @jupyterlab/filebrowser-extension:download
 
 RUN pip install pandas numpy seaborn scipy matplotlib pyNetLogo SALib boto3 awscli --upgrade
 RUN pip install gen3==4.18.0 --upgrade
 RUN pip install jupyter --upgrade
+# step 2 to disable downloads:
 RUN pip uninstall nbconvert --yes
 
 # Create a non-root user for Jupyter without copying /bin or /bin/bash
