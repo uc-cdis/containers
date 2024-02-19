@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - jupyter-vadc/**
+    - .github/workflows/build_vadc_notebook_image.yml
 
 jobs:
   push-image:

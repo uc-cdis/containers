@@ -1,20 +1,20 @@
-name: Build and push AmazonLinux jupyter-scipy
+name: Build and Push jupyter-covid19
 
 on:
   push:
     paths:
-    - azlinux-jupyter-scipy/**
-    - .github/workflows/build_azlinux_jupyter_scipy_image.yml
+    - jupyter-covid19/**
+    - .github/workflows/build_jupyter_covid19_image.yml
 
 jobs:
-  jupyter-nextflow:
-    name: Build and Push AmazonLinux jupyter-scipy
+  jupyter-covid19:
+    name: Build and Push jupyter-covid19
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
-      DOCKERFILE_LOCATION: "./azlinux-jupyter-scipy/Dockerfile"
-      DOCKERFILE_BUILD_CONTEXT: "./azlinux-jupyter-scipy"
+      DOCKERFILE_LOCATION: "./jupyter-covid19/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./jupyter-covid19"
       OVERRIDE_REPO_NAME: "jupyter-notebook"
-      OVERRIDE_TAG_NAME: "azlinux-scipy-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+      OVERRIDE_TAG_NAME: "covid19-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
