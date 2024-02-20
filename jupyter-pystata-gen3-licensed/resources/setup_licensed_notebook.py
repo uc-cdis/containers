@@ -1,12 +1,13 @@
 from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 
 
-opts = Options()
-opts.headless = True
+opts = FirefoxOptions()
+opts.add_argument('--headless')
 browser = webdriver.Firefox(options=opts)
 
 print("Checking for .lic file")
