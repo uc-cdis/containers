@@ -1,4 +1,4 @@
-FROM quay.io/cdis/datascience-notebook:2023-04-10
+FROM quay.io/cdis/datascience-notebook:2024-02-26
 
 USER root
 
