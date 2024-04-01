@@ -16,3 +16,4 @@ r-dplyr
 r-tidyr
 r-haven
 r-reshape
+pillow>=10.3.0 # not directly required, pinned by Snyk to avoid a vulnerability
