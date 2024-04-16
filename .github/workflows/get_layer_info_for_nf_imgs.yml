@@ -20,11 +20,11 @@ jobs:
               layer_json=$(echo "$layer_json" | jq --arg key "$tag_name" --argjson extracted "$response" '. + { ($key): $extracted }')
           done <<< "$url_list"
           echo "$layer_json" > response.txt
-      # - name: Commit and push changes
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: "Update response.txt"
-      #     branch: main
-      #     commit_options: '-a'
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update response.txt"
+          branch: feat/add_gh_wf_nf_img_layers
+          commit_options: '-a'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
