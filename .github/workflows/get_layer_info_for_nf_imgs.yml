@@ -1,0 +1,30 @@
+name: Store HTTP Response
+on:
+  push:
+    paths:
+      - 'nextflow-base-images/allowed_base_images.txt'
+
+jobs:
+  store_response:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull HTTP Response
+        run: |
+          url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
+          TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
+          layer_json="{}"
+          while IFS= read -r image_url; do
+              manifest_url=$(echo ${image_url} | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
+              tag_name=$(echo ${image_url} | sed 's|\(.*\):\(.*\)|\2|')
+              response=$(curl -s -H "Authorization: Bearer $TOKEN" $manifest_url | jq "[.layers[].digest]")
+              layer_json=$(echo "$layer_json" | jq --arg key "$tag_name" --argjson extracted "$response" '. + { ($key): $extracted }')
+          done <<< "$url_list"
+          echo "$layer_json" > response.txt
+      # - name: Commit and push changes
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: "Update response.txt"
+      #     branch: main
+      #     commit_options: '-a'
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
