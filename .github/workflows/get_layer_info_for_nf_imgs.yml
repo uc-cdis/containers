@@ -7,7 +7,17 @@ on:
 jobs:
   store_response:
     runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
       - name: Pull HTTP Response
         run: |
           url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
@@ -21,7 +31,7 @@ jobs:
           done <<< "$url_list"
           echo "$layer_json" > response.txt
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update response.txt"
           branch: feat/add_gh_wf_nf_img_layers
