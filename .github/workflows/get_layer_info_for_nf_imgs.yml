@@ -29,12 +29,12 @@ jobs:
               response=$(curl -s -H "Authorization: Bearer $TOKEN" $manifest_url | jq "[.layers[].digest]")
               layer_json=$(echo "$layer_json" | jq --arg key "$tag_name" --argjson extracted "$response" '. + { ($key): $extracted }')
           done <<< "$url_list"
-          echo "$layer_json" > response.txt
+          echo "$layer_json" > nextflow-base-images/response.json
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update response.txt"
-          branch: feat/add_gh_wf_nf_img_layers
+          commit_message: "Update response.json"
+          branch: main
           commit_options: '-a'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
