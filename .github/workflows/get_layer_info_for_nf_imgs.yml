@@ -1,4 +1,4 @@
-name: Store HTTP Response
+name: Update Nextflow-approved image's layers
 on:
   push:
     paths:
