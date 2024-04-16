@@ -5,7 +5,7 @@ on:
       - 'nextflow-base-images/allowed_base_images.txt'
 
 jobs:
-  store_response:
+  get_image_layers:
     runs-on: ubuntu-latest
 
     permissions:
