@@ -1,7 +1,7 @@
 name: Update Nextflow-approved image's layers
 on:
   push:
-    branches: master
+    # branches: master
     paths:
       - 'nextflow-base-images/allowed_base_images.txt' #Runs every time this file is updated
   schedule:
