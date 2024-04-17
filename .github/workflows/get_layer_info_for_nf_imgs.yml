@@ -32,11 +32,11 @@ jobs:
               response=$(curl -s -H "Authorization: Bearer $TOKEN" $manifest_url | jq "[.layers[].digest]")
               layer_json=$(echo "$layer_json" | jq --arg key "$tag_name" --argjson extracted "$response" '. + { ($key): $extracted }')
           done <<< "$url_list"
-          echo "$layer_json" > nextflow-base-images/response.json
+          echo "$layer_json" > nextflow-base-images/approved_img_layers.json
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update response.json"
+          commit_message: "Update approved_img_layers.json"
           branch: store/branch_to_track_nf_img_layers
           create_branch: true
           commit_options: '-a'
