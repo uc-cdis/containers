@@ -1,8 +1,11 @@
 name: Update Nextflow-approved image's layers
 on:
   push:
+    branches: master
     paths:
-      - 'nextflow-base-images/allowed_base_images.txt'
+      - 'nextflow-base-images/allowed_base_images.txt' #Runs every time this file is updated
+  schedule:
+    - cron: '0 0 * * 0'  # Run at midnight every Sunday
 
 jobs:
   get_image_layers:
@@ -34,7 +37,8 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update response.json"
-          branch: master
+          branch: store/branch_to_track_nf_img_layers
+          create_branch: true
           commit_options: '-a'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
