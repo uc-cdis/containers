@@ -1,3 +1,3 @@
-{
-    "_comment": "The `get_layer_info_for_nf_imgs.yml` GitHub workflow reads the `nextflow-base-images/allowed_base_images.txt` file and populates this `approved_img_layers.json` file with layer information for each base image. You are reading a placeholder file. The current list of approved layers can be found at `https://github.com/uc-cdis/containers/blob/store/branch_to_track_nf_img_layers/nextflow-base-images/approved_img_layers.json`. The workflow currently assumes that only ECR images are in the list of approved base images."
-}
+* The `get_layer_info_for_nf_imgs.yml` GitHub workflow reads the `nextflow-base-images/allowed_base_images.txt` file and populates this `approved_img_layers.json` file with layer information for each base image.
+* You are reading a placeholder file. The current list of approved layers can be found at `https://github.com/uc-cdis/containers/blob/store/branch_to_track_nf_img_layers/nextflow-base-images/approved_img_layers.json`.
+* The workflow currently assumes that only ECR images are in the list of approved base images.
