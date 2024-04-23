@@ -1,7 +1,7 @@
 name: Update Nextflow-approved image's layers
 on:
   push:
-    # branches: master
+    branches: master
     paths:
       - 'nextflow-base-images/**' #Runs every time this folder gets updated
       - '.github/workflows/get_layer_info_for_nf_imgs.yml'
