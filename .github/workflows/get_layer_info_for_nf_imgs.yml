@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: store/branch_to_track_nf_img_layers
 
       - name: Pull HTTP Response
         run: |
