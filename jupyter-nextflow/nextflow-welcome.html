@@ -39,16 +39,20 @@
   </ul>
   <h2 class=header>Get started with Nextflow</h2>
   <p>If you are new to Nextflow, visit <a
-      href=https://www.nextflow.io>nextflow.io</a> for detailed information.
+      href=https://www.nextflow.io>nextflow.io</a> for detailed information. 
+    You can also learn more about using Nextflow in BRH Workspace in the BRH Documentation <a
+      href=https://uc-cdis.github.io/BRH-documentation/01-home/</a>. 
   </p>
   <p>This workspace is set up to run Nextflow workflows in AWS Batch. Your
-    Nextflow configuration must include the Batch queue, IAM role ARN and work
-    directory that were created for you automatically. The sample configuration
+    Nextflow configuration must include the Batch queue (in our config file, 
+    <code>queue</code>), IAM role ARN (<code>jobRole</code>), and work
+    directory (<code>workDir</code>) that were created for you automatically. The sample configuration
     file will allow you to run simple workflows and can be adapted to your
     needs. To get started:
   </p>
   <ul>
-    <li>Open a new "Launcher" tab and open a terminal.
+    <li>Open a new "Launcher" tab by clicking the + next to <code>nextflow-welcome.html</code>
+    <li> Scroll down until you see the option for terminal. Click to open a terminal.
     <li>You can find your sample configuration file in the "data" directory.
       Copy it to a new "nextflow.config" file by running this command in the
       terminal: <code>cp
@@ -56,4 +60,9 @@
     <li>Launch a Hello World workflow by running this command in the terminal:
       <code>nextflow run hello</code>
   </ul>
+  <p>Since the /pd directory is the only directory that will allow files to persist
+    once the workspace is closed, if you make changes to your <code>nextflow.config</code> file, 
+    you may want to move or copy the nextflow.config to the /pd to retain your changes. 
+    Move it to the /pd directory by running this command in the terminal: <code>mv nextflow.config ./pd</code>
+  </p>
 </div>
