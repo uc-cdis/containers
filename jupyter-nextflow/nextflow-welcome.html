@@ -44,8 +44,8 @@
       href=https://uc-cdis.github.io/BRH-documentation/01-home/>BRH Documentation</a>. 
   </p>
   <p>This workspace is set up to run Nextflow workflows in AWS Batch. Your
-    Nextflow configuration must include the Batch queue (in our config file, 
-    <code>queue</code>), IAM role ARN (<code>jobRole</code>), and work
+    Nextflow configuration must include the Batch queue (in your config file, 
+    <code>process.queue</code>), IAM role ARN (<code>aws.batch.jobRole</code>), and work
     directory (<code>workDir</code>) that were created for you automatically. The sample configuration
     file will allow you to run simple workflows and can be adapted to your
     needs. To get started:
