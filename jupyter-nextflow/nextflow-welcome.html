@@ -39,21 +39,25 @@
   </ul>
   <h2 class=header>Get started with Nextflow</h2>
   <p>If you are new to Nextflow, visit <a
-      href=https://www.nextflow.io>nextflow.io</a> for detailed information.
+      href=https://www.nextflow.io>nextflow.io</a> for detailed information. 
+    You can also learn more about using Nextflow in BRH Workspace in the <a
+      href=https://uc-cdis.github.io/BRH-documentation/01-home/>BRH Documentation</a>. 
   </p>
   <p>This workspace is set up to run Nextflow workflows in AWS Batch. Your
-    Nextflow configuration must include the Batch queue, IAM role ARN and work
-    directory that were created for you automatically. The sample configuration
-    file will allow you to run simple workflows and can be adapted to your
+    Nextflow configuration must include the Batch queue (in your config file, 
+    <code>process.queue</code>), IAM role ARN (<code>aws.batch.jobRole</code>), and work
+    directory (<code>workDir</code>) that were created for you automatically. The sample config
+    file is already configured with these settings. It will allow you to run simple workflows and can be adapted to your
     needs. To get started:
   </p>
   <ul>
-    <li>If you want your files to persist, first navigate to the "pd" folder.
-    <li>Open a new "Launcher" tab and open a terminal.
+    <li>If you want your <code>nextflow.config</code> file to persist, first double-click on the "pd" folder.
+    <li>Open a new "Launcher" tab by clicking the + next to <code>nextflow-welcome.html</code>
+    <li> Scroll down until you see the option for terminal. Click to open a terminal.
     <li>You can find your sample configuration file in the "data" directory.
       Copy it to a new "nextflow.config" file by running this command in the
       terminal: <code>cp
-      ./data/sample-nextflow-config.txt ./nextflow.config</code>
+      ../data/sample-nextflow-config.txt ./nextflow.config</code>
     <li>Launch a Hello World workflow by running this command in the terminal:
       <code>nextflow run hello</code>
   </ul>
