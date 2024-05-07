@@ -1,10 +1,10 @@
 {
-  "amazonlinux-base": [
+  "public.ecr.aws/u5x5h6w3/nextflow-approved/public:amazonlinux-base": [
     "sha256:609b5300f382d0a94bbbbae014205b9b17260d3d112b1287cf0a56f01f321e21",
     "sha256:6fe3653e07120b5624856b16685a8fcbd5463f491fd6a094240c1ac30d83516a",
     "sha256:bb88de4c200a595b867a229e6b5768c6e9327c2b57d98cf6076530ca8389df6d"
   ],
-  "gen3-cuda-11.8-ubuntu22.04-openssl": [
+  "public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-11.8-ubuntu22.04-openssl": [
     "sha256:43f89b94cd7df92a2f7e565b8fb1b7f502eff2cd225508cbd7ea2d36a9a3a601",
     "sha256:5e3b7ee7738140e8f4608c3945b6e1ed4f9fb75db53a04e19ba0a6661e7cc4fe",
     "sha256:5bd037f007fdda13ae5a5f43a199d6677db1f9059c2980c84726e3a43fab169a",
@@ -23,7 +23,7 @@
     "sha256:aac836f52da7da3fefdabc024908a5d16e19a2088c2db66e743be9a911b71d08",
     "sha256:96457a7f812577205cee0906ee904366d1fc8c80e68ce5c754c510a558fd121c"
   ],
-  "gen3-cuda-12.3-ubuntu22.04-openssl": [
+  "public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-12.3-ubuntu22.04-openssl": [
     "sha256:cbe3537751ce03ea42788c2fbe2d5d336180dc2e20472c8cdba8b3224191d101",
     "sha256:d67fcc6ef5778d73d1457b1c578dfda6a3e5c9859a08031f18e4a5af9e412f60",
     "sha256:47ee674c5713e33e52341c344fd8b9bee597b8bc472e0f1c7e5a5bba1af49920",
@@ -42,7 +42,7 @@
     "sha256:8465e1164efee289ca61d033072321168c2929ae1246553180708986c84064c4",
     "sha256:82c5706e4b527cb9eeede4c72894f1d57737f9fead0249828bcd13de5659f62c"
   ],
-  "gen3-cuda-12.3-torch2.2-ubuntu22.04-openssl": [
+  "public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-12.3-torch2.2-ubuntu22.04-openssl": [
     "sha256:cbe3537751ce03ea42788c2fbe2d5d336180dc2e20472c8cdba8b3224191d101",
     "sha256:d67fcc6ef5778d73d1457b1c578dfda6a3e5c9859a08031f18e4a5af9e412f60",
     "sha256:47ee674c5713e33e52341c344fd8b9bee597b8bc472e0f1c7e5a5bba1af49920",
