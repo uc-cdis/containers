@@ -27,7 +27,7 @@ jobs:
               tag_name=$(echo ${image_url} | sed 's|\(.*\):\(.*\)|\2|')
               echo $manifest_url, $tag_name
               response=$(curl -s -H "Authorization: Bearer $TOKEN" $manifest_url | jq "[.layers[].digest]")
-              layer_json=$(echo "$layer_json" | jq --arg key "$tag_name" --argjson extracted "$response" '. + { ($key): $extracted }')
+              layer_json=$(echo "$layer_json" | jq --arg key "$image_url" --argjson extracted "$response" '. + { ($key): $extracted }')
           done <<< "$url_list"
           echo "$layer_json" > nextflow-base-images/approved_img_layers.json
       - name: Commit and push changes
