@@ -4,7 +4,7 @@ on:
     # branches: master
     paths:
       - 'nextflow-base-images/**' #Runs every time this folder gets updated
-      - '.github/workflows/get_layer_info_for_nf_imgs.yml'
+      - '.github/workflows/feat/automate_nf_base_images_build '
   schedule:
     - cron: '0 0 * * 6'  # Run at midnight UTC every Saturday
 
