@@ -1,5 +1,6 @@
 name: Update Nextflow-approved image's layers
 on:
+  workflow_dispatch:
   push:
     branches: master
     paths:
