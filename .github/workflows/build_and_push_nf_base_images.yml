@@ -26,28 +26,32 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # - name: Login to Amazon ECR
-      #   env:
-      #     AWS_REGION: us-west-1  # Replace with your AWS region
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #   run: |
-      #     aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin public.ecr.aws/u5x5h6w3
+      - name: Login to Amazon ECR
+        env:
+          AWS_REGION: us-east-1  # Replace with your AWS region
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 143731057154.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build and push Docker images
         run: |
               dir=base-images/amazonlinux-base/
               image_name=nextflow-approved/public
-              tag_name=$(basename "$dir" | sed 's/_/./g')
+              tag_name=$(basename "$dir")
               echo "$image_name:$tag_name"
               # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
               # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
+              docker build -t 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name $dir
+              docker push 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name
 
               for dir in nextflow-base-images/*/;do
                   image_name=nextflow-approved/public
                   tag_name=$(basename "$dir" | sed 's/_/./g')
                   # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
                   # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
+                  docker build -t 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name $dir
+                  docker push 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name
                   echo "$image_name:$tag_name"
                   echo $dir
               done
