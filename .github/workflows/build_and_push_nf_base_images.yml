@@ -1,5 +1,6 @@
-name: Update Nextflow-approved image's layers
+name: Push new nextflow images to ECR
 on:
+  workflow_dispatch:
   push:
     # branches: master
     paths:
