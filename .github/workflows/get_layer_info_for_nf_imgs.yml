@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
   push:
     # branches: master
-    paths:
-      - 'nextflow-base-images/**' #Runs every time this folder gets updated
-      - '.github/workflows/get_layer_info_for_nf_imgs.yml'
+    # paths:
+    #   - 'nextflow-base-images/**' #Runs every time this folder gets updated
+    #   - '.github/workflows/get_layer_info_for_nf_imgs.yml'
   schedule:
     - cron: '0 0 * * 0'  # Run at midnight UTC every Sunday
 
