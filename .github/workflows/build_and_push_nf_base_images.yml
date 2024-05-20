@@ -54,11 +54,10 @@ jobs:
                   tag_name=$(basename "$dir" | sed 's/_/./g')
                   # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
                   # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
-                  # docker build -t 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name $dir
-                  # docker push 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name
+                  docker build -t 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name $dir
+                  docker push 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name
                   echo "$image_name:$tag_name"
                   echo $dir
-                  echo $GH_TOKEN
               done
 
               gh api \

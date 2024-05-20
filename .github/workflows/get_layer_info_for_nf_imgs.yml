@@ -2,7 +2,7 @@ name: Update Nextflow-approved image's layers
 on:
   workflow_dispatch:
   push:
-    branches: master
+    # branches: master
     paths:
       - 'nextflow-base-images/**' #Runs every time this folder gets updated
       - '.github/workflows/get_layer_info_for_nf_imgs.yml'
@@ -20,7 +20,9 @@ jobs:
 
       - name: Pull HTTP Response
         run: |
-          url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
+          # url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
+          url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/feat/automate_nf_base_images_build/nextflow-base-images/allowed_base_images.txt")
+          https://github.com/uc-cdis/containers/blob/3c80c32160a2ce1fcb176775b7416c8039d9d6a4/nextflow-base-images/allowed_base_images.txt
           TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
           layer_json="{}"
           while IFS= read -r image_url; do

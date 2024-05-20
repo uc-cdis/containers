@@ -1,7 +1,7 @@
 # Use the specified base image
 FROM nvcr.io/nvidia/cuda:11.8.0-base-ubuntu22.04
 
-# RUN apt-get purge -y --auto-remove openssl && apt-get autoremove && apt-get autoclean
+RUN apt-get purge -y --auto-remove openssl && apt-get autoremove && apt-get autoclean
 
 # RUN apt-get update && apt-get -y upgrade && apt install -y wget
 
