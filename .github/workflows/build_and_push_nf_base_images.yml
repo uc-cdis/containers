@@ -37,6 +37,8 @@ jobs:
           aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 143731057154.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build and push Docker images
+        env:
+          GH_TOKEN: ${{ secrets.PLANXCYBORG_TOKEN }}
         run: |
               dir=base-images/amazonlinux-base/
               image_name=nextflow-approved/public
@@ -44,18 +46,19 @@ jobs:
               echo "$image_name:$tag_name"
               # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
               # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
-              docker build -t 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name $dir
-              docker push 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name
+              # docker build -t 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name $dir
+              # docker push 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name
 
               for dir in nextflow-base-images/*/;do
                   image_name=nextflow-approved/public
                   tag_name=$(basename "$dir" | sed 's/_/./g')
                   # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
                   # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
-                  docker build -t 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name $dir
-                  docker push 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name
+                  # docker build -t 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name $dir
+                  # docker push 143731057154.dkr.ecr.us-east-1.amazonaws.com/nextflow-staging/test:$tag_name
                   echo "$image_name:$tag_name"
                   echo $dir
+                  echo $GH_TOKEN
               done
 
               gh api \
