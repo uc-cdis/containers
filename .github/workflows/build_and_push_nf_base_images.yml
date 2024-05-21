@@ -46,7 +46,7 @@ jobs:
               echo "$image_name:$tag_name"
               # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
               # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
-              docker build -t public.ecr.aws/g3j5p1p3/nextflow-approved-testing::$tag_name $dir
+              docker build -t public.ecr.aws/g3j5p1p3/nextflow-approved-testing:$tag_name $dir
               docker push public.ecr.aws/g3j5p1p3/nextflow-approved-testing:$tag_name
 
               for dir in containers/nextflow-base-images/*/;do
@@ -54,7 +54,7 @@ jobs:
                   tag_name=$(basename "$dir" | sed 's/_/./g')
                   # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
                   # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
-                  docker build -t public.ecr.aws/g3j5p1p3/nextflow-approved-testing::$tag_name $dir
+                  docker build -t public.ecr.aws/g3j5p1p3/nextflow-approved-testing:$tag_name $dir
                   docker push public.ecr.aws/g3j5p1p3/nextflow-approved-testing:$tag_name
                   echo "$image_name:$tag_name"
                   echo $dir
