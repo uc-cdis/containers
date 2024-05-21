@@ -36,7 +36,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_ACCT_654654631253_ECR }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACCT_654654631253_ECR }}
         run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/g3j5p1p3
+          aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin public.ecr.aws/u5x5h6w3
 
       - name: Build and push Docker images
         run: |
@@ -44,18 +44,14 @@ jobs:
               image_name=nextflow-approved/public
               tag_name=$(basename "$dir")
               echo "$image_name:$tag_name"
-              # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
-              # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
-              docker build -t public.ecr.aws/g3j5p1p3/nextflow-approved-testing:$tag_name $dir
-              docker push public.ecr.aws/g3j5p1p3/nextflow-approved-testing:$tag_name
+              docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
+              docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
 
               for dir in containers/nextflow-base-images/*/;do
                   image_name=nextflow-approved/public
                   tag_name=$(basename "$dir" | sed 's/_/./g')
-                  # docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
-                  # docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
-                  docker build -t public.ecr.aws/g3j5p1p3/nextflow-approved-testing:$tag_name $dir
-                  docker push public.ecr.aws/g3j5p1p3/nextflow-approved-testing:$tag_name
+                  docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
+                  docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
                   echo "$image_name:$tag_name"
                   echo $dir
               done
