@@ -2,7 +2,7 @@ name: Push new nextflow images to ECR
 on:
   workflow_dispatch:
   push:
-    # branches: master
+    branches: master
     paths:
       - 'nextflow-base-images/**' #Runs every time this folder gets updated
       - '.github/workflows/build_and_push_nf_base_images.yml'
@@ -48,12 +48,12 @@ jobs:
               docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
 
               for dir in containers/nextflow-base-images/*/;do
+                  echo "Building an image present in $dir"
                   image_name=nextflow-approved/public
                   tag_name=$(basename "$dir" | sed 's/_/./g')
                   docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
                   docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
-                  echo "$image_name:$tag_name"
-                  echo $dir
+                  echo "Built an image with name --> $image_name:$tag_name"
               done
 
       - name: Trigger `get_layer_info_for_nf_imgs.yml` workflow
