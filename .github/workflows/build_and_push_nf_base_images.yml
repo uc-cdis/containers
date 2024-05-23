@@ -41,16 +41,17 @@ jobs:
       - name: Build and push Docker images
         run: |
               dir=base-images/amazonlinux-base/
+              echo "Building an image present in $dir"
               image_name=nextflow-approved/public
               tag_name=$(basename "$dir")
-              echo "$image_name:$tag_name"
               docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
               docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
+              echo "Built an image with name --> $image_name:$tag_name"
 
               for dir in containers/nextflow-base-images/*/;do
                   echo "Building an image present in $dir"
                   image_name=nextflow-approved/public
-                  tag_name=$(basename "$dir" | sed 's/_/./g')
+                  tag_name=$(basename "$dir")
                   docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
                   docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
                   echo "Built an image with name --> $image_name:$tag_name"
