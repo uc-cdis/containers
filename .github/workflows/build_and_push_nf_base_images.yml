@@ -77,8 +77,8 @@ jobs:
             IMAGE_IDS=$(aws ecr-public describe-images --repository-name $REPO_NAME --query 'imageDetails[?imageTags==null].imageDigest' --output text)
             if [ -n "$IMAGE_IDS" ]; then
               for IMAGE_ID in $IMAGE_IDS; do
-                # aws ecr-public batch-delete-image --repository-name $REPO_NAME --image-ids imageDigest=$IMAGE_ID
-                echo $IMAGE_ID
+                aws ecr-public batch-delete-image --repository-name $REPO_NAME --image-ids imageDigest=$IMAGE_ID
+                echo "Deleted image with SHA hash -$IMAGE_ID"
               done
             else
               echo "No untagged images to delete."
