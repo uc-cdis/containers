@@ -18,7 +18,7 @@ jobs:
 
       - name: Pull HTTP Response
         run: |
-          url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
+          url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/chore/update_reading_allowed_base_images_txt/nextflow-base-images/allowed_base_images.txt")
           TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
           layer_json="{}"
           while IFS= read -r image_url; do
