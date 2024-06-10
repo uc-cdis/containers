@@ -3,7 +3,7 @@ on:
   # Primarily this workflow is only expected to be triggered by `build_and_push_nf_base_images.yml`, these extra triggers are just added for convenience.
   workflow_dispatch:
   push:
-    branches: master
+    # branches: master
     paths:
       - 'nextflow-base-images/**'
       - '.github/workflows/get_layer_info_for_nf_imgs.yml'
@@ -22,6 +22,14 @@ jobs:
           TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
           layer_json="{}"
           while IFS= read -r image_url; do
+            # Ignore lines that start with #
+              if [[ "$image_url" == \#* ]]; then
+                continue
+              fi
+            # Strip the first * if a line starts with *
+              if [[ "$image_url" == \** ]]; then
+                image_url="${image_url:1}"
+              fi
               manifest_url=$(echo ${image_url} | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
               tag_name=$(echo ${image_url} | sed 's|\(.*\):\(.*\)|\2|')
               echo $manifest_url, $tag_name
