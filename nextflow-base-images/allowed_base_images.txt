@@ -1,6 +1,4 @@
-#this is a comment line, trying to see if this line is being ignored
 public.ecr.aws/u5x5h6w3/nextflow-approved/public:amazonlinux-base
-#Also adding an asterisk before the name of the image, to test if the `*` is being ignored by the script
-*public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-11.8-ubuntu22.04-openssl
+public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-11.8-ubuntu22.04-openssl
 public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-12.3-ubuntu22.04-openssl
 public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-12.3-torch2.2-ubuntu22.04-openssl
