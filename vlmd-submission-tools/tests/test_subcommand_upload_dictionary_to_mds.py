@@ -39,8 +39,10 @@ class TestGetDictionaryUrlSubcommand:
 
         args = self.get_mock_args()
         existing_data_dictionaries = {
-            "CVS baseline": "guid-1",
-            "JSON followup": "guid-2"
+            "data_dictionaries": {
+                "CVS baseline": "guid-1",
+                "JSON followup": "guid-2"
+            }
         }
         mocked_check_mds.return_value = existing_data_dictionaries
 
@@ -54,6 +56,7 @@ class TestGetDictionaryUrlSubcommand:
         mocked_post_response.status_code = 200
         mocked_post_response.json.return_value = {
             "_guid_type": "data_dictionary",
+            "title": args.dictionary_name,
             "data_dictionary": json_dictionary
         }
         mocked_mds_post.return_value = mocked_post_response
@@ -66,7 +69,9 @@ class TestGetDictionaryUrlSubcommand:
         new_metadata = {
             "_guid_type": "discovery_metadata",
             "gen3_discovery": "discovery_metadata",
-            "data_dictionaries": new_data_dictionaries
+            "variable_level_metadata": {
+                "data_dictionaries": new_data_dictionaries
+            }
         }
         mocked_put_response = MagicMock(requests.Response)
         mocked_put_response.status_code = 200
