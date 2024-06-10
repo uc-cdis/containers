@@ -28,6 +28,8 @@ frictionless = "^5.12.1"
 parameterized = "^0.9.0"
 pytest = "^7.4.2"
 pytest-cov = "^4.1.0"
+healdata-utils = "^0.5.1"
+requests-mock = "^1.12.1"
 
 [tool.poetry.dev-dependencies]
 
