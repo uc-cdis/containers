@@ -89,9 +89,15 @@ class UploadDictionaryToMds(Subcommand):
         except:
             raise Exception("Could not read local json dictionary.")
 
+
         # verify that the submitted study-id exists in mds db
+        # TODO: decide if we want to handle exception here
         logger.info(f"Checking for study ID {options.study_id} in MDS")
-        existing_data_dictionaries = utils.check_mds_study_id(options.study_id, config.HOST_NAME)
+        vlmd_for_study = utils.check_mds_study_id(options.study_id, config.HOST_NAME)
+        logger.info(f"Existing vlmd = {vlmd_for_study}")
+        # if empty then fill in required key: 'data_dictionaries'
+        if vlmd_for_study.get('data_dictionaries') == None:
+            vlmd_for_study['data_dictionaries'] = {}
 
         # test the client token - maybe put this in a try statement.
         # get token for mds api call
@@ -107,7 +113,8 @@ class UploadDictionaryToMds(Subcommand):
         try:
             guid = str(uuid.uuid4())
             data = { "_guid_type": "data_dictionary",
-                    "data_dictionary": data_dictionary['data_dictionary']}
+                    "title": options.dictionary_name,
+                    "data_dictionary": data_dictionary}
             url = f"https://{config.HOST_NAME}/mds/metadata/{guid}"
             headers = {"Authorization": "bearer " + token, "content-type": "application/json"}
             response = requests.post(url, headers=headers, json=data)
@@ -122,14 +129,17 @@ class UploadDictionaryToMds(Subcommand):
         if response.status_code != 200 and response.status_code != 201:
             logger.error("Error in uploading dictionary to MDS")
 
-        # add this name and guid to the study ID metadata
+        # add this name and guid to the study ID variable level metadata
         logger.info(f"Adding dictionary_name '{options.dictionary_name}' to study ID = {options.study_id}")
 
         try:
-            existing_data_dictionaries[options.dictionary_name] = f"{guid}"
-            data = {"data_dictionaries": existing_data_dictionaries}
+            vlmd_for_study['data_dictionaries'][options.dictionary_name] = f"{guid}"
+            json_data = {
+                "variable_level_metadata": vlmd_for_study
+            }
+            # data = {"data_dictionaries": existing_data_dictionaries}
             url = f"https://{config.HOST_NAME}/mds/metadata/{options.study_id}?merge=True"
-            response = requests.put(url, headers=headers, json=data)
+            response = requests.put(url, headers=headers, json=json_data)
             response.raise_for_status()
             logger.info("Success")
         except:
