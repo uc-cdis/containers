@@ -22,6 +22,16 @@ jobs:
           TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
           layer_json="{}"
           while IFS= read -r image_url; do
+            # Ignore lines that start with #
+              if [[ "$image_url" == \#* ]]; then
+                echo "Skipping this line -- $image_url"
+                continue
+              fi
+            # Strip the first * if a line starts with *
+              if [[ "$image_url" == \** ]]; then
+                echo "Stripping * from this line -- $image_url"
+                image_url="${image_url:1}"
+              fi
               manifest_url=$(echo ${image_url} | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
               tag_name=$(echo ${image_url} | sed 's|\(.*\):\(.*\)|\2|')
               echo $manifest_url, $tag_name
