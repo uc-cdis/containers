@@ -15,16 +15,18 @@ from vlmd_submission_tools.subcommands import UploadDictionaryToMds
 class MockArgs(NamedTuple):
     json_local_path: str
     dictionary_name: str
+    is_valid_dictionary: str
     study_id: str
     output: str
 
 
 class TestGetDictionaryUrlSubcommand:
 
-    def get_mock_args(self):
+    def get_mock_args(self,is_valid_dictionary='True'):
         return MockArgs(
             json_local_path="tests/templates/template_submission_minimal.json",
             dictionary_name="Minimal_json_dict",
+            is_valid_dictionary=is_valid_dictionary,
             study_id="my_study_id",
             output="upload_output.json",
         )
@@ -150,4 +152,12 @@ class TestGetDictionaryUrlSubcommand:
         expected_error = "Could not update data_dictionaries in study ID metadata"
         with pytest.raises(Exception, match=expected_error):
             UploadDictionaryToMds.main(options=args)
+        assert os.path.exists(args.output) == False
+
+
+    def test_upload_dictionary_to_mds_invalid_dict(self):
+
+        args = self.get_mock_args(is_valid_dictionary='False')
+
+        UploadDictionaryToMds.main(options=args)
         assert os.path.exists(args.output) == False

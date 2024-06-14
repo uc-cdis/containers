@@ -42,6 +42,17 @@ class UploadDictionaryToMds(Subcommand):
         )
 
         parser.add_argument(
+            "-v",
+            "--is_valid_dictionary",
+            required=False,
+            type=str,
+            default="True",
+            help=(
+                "Skip the upload if not True"
+            ),
+        )
+
+        parser.add_argument(
             "-s",
             "--study_id",
             required=True,
@@ -80,6 +91,10 @@ class UploadDictionaryToMds(Subcommand):
         """
         logger = Logger.get_logger(cls.__tool_name__())
         logger.info(cls.__get_description__())
+
+        if options.is_valid_dictionary.lower() != 'true':
+            logger.info("Skipping MDS upload. Dictionary is not valid.")
+            return
 
         # Read json dictionary from local path
         logger.info("Reading dictionary from local file system.")
