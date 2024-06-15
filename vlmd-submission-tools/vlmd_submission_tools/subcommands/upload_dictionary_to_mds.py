@@ -114,7 +114,6 @@ class UploadDictionaryToMds(Subcommand):
             raise Exception("Could not read local json dictionary.")
 
         # verify that the submitted study-id exists in mds db
-        # TODO: decide if we want to handle exception here
         logger.info(f"Checking for study ID {options.study_id} in MDS")
         vlmd_for_study = utils.check_mds_study_id(options.study_id, config.HOST_NAME)
         logger.info(f"Existing vlmd = {vlmd_for_study}")
