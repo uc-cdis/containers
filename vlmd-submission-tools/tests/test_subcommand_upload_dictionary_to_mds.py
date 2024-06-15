@@ -158,6 +158,14 @@ class TestGetDictionaryUrlSubcommand:
     def test_upload_dictionary_to_mds_invalid_dict(self):
 
         args = self.get_mock_args(is_valid_dictionary='False')
+        expected_output =  {
+            "upload_status": None,
+            "dictionary_name": args.dictionary_name,
+            "mds_guid": None
+        }
 
         UploadDictionaryToMds.main(options=args)
-        assert os.path.exists(args.output) == False
+        assert os.path.exists(args.output)
+        with open(args.output, 'r') as fh:
+            result_json = json.load(fh)
+        assert result_json == expected_output

@@ -94,6 +94,15 @@ class UploadDictionaryToMds(Subcommand):
 
         if options.is_valid_dictionary.lower() != 'true':
             logger.info("Skipping MDS upload. Dictionary is not valid.")
+            # save the upload_status, dictionary_name and MDS guid output parameters
+            record_json = {
+                "upload_status": None,
+                "dictionary_name": options.dictionary_name,
+                "mds_guid": None
+            }
+            with open(options.output, 'w', encoding='utf-8') as o:
+                json.dump(record_json, o, ensure_ascii=False, indent=4)
+            logger.info(f"JSON response saved in {options.output}")
             return
 
         # Read json dictionary from local path
@@ -103,7 +112,6 @@ class UploadDictionaryToMds(Subcommand):
                 data_dictionary = json.load(fh)
         except:
             raise Exception("Could not read local json dictionary.")
-
 
         # verify that the submitted study-id exists in mds db
         # TODO: decide if we want to handle exception here
