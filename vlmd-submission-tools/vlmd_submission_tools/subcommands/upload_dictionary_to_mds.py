@@ -159,7 +159,6 @@ class UploadDictionaryToMds(Subcommand):
             json_data = {
                 "variable_level_metadata": vlmd_for_study
             }
-            # data = {"data_dictionaries": existing_data_dictionaries}
             url = f"https://{config.HOST_NAME}/mds/metadata/{options.study_id}?merge=True"
             response = requests.put(url, headers=headers, json=json_data)
             response.raise_for_status()
