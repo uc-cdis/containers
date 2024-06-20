@@ -7,20 +7,14 @@
 
 from argparse import ArgumentParser, Namespace
 import json
-import jsonschema
-import os
 import traceback
 from urllib.parse import unquote
 
-from frictionless import Resource, FrictionlessException
-import petl as etl
 import requests
+from healdata_utils import validate_vlmd_csv, validate_vlmd_json
+from healdata_utils.conversion import convert_to_vlmd
 
 from vlmd_submission_tools.common.logger import Logger
-from vlmd_submission_tools.common import config
-from vlmd_submission_tools.common import mapping_utils
-from vlmd_submission_tools.common import utils
-from vlmd_submission_tools.common import schemas
 from vlmd_submission_tools.subcommands import Subcommand
 
 
@@ -76,9 +70,8 @@ class ReadAndValidateDictionary(Subcommand):
         """
         return (
             "Takes a presigned url and fetches the data dictionary. "
-            "Converts any csv/tsv to json and saves to local file system. "
-            "Validates the dictionary against the provided schema. "
-            "Writes JSON output with json_local_path and is_valid_dictionary."
+            "Validates the dictionary against the healdata-utils schema. "
+            "Writes JSON output with json_local_path and validation report. "
         )
 
     @classmethod
@@ -95,89 +88,107 @@ class ReadAndValidateDictionary(Subcommand):
 
         file_type = cls._get_file_type_from_filename(options.file_name)
         json_local_path = options.json_local_path
+        local_path = None
+        is_valid_dictionary = None
+        errors_list = None
 
-        # pull in schema
-        schema = schemas.heal['data_dictionary']
-        data_dictionary_props = schema['properties']
-        data_dictionary = {"title": "dictionary title"}
-        mappings = mapping_utils.fieldmap
-
-        logger.info(f"Fetching dictionary from s3 url.")
-        if file_type == 'csv' or file_type == 'tsv':
-            try:
-                source = Resource(dictionary_url)
-                source = source.to_petl()
-
-                logger.info(f"Converting {file_type} file to json")
-                logger.info(f"Column names in petl: {source.fieldnames()}")
-                fields_to_add = [
-                    (field,'')
-                    for field in mappings.keys()
-                    if not field in source.fieldnames()
-                ]
-                template_tbl = (
-                    source
-                    .addfields(fields_to_add) # add fields from mappings not in the csv template to allow convert fxns to work
-                    .convert(mappings)
-                    .convertnumbers()
-                    .cut(source.fieldnames()) # want to include only fields in csv
-                )
-            except FrictionlessException:
-                is_valid_dictionary = False
-                traceback.print_exc()
-                raise FrictionlessException(f"Frictionless could not read dictionary from url {dictionary_url}")
-            except:
-                is_valid_dictionary = False
-                traceback.print_exc()
-                raise Exception(f"Could not read dictionary from url {dictionary_url}")
-
-            try:
-                data_dictionary['data_dictionary'] = [mapping_utils.convert_rec_to_json(rec) for rec in etl.dicts(template_tbl)]
-            except:
-                is_valid_dictionary = False
-                traceback.print_exc()
-                raise Exception(f"Could not convert {file_type} to json")
-        else:
-            # JSON format is read directly without conversion
-            try:
-                response = requests.get(dictionary_url)
-                data_dictionary_json = response.text
-                data_dictionary = json.loads(data_dictionary_json)
-            except:
-                is_valid_dictionary = False
-                traceback.print_exc()
-                raise Exception(f"Could not read dictionary from url {dictionary_url}")
-
-        logger.info("Reading schema into schema_array")
-        schema_array = {
-            "$schema": "http://json-schema.org/draft-04/schema#",
-            "$id": "vlmd",
-            "title":"Variable Level Metadata (Data Dictionaries)",
-            "description": "This schema defines the variable level metadata for one data dictionary for a given study.Note a given study can have multiple data dictionaries",
-            "type": "array",
-            "items": schema
-        }
-
-        logger.info("Validating dictionary.")
-        is_valid_dictionary = True
+        # download from url and save local copy
         try:
-            jsonschema.validate(data_dictionary['data_dictionary'],schema=schema_array)
-        except:
-            is_valid_dictionary = False
-            traceback.print_exc()
-            raise Exception("Not a valid dictionary")
-        logger.info(f"Valid={is_valid_dictionary}")
+            local_path = cls._download_from_url(file_type, dictionary_url, json_local_path)
+            if local_path:
+                logger.info(f"Data dictionary saved in {local_path}")
 
-        # save the data dictionary
-        with open(json_local_path, 'w', encoding='utf-8') as o:
-            json.dump(data_dictionary, o, ensure_ascii=False, indent=4)
-        logger.info(f"JSON data dictionary saved in {json_local_path}")
+        except Exception as e:
+            logger.error(f"Could not read dictionary from url {dictionary_url}")
+            logger.error(e)
+            logger.error(f"Exception type = {type(e)}")
+            return
 
-        # save the json_local_path and is_valid_dictionary output parameters
-        record_json = {"json_local_path": json_local_path, "is_valid_dictionary": is_valid_dictionary}
+        # get validation report with healdata-utils.validate_vlmd
+        logger.info(f"Getting validation report for {local_path}")
+        try:
+            if file_type == 'json':
+                result = validate_vlmd_json(local_path)
+            elif file_type == 'csv' or file_type == 'tsv':
+                result = validate_vlmd_csv(local_path)
+            validation_report = result.get('report')
+
+            is_valid_dictionary = validation_report.get('valid')
+            errors_list = validation_report.get('errors')
+        except Exception as e:
+            logger.error(f"Error in validation: {e}")
+
+        logger.info(f"Valid dictionary = {is_valid_dictionary}")
+        logger.info(f"Errors from validation report = {errors_list}")
+
+        # convert csv to json for uploading to MDS.
+        if file_type == 'csv' or file_type == 'tsv':
+            logger.info(f"Converting {file_type} to JSON")
+            props = {
+                "description": f"Json dictionary converted from {file_type}",
+                "title": "HEAL compliant variable level metadata dictionary"
+            }
+
+            vlmd_dict = convert_to_vlmd(
+                input_filepath = local_path,
+                data_dictionary_props = props,
+                inputtype = "csv-data-dict",
+            )
+            converted_json = vlmd_dict.get('jsontemplate')
+
+        # logger.info(f"Converted JSON is valid dictionary = convertis_valid_dictionary}")
+        # logger.info(f"Errors from validation report = {errors_list}")
+            logger.info(f"Errors = {vlmd_dict.get('errors')}")
+
+            with open(json_local_path, 'w', encoding='utf-8') as o:
+                json.dump(converted_json, o, ensure_ascii=False, indent=4)
+            logger.info(f"Converted JSON data dictionary saved in {json_local_path}")
+
+
+        report_json = {
+            "json_local_path": json_local_path,
+            "is_valid_dictionary": is_valid_dictionary,
+            "errors": errors_list
+        }
+        # save the validation report artifact
         with open(options.output, 'w', encoding='utf-8') as o:
-            json.dump(record_json, o, ensure_ascii=False, indent=4)
-        logger.info(f"JSON response saved in {options.output}")
+            json.dump(report_json, o, ensure_ascii=False, indent=4)
+        logger.info(f"Validation report saved in {options.output}")
+
+
+    @classmethod
+    def _download_from_url(cls, file_type: str, url: str, json_local_path: str) -> str:
+        """
+        Sends a request to the url and saves data in the local_path
+
+        Args:
+            file_type (str): 'csv', 'tsv', 'json'
+            url (str): the url for the data dictionary
+            json_local_path (str): the path to the local copy, eg, '/tmp/vlmd/dict.json'
+
+        Returns:
+            path of saved contents, None if error in downloading.
+        """
+        local_path = None
+        try:
+            response = requests.get(url)
+            data_dictionary = response.text
+            if file_type == 'json':
+                data_dictionary = response.text
+                data_dictionary = json.loads(data_dictionary)
+                with open(json_local_path, 'w', encoding='utf-8') as f:
+                    json.dump(data_dictionary, f, ensure_ascii=False, indent=4)
+                return json_local_path
+            elif file_type == 'csv' or file_type == 'tsv':
+                data_dictionary = response.content
+                csv_local_path = json_local_path.replace('json', f"{file_type}")
+                with open(csv_local_path, 'wb') as f:
+                    f.write(data_dictionary)
+                return csv_local_path
+        except Exception as exc:
+            raise(exc)
+
+        return local_path
 
 
     @classmethod
@@ -190,4 +201,5 @@ class ReadAndValidateDictionary(Subcommand):
             file_type = 'tsv'
         else:
             raise Exception("Could not get file type suffix from filename")
+
         return file_type
