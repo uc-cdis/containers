@@ -18,29 +18,75 @@ jobs:
 
       - name: Pull HTTP Response
         run: |
-          python <<< 'print("Hello world")'
-          python --version
-          # url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
-          # TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
-          # layer_json="{}"
-          # while IFS= read -r image_url; do
-          #   # Ignore lines that start with #
-          #     if [[ "$image_url" == \#* ]]; then
-          #       echo "Skipping this line -- $image_url"
-          #       continue
-          #     fi
-          #   # Strip the first * if a line starts with *
-          #     if [[ "$image_url" == \** ]]; then
-          #       echo "Stripping * from this line -- $image_url"
-          #       image_url="${image_url:1}"
-          #     fi
-          #     manifest_url=$(echo ${image_url} | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
-          #     tag_name=$(echo ${image_url} | sed 's|\(.*\):\(.*\)|\2|')
-          #     echo $manifest_url, $tag_name
-          #     response=$(curl -s -H "Authorization: Bearer $TOKEN" $manifest_url | jq "[.layers[].digest]")
-          #     layer_json=$(echo "$layer_json" | jq --arg key "$image_url" --argjson extracted "$response" '. + { ($key): $extracted }')
-          # done <<< "$url_list"
-          # echo "$layer_json" > nextflow-base-images/approved_img_layers.json
+          url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
+          max_version_count=2  # Configurable value which indicates maximum of how many versions of past image hashes do we support
+          TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
+          output_file_name="nextflow-base-images/approved_img_layers_2.json" # change it once the xsoar script is ready to read the current file.
+
+          layer_json=$(cat $output_file_name)
+          if [ -z "$layer_json" ]; then
+            layer_json="{}"
+          fi
+
+          # Function to fetch the manifest with retry logic for rate limiting
+          fetch_manifest() {
+            local url=$1
+            local retries=5
+            local wait_time=10
+            local response
+
+            for ((i=0; i<retries; i++)); do
+              response=$(curl -s -H "Authorization: Bearer $TOKEN" "$url")
+              error_code=$(echo "$response" | jq -r '.errors[0].code // empty')
+
+              if [ "$error_code" == "TOOMANYREQUESTS" ]; then
+                echo "Line $LINENO: Rate limit exceeded, waiting for $wait_time seconds before retrying..." >&2
+                sleep $wait_time
+                wait_time=$((wait_time * 2))  # Exponential backoff
+              else
+                echo "$response"
+                return
+              fi
+            done
+
+            echo "Line $LINENO: Failed to fetch manifest after $retries attempts due to rate limiting." >&2
+            return 1
+          }
+
+          while IFS= read -r image_url; do
+            # Ignore lines that start with #
+              if [[ "$image_url" == \#* ]]; then
+              echo "Line_$LINENO: Skipping this line -- $image_url"
+                continue
+              fi
+
+            # Strip the first * if a line starts with *
+              if [[ "$image_url" == \** ]]; then
+              echo "Line_$LINENO: Stripping * from this line -- $image_url"
+                image_url="${image_url:1}"
+              fi
+
+            manifest_url=$(echo "${image_url}" | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
+            tag_name=$(echo "${image_url}" | sed 's|\(.*\):\(.*\)|\2|')
+            echo "$LINENO: manifest_url = $manifest_url, tag_name = $tag_name"
+            # Fetch the manifest with retry using exponential backoff
+            response=$(fetch_manifest "$manifest_url" | jq "[.layers[].digest]|.[-1]")
+
+            if [ $? -ne 0 ] || [ -z "$response" ]; then
+              echo "Line $LINENO: Failed to retrieve valid response from manifest_url -- $manifest_url" >&2
+              continue
+            fi
+
+            current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"]" 2>/dev/null || echo "{}")
+            current_value=$(echo "$current_value" | jq --argjson k "$max_version_count" 'to_entries | sort_by(.key) | reverse | if length > $k then .[:$k] else . end | from_entries')
+            value=$(echo "$current_value" | jq --arg key "$(date "+%Y_%m_%d_%H:%M:%S")" --argjson response "$response" '. + { ($key) : $response }' | jq 'to_entries | sort_by(.key) | reverse | from_entries')
+            layer_json=$(echo "$layer_json" | jq --arg key "$image_url" --argjson value "$value" '. + { ($key): $value }')
+
+          done <<< "$url_list"
+
+          if [ -n "$layer_json" ]; then
+            echo "$layer_json" >  $output_file_name
+          fi
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
