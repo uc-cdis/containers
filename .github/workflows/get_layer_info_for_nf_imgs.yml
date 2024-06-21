@@ -77,7 +77,7 @@ jobs:
               continue
             fi
 
-            current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"]" 2>/dev/null || echo "{}")
+            current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"]" 1>/dev/null || echo "{}")
             current_value=$(echo "$current_value" | jq --argjson k "$max_version_count" 'to_entries | sort_by(.key) | reverse | if length > $k then .[:$k] else . end | from_entries')
             value=$(echo "$current_value" | jq --arg key "$(date "+%Y_%m_%d_%H:%M:%S")" --argjson response "$response" '. + { ($key) : $response }' | jq 'to_entries | sort_by(.key) | reverse | from_entries')
             layer_json=$(echo "$layer_json" | jq --arg key "$image_url" --argjson value "$value" '. + { ($key): $value }')
