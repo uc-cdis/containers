@@ -18,6 +18,8 @@ jobs:
 
       - name: Pull HTTP Response
         run: |
+          pwd
+          ls
           url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
           max_version_count=2  # Configurable value which indicates maximum of how many versions of past image hashes do we support
           TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
