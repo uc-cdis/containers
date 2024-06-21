@@ -18,18 +18,17 @@ jobs:
 
       - name: Pull HTTP Response
         run: |
-          pwd
-          ls
+          echo "Line $LINENO: starting the script"
           url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
           max_version_count=2  # Configurable value which indicates maximum of how many versions of past image hashes do we support
           TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
           output_file_name="nextflow-base-images/approved_img_layers_2.json" # change it once the xsoar script is ready to read the current file.
-
+          echo "Line $LINENO: After setting up basic variables"
           layer_json=$(cat $output_file_name 2>/dev/null)
           if [ -z "$layer_json" ]; then
             layer_json="{}"
           fi
-
+          echo "Line $LINENO: After pulling layers file"
           # Function to fetch the manifest with retry logic for rate limiting
           fetch_manifest() {
             local url=$1
@@ -67,7 +66,7 @@ jobs:
               echo "Line_$LINENO: Stripping * from this line -- $image_url"
                 image_url="${image_url:1}"
               fi
-
+            echo "Line $LINENO: started reading lines from script"
             manifest_url=$(echo "${image_url}" | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
             tag_name=$(echo "${image_url}" | sed 's|\(.*\):\(.*\)|\2|')
             echo "$LINENO: manifest_url = $manifest_url, tag_name = $tag_name"
