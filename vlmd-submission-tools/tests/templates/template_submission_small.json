@@ -1,0 +1,18 @@
+{
+    "title": "Example VLMD",
+    "description": "This is an example",
+    "fields": [
+        {
+            "name": "participant_id",
+            "title": "Participant Id",
+            "description": "Unique identifier for participant",
+            "type": "string"
+        },
+        {
+            "name": "race",
+            "title": "Race",
+            "description": "Self-reported race",
+            "type": "integer"
+        }
+    ]
+}
