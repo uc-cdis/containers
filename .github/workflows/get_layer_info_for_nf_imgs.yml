@@ -80,7 +80,7 @@ jobs:
             fi
 
             # Extracting current value of `image_url` if the key exists, otherwise return `{}`
-            current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"]" 1>/dev/null || echo "{}")
+            current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"] // empty" || echo "{}")
             echo "Line: $LINENO: image_url = $image_url, current_value= $current_value"
             # Eliminating older values if there are more than `max_version_count` and return all the remaining values.
             current_value=$(echo "$current_value" | jq --argjson k "$max_version_count" 'to_entries | sort_by(.key) | reverse | if length > $k then .[:$k] else . end | from_entries')
