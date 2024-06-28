@@ -16,21 +16,19 @@ jobs:
         with:
           ref: store/branch_to_track_nf_img_layers
 
-      - name: Pull HTTP Response
+      - name: Pull layers information and updating nextflow-base-images/approved_img_layers.json
         run: |
           echo "Line $LINENO: starting the script"
           url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
           max_version_count=2  # Configurable value which indicates maximum of how many versions of past image hashes do we support
           TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
           output_file_name="nextflow-base-images/approved_img_layers_2.json" # change it once the xsoar script is ready to read the current file.
-          echo "Line $LINENO: After setting up basic variables"
           if [ -f $output_file_name ]; then
             layer_json=$(cat $output_file_name 2>/dev/null)
           fi
           if [ -z "$layer_json" ]; then
             layer_json="{}"
           fi
-          echo "Line $LINENO: After pulling layers file"
           # Function to fetch the manifest with retry logic for rate limiting
           fetch_manifest() {
             local url=$1
@@ -80,11 +78,17 @@ jobs:
               continue
             fi
 
+            # Extracting current value of `image_url` if the key exists, otherwise return `{}`
             current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"]" 1>/dev/null || echo "{}")
-            current_value=$(echo "$current_value" | jq --argjson k "$max_version_count" 'to_entries | sort_by(.key) | reverse | if length > $k then .[:$k] else . end | from_entries')
-            value=$(echo "$current_value" | jq --arg key "$(date "+%Y_%m_%d_%H:%M:%S")" --argjson response "$response" '. + { ($key) : $response }' | jq 'to_entries | sort_by(.key) | reverse | from_entries')
-            layer_json=$(echo "$layer_json" | jq --arg key "$image_url" --argjson value "$value" '. + { ($key): $value }')
 
+            # Eliminating older values if there are more than `max_version_count` and return all the remaining values.
+            current_value=$(echo "$current_value" | jq --argjson k "$max_version_count" 'to_entries | sort_by(.key) | reverse | if length > $k then .[:$k] else . end | from_entries')
+
+            # Adding a new entry to the current_value json with key as current time stamp and value as the last sha256 of the base image and returning them in descending order of time.
+            value=$(echo "$current_value" | jq --arg key "$(date "+%Y_%m_%d_%H:%M:%S")" --argjson response "$response" '. + { ($key) : $response }' | jq 'to_entries | sort_by(.key) | reverse | from_entries')
+
+            # Adding/Updating the updated value along with the image_url as the key.
+            layer_json=$(echo "$layer_json" | jq --arg key "$image_url" --argjson value "$value" '. + { ($key): $value }')
           done <<< "$url_list"
 
           if [ -n "$layer_json" ]; then
