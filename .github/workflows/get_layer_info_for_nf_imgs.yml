@@ -81,16 +81,16 @@ jobs:
 
             # Extracting current value of `image_url` if the key exists, otherwise return `{}`
             current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"] // empty" || echo "{}")
-            echo "Line: $LINENO: image_url = $image_url, current_value= $current_value"
+
             # Eliminating older values if there are more than `max_version_count` and return all the remaining values.
             current_value=$(echo "$current_value" | jq --argjson k "$max_version_count" 'to_entries | sort_by(.key) | reverse | if length > $k then .[:$k] else . end | from_entries')
-            echo "Line: $LINENO: current_value= $current_value"
+
             # Adding a new entry to the current_value json with key as current time stamp and value as the last sha256 of the base image and returning them in descending order of time.
             value=$(echo "$current_value" | jq --arg key "$(date "+%Y_%m_%d_%H:%M:%S")" --argjson response "$response" '. + { ($key) : $response }' | jq 'to_entries | sort_by(.key) | reverse | from_entries')
-            echo "Line: $LINENO: value= $value"
+
             # Adding/Updating the updated value along with the image_url as the key.
             layer_json=$(echo "$layer_json" | jq --arg key "$image_url" --argjson value "$value" '. + { ($key): $value }')
-            echo "Line: $LINENO: layer_json= $layer_json"
+
           done <<< "$url_list"
 
           if [ -n "$layer_json" ]; then
