@@ -82,7 +82,7 @@ jobs:
             # Extracting current value of `image_url` if the key exists, otherwise return `{}`
             current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"] // empty" || echo "{}")
 
-            # Eliminating older values if there are more than `max_version_count` and return all the remaining values.
+            # Eliminating older values (sorted using string comparison) if there are more than `max_version_count` and return all the remaining values.
             current_value=$(echo "$current_value" | jq --argjson k "$max_version_count" 'to_entries | sort_by(.key) | reverse | if length > $k then .[:$k] else . end | from_entries')
 
             # Adding a new entry to the current_value json with key as current time stamp and value as the last sha256 of the base image and returning them in descending order of time.
