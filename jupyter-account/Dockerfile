@@ -2,7 +2,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 # Use ubuntu for our image
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 # User
 USER root
