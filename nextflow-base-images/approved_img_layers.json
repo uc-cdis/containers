@@ -1,8 +1,8 @@
 {
   "public.ecr.aws/u5x5h6w3/nextflow-approved/public:amazonlinux-base": {
+    "2024_08_14_17:01:30": "sha256:b3b44abd5cc9699aa16ab3d5ab13271dd8078a1351d78e9e635c4b3a7ab4dab1",
     "2024_07_20_00:26:30": "sha256:b3b44abd5cc9699aa16ab3d5ab13271dd8078a1351d78e9e635c4b3a7ab4dab1",
-    "2024_07_13_00:28:01": "sha256:d3f9f89a1022858044d0d7129304ae6b80ec92ed9d8881630cccdb87e5e1e498",
-    "2024_07_06_00:31:10": "sha256:cca83af61e4e73633119be5d23fb5cb6e1a2674b732be8f33416b0559f807891"
+    "2024_07_13_00:28:01": "sha256:d3f9f89a1022858044d0d7129304ae6b80ec92ed9d8881630cccdb87e5e1e498"
   },
   "public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-11.8-ubuntu22.04-openssl": {
     "2024_07_20_00:26:31": "sha256:9f48d6403dbcbd6a7f70c2b292d3f26901dc9b4dd96ffa42dc18fdaa020269d1",
