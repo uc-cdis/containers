@@ -59,9 +59,9 @@ def check_mds_study_id(study_id, hostname=config.HOST_NAME):
     if response.json().get("_guid_type") != "discovery_metadata":
         raise ValueError("Study ID is not dicovery metadata")
 
-    existing_data_dictionaries = response.json().get("data_dictionaries", {})
+    existing_vlmd = response.json().get("variable_level_metadata", {})
 
-    return existing_data_dictionaries
+    return existing_vlmd
 
 
 def get_client_token(hostname: str, client_id: str, client_secret: str):

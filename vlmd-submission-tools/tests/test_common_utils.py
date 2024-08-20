@@ -43,14 +43,16 @@ class TestCommonsUtils():
         hostname = "mycommons.planx-pla.net"
         study_id = "my_study_id"
         expected_data_dictionaries = {
-            "my first dictionary": "guid1",
-            "my second dictionary": "guid2"
+            "data_dictionaries" : {
+                "my first dictionary": "guid1",
+                "my second dictionary": "guid2"
+            }
         }
         mock_mds_response = MagicMock(requests.Response)
         mock_mds_response.status_code = 200
         mock_mds_response.json.return_value = {
             "_guid_type": "discovery_metadata",
-            "data_dictionaries": expected_data_dictionaries
+            "variable_level_metadata": expected_data_dictionaries
         }
         mocked_post.return_value = mock_mds_response
 
