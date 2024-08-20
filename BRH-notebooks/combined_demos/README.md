@@ -39,4 +39,4 @@ To pull data files for a project, the notebooks use the Gen3 software, an open s
 [JupyterLab Documentation](https://jupyterlab.readthedocs.io/en/stable/)
 
 ### Have a question? Please Contact Technical Support
-[Technical Support](support@datacommons.io)
+[Technical Support](support@gen3.org)
