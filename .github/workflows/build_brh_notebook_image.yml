@@ -1,10 +1,9 @@
-name: Build and push BRH notebook image
+name: Build and push BRH tutorial image
 
 on:
   push:
     paths:
     - BRH-notebooks/*/**
-    - .github/workflows/build_brh_notebook_image.yml
 
 jobs:
   push-image:
@@ -24,7 +23,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "branch=$(echo $(echo ${GITHUB_REF#refs/heads/} | tr  / _))" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=branch::$(echo $(echo ${GITHUB_REF#refs/heads/} | tr / _))"
         id: extract_branch
 
       - name: Checkout repo
@@ -72,28 +71,27 @@ jobs:
             print(f"None of {changed_brh_notebook_files} triggers a build for any of {subdirs}. Done.")
             exit(0)
           elif len(buildable_images) > 1:
-            print("Found multiple notebook directories with changes: {buildable_images}")
+            print("Found multiple directories with changes: {buildable_images}")
             print("Only one image can be built at a time. Exiting.")
             exit(1)
 
           build_target = buildable_images[0]
           print(f"Will trigger build for: {build_target}")
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
-            print(f'build_target={build_target}', file=fh)
+          print(f"::set-output name=build_target::{build_target}")
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Sanitize image name
         id: sanitize_name
         run: |
           IMAGE_NAME=$( sed 's/[^[:alnum:]]/_/g' <<< ${{ steps.parse_image.outputs.build_target }} );
-          echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
+          echo "::set-output name=image_name::$IMAGE_NAME"
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Build image
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: brh-notebooks
+          image: BRH-notebooks
           tags:
             ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
             ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
