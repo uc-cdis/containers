@@ -3,7 +3,7 @@ on:
   # Primarily this workflow is only expected to be triggered by `build_and_push_nf_base_images.yml`, these extra triggers are just added for convenience.
   workflow_dispatch:
   push:
-    branches: master
+    # branches: master
     paths:
       - 'nextflow-base-images/**'
       - '.github/workflows/get_layer_info_for_nf_imgs.yml'
@@ -65,7 +65,7 @@ jobs:
             # Strip the first * if a line starts with *
               if [[ "$image_url" == \** ]]; then
               echo "Line_$LINENO: Stripping * from this line -- $image_url"
-                image_url="${image_url}" | sed -E 's/\*(.+)/\1/g' | sed 's/^[ \t]*//;s/[ \t]*$//'
+                image_url=$(echo "${image_url}" | sed -E 's/\*(.+)/\1/g' | sed 's/^[ \t]*//;s/[ \t]*$//')
               fi
             echo "Line $LINENO: started reading lines from script"
             manifest_url=$(echo "${image_url}" | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
