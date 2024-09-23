@@ -65,7 +65,7 @@ jobs:
             # Strip the first * if a line starts with *
               if [[ "$image_url" == \** ]]; then
               echo "Line_$LINENO: Stripping * from this line -- $image_url"
-                image_url="${image_url}" | sed -E 's/\*(.+)/\1/g' | sed 's/^[ \t]*//;s/[ \t]*$//'
+                image_url=$(echo "${image_url:1}"| sed 's/^[ \t]*//;s/[ \t]*$//')
               fi
             echo "Line $LINENO: started reading lines from script"
             manifest_url=$(echo "${image_url}" | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
