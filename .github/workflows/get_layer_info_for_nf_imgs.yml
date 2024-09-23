@@ -3,7 +3,7 @@ on:
   # Primarily this workflow is only expected to be triggered by `build_and_push_nf_base_images.yml`, these extra triggers are just added for convenience.
   workflow_dispatch:
   push:
-    # branches: master
+    branches: master
     paths:
       - 'nextflow-base-images/**'
       - '.github/workflows/get_layer_info_for_nf_imgs.yml'
