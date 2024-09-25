@@ -1,22 +1,22 @@
 {
   "public.ecr.aws/u5x5h6w3/nextflow-approved/public:amazonlinux-base": {
+    "2024_09_25_14:33:48": "sha256:ac2759a13b4dc3b3784e8400c2937a0bb4bb0f6861004e7bdde28d6e1796ac31",
     "2024_09_25_14:03:55": "sha256:f4bddf50e1d796c7d95dcdcd06d2e0a252c4aab7ae16cb705adec59da97c794e",
-    "2024_09_23_21:41:58": "sha256:f4bddf50e1d796c7d95dcdcd06d2e0a252c4aab7ae16cb705adec59da97c794e",
-    "2024_09_23_14:56:46": "sha256:f4bddf50e1d796c7d95dcdcd06d2e0a252c4aab7ae16cb705adec59da97c794e"
+    "2024_09_23_21:41:58": "sha256:f4bddf50e1d796c7d95dcdcd06d2e0a252c4aab7ae16cb705adec59da97c794e"
   },
   "public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-11.8-ubuntu22.04-openssl": {
+    "2024_09_25_14:33:49": "sha256:8d88fb6733af110f7bc68914f8bb8b366526ead6640c84ab4790849fc6539729",
     "2024_09_25_14:03:56": "sha256:4b77d6f07768bb3af09c961f3eebf2e9a05abb4a6713fdb93315b519689ea60e",
-    "2024_09_23_21:41:58": "sha256:4b77d6f07768bb3af09c961f3eebf2e9a05abb4a6713fdb93315b519689ea60e",
-    "2024_09_23_14:56:57": "sha256:4b77d6f07768bb3af09c961f3eebf2e9a05abb4a6713fdb93315b519689ea60e"
+    "2024_09_23_21:41:58": "sha256:4b77d6f07768bb3af09c961f3eebf2e9a05abb4a6713fdb93315b519689ea60e"
   },
   "public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-12.3-ubuntu22.04-openssl": {
+    "2024_09_25_14:33:49": "sha256:496a15fe0d23c8b0250c1a1246b0fd0c61d7201128bbca0a1f019402a5540050",
     "2024_09_25_14:03:56": "sha256:fe74ace3c988eea7e987dfa6b4a66dc4d7abacdcbf988ab749d39d7cab3146a6",
-    "2024_09_23_21:41:59": "sha256:fe74ace3c988eea7e987dfa6b4a66dc4d7abacdcbf988ab749d39d7cab3146a6",
-    "2024_09_23_14:56:57": "sha256:fe74ace3c988eea7e987dfa6b4a66dc4d7abacdcbf988ab749d39d7cab3146a6"
+    "2024_09_23_21:41:59": "sha256:fe74ace3c988eea7e987dfa6b4a66dc4d7abacdcbf988ab749d39d7cab3146a6"
   },
   "public.ecr.aws/u5x5h6w3/nextflow-approved/public:gen3-cuda-12.3-torch2.2-ubuntu22.04-openssl": {
+    "2024_09_25_14:33:49": "sha256:43804d6a55e2e8db3a1198da9fa1f8664a25df35a138861d807c172e91269ed1",
     "2024_09_25_14:03:57": "sha256:6b2bc36403beff7f38c23dad8142fce92418dfb36f2e4bb1c87f3e5cc5a4b255",
-    "2024_09_23_21:41:59": "sha256:6b2bc36403beff7f38c23dad8142fce92418dfb36f2e4bb1c87f3e5cc5a4b255",
-    "2024_09_23_14:56:57": "sha256:6b2bc36403beff7f38c23dad8142fce92418dfb36f2e4bb1c87f3e5cc5a4b255"
+    "2024_09_23_21:41:59": "sha256:6b2bc36403beff7f38c23dad8142fce92418dfb36f2e4bb1c87f3e5cc5a4b255"
   }
 }
