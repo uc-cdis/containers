@@ -5,3 +5,4 @@ plotly==5.1.0
 openpyxl==3.0.7
 sklearn==0.24.2
 # trigger build
+pillow>=10.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
