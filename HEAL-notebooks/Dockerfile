@@ -1,11 +1,9 @@
-FROM quay.io/cdis/jupyter-superslim-r:1.0.4
+FROM quay.io/cdis/jupyter-superslim-r:2.0.0
 
 ARG NOTEBOOK_DIR
 
 COPY $NOTEBOOK_DIR/ $HOME/
 
-RUN pip uninstall -y gen3
-RUN pip3 install gen3
 RUN pip3 install healdata-utils
 RUN conda config --append channels conda-forge
 RUN conda install -c plotly plotly
