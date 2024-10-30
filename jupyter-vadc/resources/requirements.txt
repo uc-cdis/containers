@@ -1,0 +1,4 @@
+pqdm
+psycopg2
+pymssql
+tqdm

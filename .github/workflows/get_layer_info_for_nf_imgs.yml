@@ -1,0 +1,107 @@
+name: Update Nextflow-approved image's layers
+on:
+  # Primarily this workflow is only expected to be triggered by `build_and_push_nf_base_images.yml`, these extra triggers are just added for convenience.
+  workflow_dispatch:
+  push:
+    branches: master
+    paths:
+      - 'nextflow-base-images/**'
+      - '.github/workflows/get_layer_info_for_nf_imgs.yml'
+jobs:
+  get_image_layers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: store/branch_to_track_nf_img_layers
+
+      - name: Pull layers information and updating nextflow-base-images/approved_img_layers.json
+        run: |
+          echo "Line $LINENO: starting the script"
+          url_list=$(curl -s "https://raw.githubusercontent.com/uc-cdis/containers/master/nextflow-base-images/allowed_base_images.txt")
+          max_version_count=2  # Configurable value which indicates maximum of how many versions of past image hashes do we support
+          TOKEN=$(curl -s https://public.ecr.aws/token/ | jq -r .token)
+          output_file_name="nextflow-base-images/approved_img_layers.json"
+          if [ -f $output_file_name ]; then
+            layer_json=$(cat $output_file_name 2>/dev/null)
+          fi
+          if [ -z "$layer_json" ]; then
+            layer_json="{}"
+          fi
+          echo "Line: $LINENO layer_json=$layer_json"
+          # Function to fetch the manifest with retry logic for rate limiting
+          fetch_manifest() {
+            local url=$1
+            local retries=5
+            local wait_time=10
+            local response
+
+            for ((i=0; i<retries; i++)); do
+              response=$(curl -s -H "Authorization: Bearer $TOKEN" "$url")
+              error_code=$(echo "$response" | jq -r '.errors[0].code // empty')
+
+              if [ "$error_code" == "TOOMANYREQUESTS" ]; then
+                echo "Line $LINENO: Rate limit exceeded, waiting for $wait_time seconds before retrying..." >&2
+                sleep $wait_time
+                wait_time=$((wait_time * 2))  # Exponential backoff
+              else
+                echo "$response"
+                return
+              fi
+            done
+
+            echo "Line $LINENO: Failed to fetch manifest after $retries attempts due to rate limiting." >&2
+            return 1
+          }
+
+          while IFS= read -r image_url; do
+            # Ignore lines that start with #
+              if [[ "$image_url" == \#* ]]; then
+              echo "Line_$LINENO: Skipping this line -- $image_url"
+                continue
+              fi
+
+            # Strip the first * if a line starts with *
+              if [[ "$image_url" == \** ]]; then
+              echo "Line_$LINENO: Stripping * from this line -- $image_url"
+                image_url=$(echo "${image_url:1}"| sed 's/^[ \t]*//;s/[ \t]*$//')
+              fi
+            echo "Line $LINENO: started reading lines from script"
+            manifest_url=$(echo "${image_url}" | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
+            tag_name=$(echo "${image_url}" | sed 's|\(.*\):\(.*\)|\2|')
+            echo "$LINENO: manifest_url = $manifest_url, tag_name = $tag_name"
+            # Fetch the manifest with retry using exponential backoff
+            response=$(fetch_manifest "$manifest_url" | jq "[.layers[].digest]|.[-1]")
+
+            if [ $? -ne 0 ] || [ -z "$response" ]; then
+              echo "Line $LINENO: Failed to retrieve valid response from manifest_url -- $manifest_url" >&2
+              continue
+            fi
+
+            # Extracting current value of `image_url` if the key exists, otherwise return `{}`
+            current_value=$(echo "$layer_json" | jq -e ".[\"$image_url\"] // empty" || echo "{}")
+
+            # Eliminating older values (sorted using string comparison) if there are more than `max_version_count` and return all the remaining values.
+            current_value=$(echo "$current_value" | jq --argjson k "$max_version_count" 'to_entries | sort_by(.key) | reverse | if length > $k then .[:$k] else . end | from_entries')
+
+            # Adding a new entry to the current_value json with key as current time stamp and value as the last sha256 of the base image and returning them in descending order of time.
+            value=$(echo "$current_value" | jq --arg key "$(date "+%Y_%m_%d_%H:%M:%S")" --argjson response "$response" '. + { ($key) : $response }' | jq 'to_entries | sort_by(.key) | reverse | from_entries')
+
+            # Adding/Updating the updated value along with the image_url as the key.
+            layer_json=$(echo "$layer_json" | jq --arg key "$image_url" --argjson value "$value" '. + { ($key): $value }')
+
+          done <<< "$url_list"
+
+          if [ -n "$layer_json" ]; then
+            echo "$layer_json" >  $output_file_name
+          fi
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update approved_img_layers.json"
+          branch: store/branch_to_track_nf_img_layers
+          create_branch: true
+          commit_options: '-a'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

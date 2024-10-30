@@ -1,0 +1,7 @@
+name	title	description	type
+participant_id	Participant Id	Unique identifier for participant	string
+race	Race	Self-reported race	integer
+age	Age	What is your age? (age at enrollment)	integer
+hispanic	"Hispanic	 Latino	 or Spanish Origin"	"Are you of Hispanic	 Latino	 or Spanish origin?"	boolean
+sex_at_birth	Sex at Birth	The self-reported sex of the participant/subject at birth	string
+SU4	Heroin Days Used	During the past 30 days how many days did you use heroin (alone or mixed with other drugs)? ] [Write 0 days if no use]	integer

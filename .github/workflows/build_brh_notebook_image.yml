@@ -1,4 +1,4 @@
-name: Build and push BRH notebook image
+name: Build and push BRH tutorial image
 
 on:
   push:
@@ -71,7 +71,7 @@ jobs:
             print(f"None of {changed_brh_notebook_files} triggers a build for any of {subdirs}. Done.")
             exit(0)
           elif len(buildable_images) > 1:
-            print("Found multiple notebook directories with changes: {buildable_images}")
+            print("Found multiple directories with changes: {buildable_images}")
             print("Only one image can be built at a time. Exiting.")
             exit(1)
 
@@ -91,7 +91,7 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: brh-notebooks
+          image: BRH-notebooks
           tags:
             ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
             ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}

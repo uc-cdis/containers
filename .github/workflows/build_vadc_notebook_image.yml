@@ -1,0 +1,22 @@
+name: Build and push VADC notebook image
+
+on:
+  push:
+    paths:
+    - jupyter-vadc/**
+    - .github/workflows/build_vadc_notebook_image.yml
+
+jobs:
+  jupyter-vadc:
+    name: Build and Push jupyter-vadc
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      DOCKERFILE_LOCATION: "./jupyter-vadc/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./jupyter-vadc"
+      OVERRIDE_REPO_NAME: "jupyter-vadc"
+      OVERRIDE_TAG_NAME: "vadc-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
