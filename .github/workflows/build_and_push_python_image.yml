@@ -1,13 +1,14 @@
-name: Build Python Images and Push to Quay and ECR
+name: Build and Push python3.9-data-science
 
 on:
   push:
     paths:
-    - python3.9-data-science/Dockerfile
+    - python3.9-data-science/**
+    - .github/workflows/build_and_push_python_image.yml
 
 jobs:
   python_3-9:
-    name: Python 3.9 Build and Push
+    name: Build and Push python3.9-data-science
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
       DOCKERFILE_LOCATION: "./python3.9-data-science/Dockerfile"

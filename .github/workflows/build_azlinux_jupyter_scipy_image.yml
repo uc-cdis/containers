@@ -1,0 +1,22 @@
+name: Build and push AmazonLinux jupyter-scipy
+
+on:
+  push:
+    paths:
+    - azlinux-jupyter-scipy/**
+    - .github/workflows/build_azlinux_jupyter_scipy_image.yml
+
+jobs:
+  jupyter-nextflow:
+    name: Build and Push AmazonLinux jupyter-scipy
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      DOCKERFILE_LOCATION: "./azlinux-jupyter-scipy/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./azlinux-jupyter-scipy"
+      OVERRIDE_REPO_NAME: "jupyter-notebook"
+      OVERRIDE_TAG_NAME: "azlinux-scipy-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}

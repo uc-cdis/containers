@@ -1,0 +1,22 @@
+name: Build and Push Jupyter-Nextflow image
+
+on:
+  push:
+    paths:
+    - jupyter-nextflow/**
+    - .github/workflows/build_jupyter_nextflow_image.yml
+
+jobs:
+  jupyter-nextflow:
+    name: Build and Push jupyter-nextflow image
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      DOCKERFILE_LOCATION: "./jupyter-nextflow/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./jupyter-nextflow"
+      OVERRIDE_REPO_NAME: "jupyter-notebook"
+      OVERRIDE_TAG_NAME: "nextflow-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
