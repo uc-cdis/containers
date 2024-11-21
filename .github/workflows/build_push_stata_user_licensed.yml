@@ -57,4 +57,3 @@ jobs:
           tags: |
             quay.io/cdis/jupyter-pystata-user-licensed:${{ env.IMAGE_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: "linux/amd64, linux/arm64"
