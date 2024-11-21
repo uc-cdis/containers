@@ -51,8 +51,8 @@ jobs:
       - name: Build and Push Image
         uses: docker/build-push-action@v6
         with:
-          context: ./jupyter-pystata-user-licensed"
-          file: "./jupyter-pystata-user-licensed/Dockerfile"
+          context: /jupyter-pystata-user-licensed"
+          file: "/jupyter-pystata-user-licensed/Dockerfile"
           push: true
           tags: |
             quay.io/cdis/jupyter-pystata-user-licensed:${{ env.IMAGE_TAG }}
