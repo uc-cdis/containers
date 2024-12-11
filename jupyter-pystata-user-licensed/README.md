@@ -25,4 +25,4 @@ and to run this container:
 docker run -P 8888:8888 stata
 ```
 
-You will need a local copy of `Stata17Linux64.tar.gz` for the build.
+You will need a local copy of `StataNow18Linux64.tar.gz` for the build.
