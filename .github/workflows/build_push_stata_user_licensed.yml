@@ -24,7 +24,7 @@ jobs:
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          source: 's3://ctds-stata/Stata17Linux64.tar.gz'
+          source: 's3://ctds-stata/StataNow18Linux64.tar.gz'
           dest: './jupyter-pystata-user-licensed/resources/'
 
       - name: Extract branch name
