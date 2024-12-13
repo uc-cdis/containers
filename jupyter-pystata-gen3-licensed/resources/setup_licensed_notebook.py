@@ -11,7 +11,7 @@ opts.add_argument('--headless')
 browser = webdriver.Firefox(options=opts)
 
 print("Checking for .lic file")
-with open("/usr/local/stata17/stata.lic", "r") as lic_file:
+with open("/usr/local/stata18/stata.lic", "r", encoding="utf-8") as lic_file:
     print("Found stata.lic file")
 
 print("Ready to open notebook")

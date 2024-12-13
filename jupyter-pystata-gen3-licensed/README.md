@@ -58,13 +58,13 @@ To build, enter the root directory of this repo and run:
 ```
 docker build -t stata-licensed -f jupyter-pystata-gen3-licensed/Dockerfile .
 
-docker run --name stata-licensed -p 8888:8888 stata-licensed /tmp/wait_for_license.sh --NotebookApp.base_url=/lw-workspace/proxy/ --NotebookApp.password='' --NotebookApp.token=''
+docker run --name stata-licensed -p 8888:8888 stata-licensed /tmp/wait_for_license.sh --JupyterNotebookApp.base_url=/lw-workspace/proxy/ --JupyterNotebookApp.password='' --JupyterNotebookApp.token=''
 ```
 
-(You will need a local copy of `Stata17Linux64.tar.gz`.)
+(You will need a local copy of `StataNow18Linux64.tar.gz`.)
 
 Then, with your license `stata.lic`,
 
 ```
-docker cp stata.lic stata-licensed:/usr/local/stata17/stata.lic
+docker cp stata.lic stata-licensed:/usr/local/stata18/stata.lic
 ```
