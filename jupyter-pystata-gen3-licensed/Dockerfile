@@ -15,7 +15,7 @@ USER $NB_USER
 RUN pip3 install selenium
 
 RUN pip3 uninstall --yes stata-setup
-RUN pip3 install stata-setup
+RUN pip3 install stata-setup==0.1.2
 
 # Remove the notebook created in jupyter-pystata-user-licensed
 RUN rm $HOME/Stata.ipynb
