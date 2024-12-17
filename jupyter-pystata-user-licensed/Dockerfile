@@ -10,7 +10,6 @@ RUN mkdir /usr/local/stata18
 COPY ./resources/StataNow18Linux64.tar.gz /tmp/StataNow18Linux64.tar.gz
 RUN cd /usr/local/stata18 && tar -xvf /tmp/StataNow18Linux64.tar.gz
 
-RUN chown -R $NB_USER /usr/local/stata18/
 ENV PATH=$PATH:/usr/local/stata18
 RUN cd /usr/local/stata18 && \
 	{ echo y; echo y; echo y; } | ./install
@@ -18,6 +17,7 @@ RUN cd /usr/local/stata18 && \
 COPY ./resources/Stata.ipynb .
 COPY ./resources/welcome.html .
 
+RUN chown -R $NB_USER /usr/local/stata18/
 USER $NB_USER
 RUN pip install --user stata_setup
 
