@@ -25,6 +25,6 @@ python3 /tmp/setup_licensed_notebook.py
 rm geckodriver*
 
 echo "Init script done."
-rm /usr/local/stata18/stata.lic
+# rm /usr/local/stata18/stata.lic
 
 while true; do sleep 1; done
