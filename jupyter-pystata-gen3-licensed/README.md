@@ -56,7 +56,7 @@ kubectl get secret stata-workspace-gen3-license-g3auto
 
 To build, enter the root directory of this repo and run:
 ```
-docker build -t stata-licensed -f jupyter-pystata-gen3-licensed/Dockerfile .
+docker build -t stata-licensed -f jupyter-pystata-gen3-licensed/Dockerfile ./jupyter-pystata-gen3-licensed
 
 docker run --name stata-licensed -p 8888:8888 stata-licensed /tmp/wait_for_license.sh --JupyterNotebookApp.base_url=/lw-workspace/proxy/ --JupyterNotebookApp.password='' --JupyterNotebookApp.token=''
 ```

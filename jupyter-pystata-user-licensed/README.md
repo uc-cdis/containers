@@ -17,7 +17,7 @@ Stata software requires a license to run. As a one-time step, workspace users sh
 ### Local development
 To build, enter the root directory of this repo and run:
 ```
-docker build -t stata -f jupyter-pystata-user-licensed/Dockerfile .
+docker build -t stata -f jupyter-pystata-user-licensed/Dockerfile ./jupyter-pystata-user-licensed
 ```
 You will need a local copy of `StataNow18Linux64.tar.gz` for the build.
 
