@@ -17,7 +17,7 @@ echo "Received a license. Starting jupyter."
 
 start-notebook.sh $@ &
 
-sleep 30
+sleep 20
 
 echo "Running Stata notebook init script."
 python3 /tmp/setup_licensed_notebook.py
