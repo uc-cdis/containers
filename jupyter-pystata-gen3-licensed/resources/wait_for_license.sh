@@ -26,6 +26,6 @@ sleep 10
 rm geckodriver*
 
 echo "Init script done."
-# rm /usr/local/stata18/stata.lic
+rm /usr/local/stata18/stata.lic
 
 while true; do sleep 1; done
