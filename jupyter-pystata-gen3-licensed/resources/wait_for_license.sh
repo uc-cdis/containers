@@ -2,13 +2,13 @@
 
 echo "Checking for license copied by sidecar"
 
-while [ ! -f /usr/local/stata17/stata.lic ];
+while [ ! -f /usr/local/stata18/stata.lic ];
 do
     sleep 5
     echo "Checking for license"
     if [ -f /data/stata.lic ]; then
         echo "Found license"
-        mv /data/stata.lic /usr/local/stata17/stata.lic
+        mv /data/stata.lic /usr/local/stata18/stata.lic
         echo "Copied license"
     fi
 done
@@ -25,6 +25,6 @@ python3 /tmp/setup_licensed_notebook.py
 rm geckodriver*
 
 echo "Init script done."
-rm /usr/local/stata17/stata.lic
+rm /usr/local/stata18/stata.lic
 
 while true; do sleep 1; done
