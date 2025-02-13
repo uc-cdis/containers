@@ -35,7 +35,7 @@ Both controlled access and open access data are presented in this workspace. The
 To pull data files for a project, the notebooks use the Gen3 software, an open source software developed and maintained at the Center for translational data science, University of Chicago. Gen3 allows users to access and explore data and metadata files associated with projects in a cloud agonistic manner. This is achieved by accessing a file object using its Globally unique identifier (GUID), which is a unique identifier associated with the file. An example GUID looks like `dg.6VTS/342e89bd-3d37-49be-8f97-ffb283649b9a`.
 
 ### Further Readings
-[Gen3 API's](https://gen3.org/resources/user/using-api/)
+[Gen3 API's](https://docs.gen3.org/gen3-resources/user-guide/using-api/)
 [JupyterLab Documentation](https://jupyterlab.readthedocs.io/en/stable/)
 
 ### Have a question? Please Contact Technical Support
