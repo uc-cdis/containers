@@ -1,6 +1,6 @@
 FROM quay.io/cdis/jupyter-superslim-r:2.0.0
 
-ARG NOTEBOOK_DIR=./combined_demos
+ARG NOTEBOOK_DIR
 
 COPY $NOTEBOOK_DIR/ $HOME/
 USER root
