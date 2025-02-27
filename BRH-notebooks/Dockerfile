@@ -1,13 +1,10 @@
-FROM quay.io/cdis/jupyter-superslim-r:1.0.4
+FROM quay.io/cdis/jupyter-superslim-r:2.0.0
 
 ARG NOTEBOOK_DIR
 
 COPY $NOTEBOOK_DIR/ $HOME/
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    python3 \
-    python3-pip \
     g++ \
     libxml2-dev \
     libssl-dev \
@@ -19,20 +16,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgsl* \
     libudunits2-dev \
     libgs-dev \
-    unzip \
-    wget && \
+    unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip uninstall -y gen3
+RUN pip3 uninstall -y gen3
 RUN pip3 install gen3
 RUN conda config --append channels conda-forge
 RUN conda config --add channels bioconda
 RUN conda install -c plotly plotly
-RUN conda install -c bioconda bioconductor-gdcrnatools
+RUN conda install -c conda-forge r-biocmanager
 RUN conda install -c conda-forge scikit-allel
-run R -e "BiocManager::install('DESeq2')"
-run R -e "BiocManager::install('TCGAbiolinks')"
+RUN R -e "BiocManager::install('DESeq2')"
+RUN R -e "BiocManager::install('TCGAbiolinks')"
 
 
 RUN printf '\n\
