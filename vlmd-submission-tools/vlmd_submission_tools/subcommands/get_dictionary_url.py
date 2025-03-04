@@ -1,9 +1,4 @@
-"""Interacts with fence service to retrieve a presigned url for the data dictionary.
-
-@author: George Thomas <george42@uchicago.edu>,
-         J Montgomery Maxwell <jmontmaxwell@uchicago.edu>,
-         Michael Kranz <kranz-michael@norc.org>
-"""
+"""Interacts with fence service to retrieve a presigned url for the data dictionary."""
 
 from argparse import ArgumentParser, Namespace
 import json

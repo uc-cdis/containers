@@ -1,9 +1,4 @@
-"""Uploads the data dictionary to MDS.
-
-@author: George Thomas <george42@uchicago.edu>,
-         J Montgomery Maxwell <jmontmaxwell@uchicago.edu>,
-         Michael Kranz <kranz-michael@norc.org>
-"""
+"""Uploads the data dictionary to MDS."""
 
 from argparse import ArgumentParser, Namespace
 import json
