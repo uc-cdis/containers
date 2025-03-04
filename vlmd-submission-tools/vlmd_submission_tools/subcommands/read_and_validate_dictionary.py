@@ -1,18 +1,18 @@
-"""Validates the data dictionary against the HEAL schema.
-
-@author: George Thomas <george42@uchicago.edu>,
-         J Montgomery Maxwell <jmontmaxwell@uchicago.edu>,
-         Michael Kranz <kranz-michael@norc.org>
-"""
+"""Validates the data dictionary against the HEAL schema."""
 
 from argparse import ArgumentParser, Namespace
 import json
+import os
 import traceback
 from urllib.parse import unquote
 
 import requests
-from healdata_utils import validate_vlmd_csv, validate_vlmd_json
-from healdata_utils.conversion import convert_to_vlmd
+from heal.vlmd.extract.conversion import convert_to_vlmd
+from heal.vlmd.extract.extract import vlmd_extract
+from heal.vlmd.file_utils import get_output_filepath
+from heal.vlmd.validate.json_validator import vlmd_validate_json
+from heal.vlmd.validate.validate import vlmd_validate
+
 
 from vlmd_submission_tools.common.logger import Logger
 from vlmd_submission_tools.subcommands import Subcommand
@@ -35,11 +35,22 @@ class ReadAndValidateDictionary(Subcommand):
 
         parser.add_argument(
             "-j",
-            "--json_local_path",
+            "--json_output_dir",
             required=True,
             type=str,
             help=(
-                "Full path for saving the dictionary in json, eg /mnt/vol/dict.json."
+                "Directory for saving the json dictionary, eg '/mnt/vol'."
+            ),
+        )
+
+        parser.add_argument(
+            "-t",
+            "--title",
+            required=False,
+            default=None,
+            type=str,
+            help=(
+                "Title for the dictionary (required for CSV input), eg 'Baseline VLMD for study'."
             ),
         )
 
@@ -59,7 +70,7 @@ class ReadAndValidateDictionary(Subcommand):
             required=True,
             type=str,
             help=(
-                "Path to write out the JSON response with json_local_path and is_valid_dictionary."
+                "Path to write JSON artifact output with json_local_path and is_valid_dictionary."
             ),
         )
 
@@ -86,64 +97,98 @@ class ReadAndValidateDictionary(Subcommand):
         dictionary_url = unquote(dictionary_url)
         logger.info(f"URL {dictionary_url}")
 
-        file_type = cls._get_file_type_from_filename(options.file_name)
-        json_local_path = options.json_local_path
+        input_file_name = options.file_name
+        title = options.title
+
+        json_output_dir = os.path.abspath(options.json_output_dir)
+        input_dict_path = os.path.join(json_output_dir, input_file_name)
+        if not os.path.isdir(os.path.dirname(options.output)):
+            logger.warning(f"Invalid directory for artifact output.")
+
+        file_type = cls._get_file_type_from_filename(input_file_name)
         local_path = None
-        is_valid_dictionary = None
-        errors_list = None
+        is_valid_dictionary = False
+        validation_error = None
+        errors_list = []
+        report_json = {
+            "json_local_path": None,
+            "is_valid_dictionary": is_valid_dictionary,
+            "errors": errors_list
+        }
+
+
 
         # download from url and save local copy
         try:
-            local_path = cls._download_from_url(file_type, dictionary_url, json_local_path)
+            local_path = cls._download_from_url(file_type, dictionary_url, input_dict_path)
             if local_path:
-                logger.info(f"Data dictionary saved in {local_path}")
+                logger.info(f"Input dictionary saved in {local_path}")
+                report_json["json_local_path"] = local_path
 
-        except Exception as e:
-            logger.error(f"Could not read dictionary from url {dictionary_url}")
-            logger.error(e)
-            logger.error(f"Exception type = {type(e)}")
+        except Exception as err:
+            error_message = f"Could not read dictionary from url {dictionary_url}"
+            logger.error(error_message)
+            logger.error(err)
+
+            report_json["errors"] = [error_message]
+            with open(options.output, 'w', encoding='utf-8') as output_file:
+                json.dump(report_json, output_file, ensure_ascii=False, indent=4)
+            logger.info(f"Validation report saved in {options.output}")
             return
 
-        # get validation report with healdata-utils.validate_vlmd
         logger.info(f"Getting validation report for {local_path}")
-        try:
-            if file_type == 'json':
-                result = validate_vlmd_json(local_path)
-            elif file_type == 'csv' or file_type == 'tsv':
-                result = validate_vlmd_csv(local_path)
-            validation_report = result.get('report')
 
-            is_valid_dictionary = validation_report.get('valid')
-            errors_list = validation_report.get('errors')
-        except Exception as e:
-            logger.error(f"Error in validation: {e}")
+        if file_type == 'json':
+            json_local_path = local_path
+            try:
+                # just validate, don't convert
+                is_valid_dictionary = vlmd_validate(
+                    local_path,
+                    file_type=file_type,
+                    output_type="json",
+                    return_converted_output=False,
+                )
 
-        logger.info(f"Valid dictionary = {is_valid_dictionary}")
-        logger.info(f"Errors from validation report = {errors_list}")
+            except Exception as err:
+                validation_error = str(err)
+                # TODO: remove this parsing after the heal-sdk has trimmed down the error size.
+                validation_error = validation_error.split('\n')[0]
+                logger.error(f"Error in json validation: {err}")
 
-        # convert csv to json for uploading to MDS.
         if file_type == 'csv' or file_type == 'tsv':
             logger.info(f"Converting {file_type} to JSON")
-            props = {
-                "description": f"Json dictionary converted from {file_type}",
-                "title": "HEAL compliant variable level metadata dictionary"
-            }
+            if title is None:
+                logger.warning("Missing 'title' parameter. Will check for standardsMappings")
 
-            vlmd_dict = convert_to_vlmd(
-                input_filepath = local_path,
-                data_dictionary_props = props,
-                inputtype = "csv-data-dict",
-            )
-            converted_json = vlmd_dict.get('jsontemplate')
+            try:
+                json_local_path = get_output_filepath(
+                    json_output_dir, input_file_name, output_type="json"
+                )
+                # use file_type="auto" so we can handle csv, tsv, REDCap
+                is_valid_dictionary = vlmd_extract(
+                    input_file=local_path,
+                    title=title,
+                    file_type="auto",
+                    output_dir=json_output_dir,
+                    output_type="json"
+                )
 
-        # logger.info(f"Converted JSON is valid dictionary = convertis_valid_dictionary}")
-        # logger.info(f"Errors from validation report = {errors_list}")
-            logger.info(f"Errors = {vlmd_dict.get('errors')}")
+                if os.path.exists(json_local_path):
+                    logger.info(f"Converted JSON data dictionary saved in {json_local_path}")
+                else:
+                    logger.warning(f"Not finding file in {json_local_path}")
+                is_valid_dictionary = True
+            except Exception as err:
+                logger.error(f"Error in validating and extracting dictionary from {local_path}")
+                logger.error(f"Error type {type(err).__name__}")
+                validation_error = str(err)
+                validation_error = validation_error.split('\n')[0]
+                logger.error(validation_error)
 
-            with open(json_local_path, 'w', encoding='utf-8') as o:
-                json.dump(converted_json, o, ensure_ascii=False, indent=4)
-            logger.info(f"Converted JSON data dictionary saved in {json_local_path}")
-
+        logger.info(f"Valid json dictionary = {is_valid_dictionary}")
+        logger.info(f"Validation errors = {validation_error}")
+        if validation_error:
+            errors_list.append(validation_error)
 
         report_json = {
             "json_local_path": json_local_path,
@@ -151,8 +196,8 @@ class ReadAndValidateDictionary(Subcommand):
             "errors": errors_list
         }
         # save the validation report artifact
-        with open(options.output, 'w', encoding='utf-8') as o:
-            json.dump(report_json, o, ensure_ascii=False, indent=4)
+        with open(options.output, 'w', encoding='utf-8') as output_file:
+            json.dump(report_json, output_file, ensure_ascii=False, indent=4)
         logger.info(f"Validation report saved in {options.output}")
 
 
@@ -173,17 +218,19 @@ class ReadAndValidateDictionary(Subcommand):
         try:
             response = requests.get(url)
             data_dictionary = response.text
+
             if file_type == 'json':
                 data_dictionary = response.text
+                print(f"JSON Response {data_dictionary}")
                 data_dictionary = json.loads(data_dictionary)
-                with open(json_local_path, 'w', encoding='utf-8') as f:
-                    json.dump(data_dictionary, f, ensure_ascii=False, indent=4)
+                with open(json_local_path, 'w', encoding='utf-8') as json_file:
+                    json.dump(data_dictionary, json_file, ensure_ascii=False, indent=4)
                 return json_local_path
             elif file_type == 'csv' or file_type == 'tsv':
                 data_dictionary = response.content
                 csv_local_path = json_local_path.replace('json', f"{file_type}")
-                with open(csv_local_path, 'wb') as f:
-                    f.write(data_dictionary)
+                with open(csv_local_path, 'wb') as csv_file:
+                    csv_file.write(data_dictionary)
                 return csv_local_path
         except Exception as exc:
             raise(exc)
