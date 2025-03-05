@@ -234,7 +234,6 @@ class ReadAndValidateDictionary(Subcommand):
 
             if file_type == 'json':
                 data_dictionary = response.text
-                print(f"JSON Response {data_dictionary}")
                 data_dictionary = json.loads(data_dictionary)
                 with open(json_local_path, 'w', encoding='utf-8') as json_file:
                     json.dump(data_dictionary, json_file, ensure_ascii=False, indent=4)
