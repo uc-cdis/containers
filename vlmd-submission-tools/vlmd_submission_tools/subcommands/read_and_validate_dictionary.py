@@ -3,6 +3,7 @@
 from argparse import ArgumentParser, Namespace
 import json
 import os
+from shutil import copyfile
 import traceback
 from urllib.parse import unquote
 
@@ -35,11 +36,11 @@ class ReadAndValidateDictionary(Subcommand):
 
         parser.add_argument(
             "-j",
-            "--json_output_dir",
+            "--json_local_path",
             required=True,
             type=str,
             help=(
-                "Directory for saving the json dictionary, eg '/mnt/vol'."
+                "Full path for saving the json dictionary, eg /mnt/vol/converted_dict.json."
             ),
         )
 
@@ -70,7 +71,7 @@ class ReadAndValidateDictionary(Subcommand):
             required=True,
             type=str,
             help=(
-                "Path to write JSON artifact output with json_local_path and is_valid_dictionary."
+                "Path to write task output (with 'is_valid_dictionary')."
             ),
         )
 
@@ -100,10 +101,13 @@ class ReadAndValidateDictionary(Subcommand):
         input_file_name = options.file_name
         title = options.title
 
-        json_output_dir = os.path.abspath(options.json_output_dir)
+        json_local_path = options.json_local_path
+        json_output_dir = os.path.dirname(os.path.abspath(json_local_path))
         input_dict_path = os.path.join(json_output_dir, input_file_name)
-        if not os.path.isdir(os.path.dirname(options.output)):
-            logger.warning(f"Invalid directory for artifact output.")
+        if not os.path.isdir(os.path.dirname(json_output_dir)):
+            logger.warning(f"Invalid directory for json_local_path: '{json_local_path}'.")
+        if not os.path.isdir(os.path.dirname(os.path.abspath(options.output))):
+            logger.warning(f"Invalid directory for artifact output: '{options.output}'.")
 
         file_type = cls._get_file_type_from_filename(input_file_name)
         local_path = None
@@ -116,14 +120,13 @@ class ReadAndValidateDictionary(Subcommand):
             "errors": errors_list
         }
 
-
-
         # download from url and save local copy
         try:
             local_path = cls._download_from_url(file_type, dictionary_url, input_dict_path)
             if local_path:
                 logger.info(f"Input dictionary saved in {local_path}")
-                report_json["json_local_path"] = local_path
+            else:
+                logger.warning("Input file not downloaded")
 
         except Exception as err:
             error_message = f"Could not read dictionary from url {dictionary_url}"
@@ -139,7 +142,6 @@ class ReadAndValidateDictionary(Subcommand):
         logger.info(f"Getting validation report for {local_path}")
 
         if file_type == 'json':
-            json_local_path = local_path
             try:
                 # just validate, don't convert
                 is_valid_dictionary = vlmd_validate(
@@ -148,6 +150,7 @@ class ReadAndValidateDictionary(Subcommand):
                     output_type="json",
                     return_converted_output=False,
                 )
+                converted_json_path = local_path
 
             except Exception as err:
                 validation_error = str(err)
@@ -161,7 +164,7 @@ class ReadAndValidateDictionary(Subcommand):
                 logger.warning("Missing 'title' parameter. Will check for standardsMappings")
 
             try:
-                json_local_path = get_output_filepath(
+                converted_json_path = get_output_filepath(
                     json_output_dir, input_file_name, output_type="json"
                 )
                 # use file_type="auto" so we can handle csv, tsv, REDCap
@@ -173,15 +176,15 @@ class ReadAndValidateDictionary(Subcommand):
                     output_type="json"
                 )
 
-                if os.path.exists(json_local_path):
-                    logger.info(f"Converted JSON data dictionary saved in {json_local_path}")
+                if os.path.exists(converted_json_path):
+                    logger.info(f"Converted JSON data dictionary saved in {converted_json_path}")
                 else:
-                    logger.warning(f"Not finding file in {json_local_path}")
-                is_valid_dictionary = True
+                    logger.warning(f"Not finding converted file in {converted_json_path}")
             except Exception as err:
                 logger.error(f"Error in validating and extracting dictionary from {local_path}")
                 logger.error(f"Error type {type(err).__name__}")
                 validation_error = str(err)
+                # TODO: remove this line if heal-sdk becomes less verbose
                 validation_error = validation_error.split('\n')[0]
                 logger.error(validation_error)
 
@@ -189,6 +192,16 @@ class ReadAndValidateDictionary(Subcommand):
         logger.info(f"Validation errors = {validation_error}")
         if validation_error:
             errors_list.append(validation_error)
+
+        # copy converted json file written by extract into path specified in workflow
+        if is_valid_dictionary:
+            try:
+                if json_local_path != converted_json_path:
+                    copyfile(converted_json_path, json_local_path)
+            except Exception as err:
+                error_message = "Could not copy extracted file to 'json_local_path'"
+                logger.error(error_message)
+                logger.error(err)
 
         report_json = {
             "json_local_path": json_local_path,

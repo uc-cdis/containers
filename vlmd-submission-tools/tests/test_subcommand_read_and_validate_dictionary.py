@@ -19,7 +19,7 @@ DIR = Path(__file__).resolve().parent
 
 class MockArgs(NamedTuple):
     file_name: str
-    json_output_dir: str
+    json_local_path: str
     title: str
     dictionary_url: str
     output: str
@@ -73,10 +73,10 @@ def template_submission_invalid_tsv():
 
 class TestReadAndValidateDictionarySubcommand:
 
-    def get_mock_args(self, file_name, json_output_dir, dictionary_url, output, title=None):
+    def get_mock_args(self, file_name, json_local_path, dictionary_url, output, title=None):
         return MockArgs(
             file_name=file_name,
-            json_output_dir=json_output_dir,
+            json_local_path=json_local_path,
             dictionary_url=dictionary_url,
             output=output,
             title=title,
@@ -194,17 +194,18 @@ class TestReadAndValidateDictionarySubcommand:
 
     def test_read_and_validate_dictionary_json(self, template_submission_json, download_dir):
         """read valid json dictionary, validate, save report"""
+        json_local_path = f"{download_dir}/test_dict.json"
         json_file_name = "template_submission_small.json"
-        path_to_input_dict = f"tests/templates/{json_file_name}"
+        expected_download_path = f"{download_dir}/{json_file_name}"
+
         args = self.get_mock_args(
             file_name=json_file_name,
-            json_output_dir=download_dir,
+            json_local_path=json_local_path,
             dictionary_url="https://some.url",
             output=f"{download_dir}/validate_artifact.json",
         )
-        expected_json_local_path = f"{args.json_output_dir}/{args.file_name}"
         expected_validation_report = {
-            "json_local_path": expected_json_local_path,
+            "json_local_path": json_local_path,
             "is_valid_dictionary": True,
             "errors": []
         }
@@ -218,9 +219,11 @@ class TestReadAndValidateDictionarySubcommand:
 
                 ReadAndValidateDictionary.main(options=args)
 
-                # downloaded json dict is saved in 'json_local_path'.
-                assert Path(expected_json_local_path).resolve().is_file()
-                with open(expected_json_local_path, 'r') as json_file:
+                # downloaded json dict is saved in 'expected_download_path'
+                assert Path(expected_download_path).resolve().is_file()
+                # file is copied to 'json_local_path' after validation.
+                assert Path(json_local_path).resolve().is_file()
+                with open(json_local_path, 'r') as json_file:
                     downloaded_json = json.load(json_file)
                 assert "fields" in downloaded_json
                 assert downloaded_json == template_submission_json
@@ -230,18 +233,18 @@ class TestReadAndValidateDictionarySubcommand:
                     validation_report = json.load(json_file)
                 assert validation_report == expected_validation_report
         finally:
-            cleanup_files([expected_json_local_path, args.output])
+            cleanup_files([json_local_path, expected_download_path, args.output])
 
 
     def test_read_and_validate_dictionary_bad_url(self, download_dir):
         """Test error handling and output report in read_and_validate with bad url."""
         args = self.get_mock_args(
             file_name="some_template.json",
-            json_output_dir=download_dir,
+            json_local_path=f"{download_dir}/some_template.json",
             dictionary_url="https://some.url",
             output=f"{download_dir}/validate_artifact.json",
         )
-        expected_json_local_path = f"{args.json_output_dir}/{args.file_name}"
+        expected_json_local_path = f"{args.json_local_path}/{args.file_name}"
         expected_validation_report = {
             "json_local_path": None,
             "is_valid_dictionary": False,
@@ -274,7 +277,7 @@ class TestReadAndValidateDictionarySubcommand:
         """
         args = self.get_mock_args(
             file_name="some_template.json",
-            json_output_dir="/does/not/exist",
+            json_local_path="/does/not/exist/test.json",
             dictionary_url="https://some.url",
             output=f"{download_dir}/validate_artifact.json",
         )
@@ -290,7 +293,7 @@ class TestReadAndValidateDictionarySubcommand:
                 args.dictionary_url,
                 text=json.dumps(template_submission_json)
             )
-            expected_json_local_path = f"{args.json_output_dir}/{args.file_name}"
+            expected_json_local_path = f"{args.json_local_path}/{args.file_name}"
 
             ReadAndValidateDictionary.main(args)
 
@@ -305,15 +308,16 @@ class TestReadAndValidateDictionarySubcommand:
         self, template_submission_invalid_json, download_dir
     ):
         """With a bad json dictionary, the file is downloaded and marked as invalid in report."""
+        json_local_path=f"{download_dir}/converted_dict.json"
         args = self.get_mock_args(
             file_name="template_submission_invalid.json",
-            json_output_dir=download_dir,
+            json_local_path=json_local_path,
             dictionary_url="https://some.url",
             output=f"{download_dir}/validate_artifact.json",
         )
-        expected_json_local_path = f"{download_dir}/{args.file_name}"
+        expected_download_path = f"{download_dir}/{args.file_name}"
         expected_validation_report = {
-            "json_local_path": expected_json_local_path,
+            "json_local_path": json_local_path,
             "is_valid_dictionary": False,
             "errors": [
                 "'character' is not one of ['number', 'integer', 'string', 'any', 'boolean', 'date', 'datetime', 'time', 'year', 'yearmonth', 'duration', 'geopoint']"
@@ -329,13 +333,16 @@ class TestReadAndValidateDictionarySubcommand:
 
                 ReadAndValidateDictionary.main(options=args)
 
-                assert Path(expected_json_local_path).resolve().is_file()
+                # check that we have a downloaded file but not copied to converted file
+                assert Path(expected_download_path).resolve().is_file()
+                assert not Path(json_local_path).resolve().is_file()
+
                 assert Path(args.output).resolve().is_file()
                 with open(args.output, 'r') as fh:
                     validation_report = json.load(fh)
                 assert validation_report == expected_validation_report
         finally:
-            cleanup_files([expected_json_local_path, args.output])
+            cleanup_files([expected_download_path, args.output])
 
 
     @pytest.mark.parametrize(
@@ -358,18 +365,26 @@ class TestReadAndValidateDictionarySubcommand:
         The converted dictionaries should match the template_submission_json fixture.
         """
 
+        file_name=f"template_submission.{suffix}"
+        # raw csv file
+        expected_download_path=f"{download_dir}/{file_name}"
+        # converted json written by heal-sdk
+        expected_json_local_path = get_output_filepath(
+            download_dir, file_name, output_type="json"
+        )
+        # valid json copied by workflow
+        json_local_path=f"{download_dir}/converted_dict.json"
+
         args = self.get_mock_args(
-            file_name=f"template_submission.{suffix}",
-            json_output_dir=download_dir,
+            file_name=file_name,
+            json_local_path=json_local_path,
             title="Some title",
             dictionary_url="https://some.url",
             output=f"{download_dir}/validate_artifact.json",
         )
-        expected_json_local_path = get_output_filepath(
-            download_dir, args.file_name, output_type="json"
-        )
+
         expected_validation_report = {
-            "json_local_path": expected_json_local_path,
+            "json_local_path": json_local_path,
             "is_valid_dictionary": True,
             "errors": []
         }
@@ -384,13 +399,14 @@ class TestReadAndValidateDictionarySubcommand:
 
                 ReadAndValidateDictionary.main(options=args)
 
-                # check for unconverted input data
-                expected_local_path = f"{args.json_output_dir}/{args.file_name}"
-                assert Path(expected_local_path).resolve().is_file()
-                # check for converted json dictionary
+                # check for raw csv/tsv input data
+                assert Path(expected_download_path).resolve().is_file()
+                # check for converted json dictionary and copied json dictionary
                 assert Path(expected_json_local_path).resolve().is_file()
-                with open(expected_json_local_path, 'r') as f:
-                    converted_json = json.load(f)
+                assert Path(json_local_path).resolve().is_file()
+
+                with open(json_local_path, 'r') as json_file:
+                    converted_json = json.load(json_file)
                 assert converted_json.get('fields') == expected_converted_json.get('fields')
                 # output validation report json artifact
                 with open(args.output, 'r') as output_file:
@@ -398,7 +414,7 @@ class TestReadAndValidateDictionarySubcommand:
                 assert validation_report == expected_validation_report
 
         finally:
-            cleanup_files([expected_local_path, expected_json_local_path, args.output])
+            cleanup_files([expected_download_path, expected_json_local_path, json_local_path, args.output])
 
 
     @pytest.mark.parametrize(
@@ -416,19 +432,27 @@ class TestReadAndValidateDictionarySubcommand:
         request
     ):
         """Invalid csv will get downloaded but not coverted."""
+
+        file_name=f"template_submission_invalid.{suffix}"
+        # raw csv file
+        expected_download_path=f"{download_dir}/{file_name}"
+        # converted json written by heal-sdk
+        expected_json_local_path = get_output_filepath(
+            download_dir, file_name, output_type="json"
+        )
+        # valid json copied by workflow
+        json_local_path=f"{download_dir}/converted_dict.json"
+
         args = self.get_mock_args(
-            file_name=f"template_submission_invalid.{suffix}",
-            json_output_dir=download_dir,
+            file_name=file_name,
+            json_local_path=json_local_path,
             dictionary_url="https://some.url",
             output=f"{download_dir}/validate_artifact.json",
             title="Some title",
         )
-        csv_local_path = f"{download_dir}/{args.file_name}"
-        expected_json_local_path = get_output_filepath(
-            download_dir, args.file_name, output_type="json"
-        )
+
         expected_validation_report = {
-            "json_local_path": expected_json_local_path,
+            "json_local_path": json_local_path,
             "is_valid_dictionary": False,
             "errors": ["'name' is a required property"]
         }
@@ -442,9 +466,10 @@ class TestReadAndValidateDictionarySubcommand:
 
                 ReadAndValidateDictionary.main(options=args)
 
-                assert Path(csv_local_path).resolve().is_file()
+                assert Path(expected_download_path).resolve().is_file()
                 # invalid csv input will not generate json output
                 assert not Path(expected_json_local_path).resolve().is_file()
+                assert not Path(json_local_path).resolve().is_file()
                 # validation report should show errors
                 assert Path(args.output).resolve().is_file()
                 with open(args.output, 'r') as output_file:
@@ -453,4 +478,4 @@ class TestReadAndValidateDictionarySubcommand:
                 assert validation_report == expected_validation_report
 
         finally:
-            cleanup_files([csv_local_path, expected_json_local_path, args.output])
+            cleanup_files([expected_download_path, expected_json_local_path, json_local_path, args.output])
