@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "vlmd-submission-tools"
 description = "CLI with subcommands that support the VLMD workflows."
-version = "0.1.0"
+version = "2.1.0"
 repository = "https://github.com/uc-cdis/vlmd-submission-tools"
 authors = ["Center for Translational Data Science at the University of Chicago <support@gen3.org>"]
 license = "Apache-2.0"
