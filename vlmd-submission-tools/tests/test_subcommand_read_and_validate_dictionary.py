@@ -73,6 +73,8 @@ def template_submission_invalid_tsv():
 
 class TestReadAndValidateDictionarySubcommand:
 
+    EMPTY_DICTIONARY = {}
+
     def get_mock_args(self, file_name, json_local_path, dictionary_url, output, title=None):
         return MockArgs(
             file_name=file_name,
@@ -333,10 +335,14 @@ class TestReadAndValidateDictionarySubcommand:
 
                 ReadAndValidateDictionary.main(options=args)
 
-                # check that we have a downloaded file but not copied to converted file
+                # check that the raw json input is downloaded
                 assert Path(expected_download_path).resolve().is_file()
-                assert not Path(json_local_path).resolve().is_file()
-
+                # check that the converted file is empty
+                assert Path(json_local_path).resolve().is_file()
+                with open(args.json_local_path, 'r') as json_file:
+                    json_dict = json.load(json_file)
+                assert json_dict == self.EMPTY_DICTIONARY
+                # check validation report
                 assert Path(args.output).resolve().is_file()
                 with open(args.output, 'r') as fh:
                     validation_report = json.load(fh)
@@ -431,7 +437,10 @@ class TestReadAndValidateDictionarySubcommand:
         download_dir,
         request
     ):
-        """Invalid csv will get downloaded but not coverted."""
+        """
+        Invalid csv will get downloaded but not converted.
+        An empty dict is written to 'json_local_path'
+        """
 
         file_name=f"template_submission_invalid.{suffix}"
         # raw csv file
@@ -467,9 +476,13 @@ class TestReadAndValidateDictionarySubcommand:
                 ReadAndValidateDictionary.main(options=args)
 
                 assert Path(expected_download_path).resolve().is_file()
-                # invalid csv input will not generate json output
+                # invalid csv input will not generate converted json output
                 assert not Path(expected_json_local_path).resolve().is_file()
-                assert not Path(json_local_path).resolve().is_file()
+                # there should still be an empty dictionary in the 'json_local_path'
+                assert Path(json_local_path).resolve().is_file()
+                with open(args.json_local_path, 'r') as json_file:
+                    json_dict = json.load(json_file)
+                assert json_dict == self.EMPTY_DICTIONARY
                 # validation report should show errors
                 assert Path(args.output).resolve().is_file()
                 with open(args.output, 'r') as output_file:

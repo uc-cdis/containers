@@ -202,6 +202,11 @@ class ReadAndValidateDictionary(Subcommand):
                 error_message = "Could not copy extracted file to 'json_local_path'"
                 logger.error(error_message)
                 logger.error(err)
+        else:
+            # save an empty file to prevent workflow errors
+            empty_dict = {}
+            with open(json_local_path, 'w', encoding='utf-8') as output_file:
+                json.dump(empty_dict, output_file, ensure_ascii=False, indent=4)
 
         report_json = {
             "json_local_path": json_local_path,
