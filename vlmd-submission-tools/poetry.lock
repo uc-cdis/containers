@@ -784,8 +784,8 @@ requests = "*"
 [package.source]
 type = "git"
 url = "https://github.com/uc-cdis/heal-platform-sdk.git"
-reference = "master"
-resolved_reference = "65b395f5a10fcd4cf8f9c6605b12ef3978ad4abf"
+reference = "chore/do-not-overwrite-title"
+resolved_reference = "794bacb62ff047e5235ed29caca629b3d73e80f2"
 
 [[package]]
 name = "httpcore"
@@ -2176,4 +2176,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "ee3b0e4c1f3e96fb68178df42fe420a7b54f5cbc2a6bf98ec7d53ea7b2087d06"
+content-hash = "ec48e9f03d15f59bd1f875783572a134a93a2ee7667138ea92fca81c1da7931a"
