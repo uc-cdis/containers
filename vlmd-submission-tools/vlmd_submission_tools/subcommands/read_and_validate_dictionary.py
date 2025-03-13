@@ -154,7 +154,7 @@ class ReadAndValidateDictionary(Subcommand):
 
             except Exception as err:
                 validation_error = str(err)
-                # TODO: remove this parsing after the heal-sdk has trimmed down the error size.
+                # TODO: remove this line if heal-sdk becomes less verbose
                 validation_error = validation_error.split('\n')[0]
                 logger.error(f"Error in json validation: {err}")
 
@@ -182,7 +182,6 @@ class ReadAndValidateDictionary(Subcommand):
                     logger.warning(f"Not finding converted file in {converted_json_path}")
             except Exception as err:
                 logger.error(f"Error in validating and extracting dictionary from {local_path}")
-                logger.error(f"Error type {type(err).__name__}")
                 validation_error = str(err)
                 # TODO: remove this line if heal-sdk becomes less verbose
                 validation_error = validation_error.split('\n')[0]
