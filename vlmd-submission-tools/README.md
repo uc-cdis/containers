@@ -13,7 +13,7 @@ The following subcommands are executed for the VLMD dictionary submission and va
 
 ```
 vlmd-submission-tools GetDictionaryUrl -d <indexd guid> -o <local json output>
-vlmd-submission-tools ReadAndValidateDictionary -f <dictionary file name> -j <path to json dictionary>  -u <dictionary url> -o <local json output>
+vlmd-submission-tools ReadAndValidateDictionary -f <dictionary file name> -j <path to json dictionary> -t <dictionary title> -u <dictionary url> -o <local json output>
 vlmd-submission-tools UploadDictionaryToMds -j <path to json dictionary> -n <dictionary name> -s <mds studyid> -o <local json output>
 ```
 
