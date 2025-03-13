@@ -7,8 +7,8 @@ on:
     - .github/workflows/build_prometheus_notebook_image.yml
 
 jobs:
-  jupyter-vadc:
-    name: Build and Push jupyter-vadc
+  jupyter-prometheus:
+    name: Build and Push jupyter-prometheus
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
       DOCKERFILE_LOCATION: "./jupyter-prometheus/Dockerfile"
