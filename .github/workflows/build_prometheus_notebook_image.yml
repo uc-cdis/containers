@@ -9,12 +9,13 @@ on:
 jobs:
   jupyter-prometheus:
     name: Build and Push jupyter-prometheus
-    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    uses: uc-cdis/.github/.github/workflows/image_build_push_native.yaml@master
     with:
       DOCKERFILE_LOCATION: "./jupyter-prometheus/Dockerfile"
       DOCKERFILE_BUILD_CONTEXT: "./jupyter-prometheus"
       OVERRIDE_REPO_NAME: "jupyter-prometheus"
       OVERRIDE_TAG_NAME: "prometheus-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
