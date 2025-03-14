@@ -30,7 +30,7 @@ RUN conda config --append channels conda-forge
 RUN conda config --add channels bioconda
 RUN conda install -c plotly plotly
 RUN conda install -c bioconda bioconductor-gdcrnatools
-RUN conda install -c conda-forge scikit-allel
+RUN conda install -c conda-forge scipy
 run R -e "BiocManager::install('DESeq2')"
 run R -e "BiocManager::install('TCGAbiolinks')"
 
