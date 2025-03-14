@@ -104,6 +104,9 @@ class ReadAndValidateDictionary(Subcommand):
         json_local_path = options.json_local_path
         json_output_dir = os.path.dirname(os.path.abspath(json_local_path))
         input_dict_path = os.path.join(json_output_dir, input_file_name)
+        logger.info(f"input_file_name {input_file_name}")
+        logger.info(f"json_local_path {json_local_path}")
+        logger.info(f"input_dict_path {input_dict_path}")
         if not os.path.isdir(os.path.dirname(json_output_dir)):
             logger.warning(f"Invalid directory for json_local_path: '{json_local_path}'.")
         if not os.path.isdir(os.path.dirname(os.path.abspath(options.output))):
@@ -219,19 +222,19 @@ class ReadAndValidateDictionary(Subcommand):
 
 
     @classmethod
-    def _download_from_url(cls, file_type: str, url: str, json_local_path: str) -> str:
+    def _download_from_url(cls, file_type: str, url: str, input_dict_path: str) -> str:
         """
         Sends a request to the url and saves data in the local_path
 
         Args:
             file_type (str): 'csv', 'tsv', 'json'
             url (str): the url for the data dictionary
-            json_local_path (str): the path to the local copy, eg, '/tmp/vlmd/dict.json'
+            input_dict_path (str): the path to the local copy, eg, '/tmp/vlmd/dict.json'
 
         Returns:
             path of saved contents, None if error in downloading.
         """
-        local_path = None
+
         try:
             response = requests.get(url)
             data_dictionary = response.text
@@ -239,19 +242,18 @@ class ReadAndValidateDictionary(Subcommand):
             if file_type == 'json':
                 data_dictionary = response.text
                 data_dictionary = json.loads(data_dictionary)
-                with open(json_local_path, 'w', encoding='utf-8') as json_file:
+                with open(input_dict_path, 'w', encoding='utf-8') as json_file:
                     json.dump(data_dictionary, json_file, ensure_ascii=False, indent=4)
-                return json_local_path
             elif file_type == 'csv' or file_type == 'tsv':
                 data_dictionary = response.content
-                csv_local_path = json_local_path.replace('json', f"{file_type}")
-                with open(csv_local_path, 'wb') as csv_file:
+                with open(input_dict_path, 'wb') as csv_file:
                     csv_file.write(data_dictionary)
-                return csv_local_path
+            return input_dict_path
+
         except Exception as exc:
             raise(exc)
 
-        return local_path
+        return None
 
 
     @classmethod
