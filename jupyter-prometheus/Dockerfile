@@ -26,14 +26,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN pip uninstall -y gen3
 RUN pip3 install gen3
-RUN conda config --append channels conda-forge
-RUN conda config --add channels bioconda
-RUN conda install -c plotly plotly
-RUN conda install -c bioconda bioconductor-gdcrnatools
-RUN conda install -c conda-forge scipy
-run R -e "BiocManager::install('DESeq2')"
-run R -e "BiocManager::install('TCGAbiolinks')"
-
+RUN pip3 install pandas
+RUN pip3 install seaborn
+RUN pip3 install matplotlib
+RUN pip3 install scipy
 
 RUN printf '\n\
 if [ -f $HOME/requirements.txt ]; then \n\
