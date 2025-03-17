@@ -21,7 +21,7 @@ python = "^3.9"
 requests = "^2.27.1"
 PyYAML = "^6.0"
 urllib3 = ">=1.26.9"
-heal = {git = "https://github.com/uc-cdis/heal-platform-sdk.git", rev = "chore/do-not-overwrite-title"}
+heal-sdk = ">=1.0.0"
 kubernetes = "^26.1.0"
 
 
