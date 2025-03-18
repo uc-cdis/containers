@@ -159,7 +159,7 @@ class ReadAndValidateDictionary(Subcommand):
                 validation_error = str(err)
                 # TODO: remove this line if heal-sdk becomes less verbose
                 validation_error = validation_error.split('\n')[0]
-                logger.error(f"Error in json validation: {err}")
+                logger.error(f"Error in json validation: {validation_error}")
 
         if file_type == 'csv' or file_type == 'tsv':
             logger.info(f"Converting {file_type} to JSON")
@@ -186,8 +186,6 @@ class ReadAndValidateDictionary(Subcommand):
             except Exception as err:
                 logger.error(f"Error in validating and extracting dictionary from {local_path}")
                 validation_error = str(err)
-                # TODO: remove this line if heal-sdk becomes less verbose
-                validation_error = validation_error.split('\n')[0]
                 logger.error(validation_error)
 
         logger.info(f"Valid json dictionary = {is_valid_dictionary}")
