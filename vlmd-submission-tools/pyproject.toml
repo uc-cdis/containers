@@ -21,7 +21,7 @@ python = "^3.9"
 requests = "^2.27.1"
 PyYAML = "^6.0"
 urllib3 = ">=1.26.9"
-heal-sdk = ">=1.0.0"
+heal-sdk = ">=1.0.1"
 kubernetes = "^26.1.0"
 
 

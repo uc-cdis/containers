@@ -769,13 +769,13 @@ files = [
 
 [[package]]
 name = "heal-sdk"
-version = "1.0.0"
+version = "1.0.1"
 description = "HEAL Platform SDK"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "heal_sdk-1.0.0-py3-none-any.whl", hash = "sha256:f5551afd3bda20a690227ef890db133a8e492706fb0187aeda93b089d48efda8"},
-    {file = "heal_sdk-1.0.0.tar.gz", hash = "sha256:831911e61f05a4dda7734f3d3dce26185ed0cbf28f1d4b85fc950d1ea6afeec3"},
+    {file = "heal_sdk-1.0.1-py3-none-any.whl", hash = "sha256:6982fc51292e4978496680f61ca26cb5943b8599d083bea0d4a05df2ecac4e25"},
+    {file = "heal_sdk-1.0.1.tar.gz", hash = "sha256:f17dab63ac26bf6d5ad2b123b75c24c82140236c35ed7776bb48d42da3da2a08"},
 ]
 
 [package.dependencies]
@@ -2172,4 +2172,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "e29fe20de5f83308af1d59fcd86f20df895f775221450ec5417130ba564c70b7"
+content-hash = "31814ebab49c03883e93dbb5db389f96490034eeb7c600e84b4fa4d32190b85f"
