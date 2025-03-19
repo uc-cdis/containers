@@ -13,11 +13,12 @@ The following subcommands are executed for the VLMD dictionary submission and va
 
 ```
 vlmd-submission-tools GetDictionaryUrl -d <indexd guid> -o <local json output>
-vlmd-submission-tools ReadAndValidateDictionary -f <dictionary file name> -j <path to json dictionary> -u <dictionary url> -o <local json output>
+vlmd-submission-tools ReadAndValidateDictionary -f <dictionary file name> -j <path to json dictionary> -t <dictionary title> -u <dictionary url> -o <local json output>
 vlmd-submission-tools UploadDictionaryToMds -j <path to json dictionary> -n <dictionary name> -s <mds studyid> -o <local json output>
 ```
 
-Each task requires a `-o` parameter to specify the local JSON output parameter file, eg
+Each task requires a `-o` parameter to specify the local JSON output parameter artifact file
+used in workflows, eg
 
 `-o /tmp/url_parameters.json`
 
@@ -54,8 +55,8 @@ from the config file:
 
 ```
 {
-    config.CLIENT_ID_CONFIG: <client_id>,
-    config.CLIENT_SECRET_CONFIG: <client_secret>
+    <config.CLIENT_ID_CONFIG>: <client_id>,
+    <config.CLIENT_SECRET_CONFIG>: <client_secret>
 }
 ```
 
@@ -152,23 +153,23 @@ vlmd-submission-tools <subcommand> -h
 The Gen3 commons hostname (eg, `qa-heal.planx-pla.net`) should be set as the environment variable `GEN3_HOSTNAME`.
 
 The fence client-credentials are read from JSON in a local kubernetes secret.
-You could run Rancher Desktop locally for storing the kubernetes secret.
+You could run a kubernetes cluster locally, say via Docker Desktop, for storing the kubernetes secret.
 The secret should mimic the structure of the `g3auto` secret in your commons, ie,
 there is a main key that is derived from the name of the file
 that stores the secrets.
 
-For example, with Rancher Desktop running, create your local kubernetes secret
+For example, with Docker Desktop running, create your local kubernetes secret
 
 ```
-kubectl create secret generic <CLIENT_SECRET_NAME> --from-file=credentials.json=credentials.json
+kubectl create secret generic <CLIENT_SECRET_NAME> --from-file=fence_client_credentials.json=fence_client_credentials.json
 ```
 
-where the local file `credentials.json` has the following structure:
+where the local file `fence_client_credentials.json` has the following structure:
 
 ```
 {
-    config.CLIENT_ID_CONFIG: <client_id>,
-    config.CLIENT_SECRET_CONFIG: <client_secret>
+    <config.CLIENT_ID_CONFIG>: <client_id>,
+    <config.CLIENT_SECRET_CONFIG>: <client_secret>
 }
 ```
 
@@ -176,7 +177,7 @@ You will also need to set environment variables for the secret name, for example
 
 ```
 export CLIENT_SECRET_NAME=vlmd-fence-client-g3auto
-export CLIENT_SECRET_KEY_CONFIG=credentials.json
+export CLIENT_SECRET_KEY_CONFIG=fence_client_credentials.json
 export CLIENT_SECRET_NAMESPACE=default
 ```
 

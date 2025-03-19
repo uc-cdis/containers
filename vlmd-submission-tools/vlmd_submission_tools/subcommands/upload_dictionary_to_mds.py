@@ -1,9 +1,4 @@
-"""Uploads the data dictionary to MDS.
-
-@author: George Thomas <george42@uchicago.edu>,
-         J Montgomery Maxwell <jmontmaxwell@uchicago.edu>,
-         Michael Kranz <kranz-michael@norc.org>
-"""
+"""Uploads the data dictionary to MDS."""
 
 from argparse import ArgumentParser, Namespace
 import json
@@ -84,6 +79,7 @@ class UploadDictionaryToMds(Subcommand):
             "Writes JSON output with the MDS upload_status."
         )
 
+
     @classmethod
     def main(cls, options: Namespace) -> None:
         """
@@ -112,6 +108,18 @@ class UploadDictionaryToMds(Subcommand):
                 data_dictionary = json.load(fh)
         except:
             raise Exception("Could not read local json dictionary.")
+
+        if data_dictionary == {}:
+            logger.warning("Input dictionary is empty")
+            record_json = {
+                "upload_status": "not uploaded",
+                "dictionary_name": options.dictionary_name,
+                "mds_guid": None
+                }
+            with open(options.output, 'w', encoding='utf-8') as o:
+                json.dump(record_json, o, ensure_ascii=False, indent=4)
+            logger.info(f"JSON response saved in {options.output}")
+            return
 
         # verify that the submitted study-id exists in mds db
         logger.info(f"Checking for study ID {options.study_id} in MDS")
