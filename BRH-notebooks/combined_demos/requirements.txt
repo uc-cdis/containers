@@ -8,7 +8,7 @@ scikit-learn==1.6.1
 tableone==0.7.12
 lifelines==0.27.4
 networkx==3.2.1
-r-terra==1.8.5
+r-terra
 r-geojsonio
 r-sf
 r-tidygeocoder
