@@ -27,7 +27,7 @@ This file you are viewing is a README markdown file which can be rendered by jup
 
 ### Controlled access and open access notebooks
 
-Both controlled access and open access data are presented in this workspace. The two notebooks that use controlled access data are `ACTT1_accessclinical.ipynb` and `JCOIN_Tracking_Opioid_Stigma.ipynb`. You need access to these studies to be able to run these notebooks.
+Both controlled access and open access data are presented in this workspace. The only notebook that uses controlled access data is  `JCOIN_Tracking_Opioid_Stigma.ipynb`. You need access to these studies to be able to run this notebooks.
 
 
 ### Gen3 and GUIDs
