@@ -1,10 +1,6 @@
-FROM quay.io/cdis/jupyter-superslim:2.0.0
+FROM quay.io/cdis/jupyter-superslim:fix_al2
 
 USER root
-RUN apt-get update
-
-# needed if user wants to run stinit (license validation) in the workspace
-RUN	apt-get install -y libncurses5
 
 RUN mkdir /usr/local/stata18
 COPY ./resources/StataNow18Linux64.tar.gz /tmp/StataNow18Linux64.tar.gz
