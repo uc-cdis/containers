@@ -18,7 +18,6 @@ USER $NB_USER
 RUN pip install --user stata_setup
 
 COPY ./dockerstart.sh /usr/local/bin/
-
 RUN mkdir /tmp/custom_api
 COPY ./resources/custom_api/* /tmp/custom_api/
 
