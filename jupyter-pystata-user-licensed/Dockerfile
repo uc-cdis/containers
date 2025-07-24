@@ -13,7 +13,7 @@ RUN cd /usr/local/stata18 && \
 COPY ./resources/Stata.ipynb .
 COPY ./resources/welcome.html .
 
-RUN chown -R $NB_USER /usr/local/stata18/
+RUN chown -R "${NB_USER}:${NB_GID}" /usr/local/stata18/
 USER $NB_USER
 RUN pip install --user stata_setup
 
