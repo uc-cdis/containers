@@ -11,7 +11,7 @@ COPY ./resources/setup_licensed_notebook.py /tmp/
 RUN chmod 777 /tmp/wait_for_license.sh /tmp/setup_licensed_notebook.py
 
 COPY ./resources/licensed_stata_session.ipynb $HOME
-RUN chown $NB_USER $HOME/licensed_stata_session.ipynb
+RUN chown "${NB_USER}:${NB_GID}" $HOME/licensed_stata_session.ipynb
 
 USER $NB_USER
 RUN pip3 install selenium
