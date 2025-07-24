@@ -2,6 +2,12 @@ FROM quay.io/cdis/jupyter-superslim:fix_al2
 
 USER root
 
+# This is needed for running stata_setup
+RUN yum -y update
+RUN yum install -y \
+	ncurses-compat-libs && \
+    yum clean all
+
 RUN mkdir /usr/local/stata18
 COPY ./resources/StataNow18Linux64.tar.gz /tmp/StataNow18Linux64.tar.gz
 RUN cd /usr/local/stata18 && tar -xvf /tmp/StataNow18Linux64.tar.gz
