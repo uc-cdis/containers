@@ -19,6 +19,35 @@ jobs:
         with:
           path: containers
 
+      - name: Validate PLANXCYBORG_TOKEN access to uc-cdis/base-images
+        env:
+          GH_TOKEN: ${{ secrets.PLANXCYBORG_TOKEN }}
+        run: |
+          echo "Validating access token..."
+          STATUS_CODE=$(curl -s -o response.txt -w "%{http_code}" \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/uc-cdis/base-images)
+
+          if [ "$STATUS_CODE" -eq 200 ]; then
+            echo "✅ Token is valid and has access to uc-cdis/base-images."
+          elif [ "$STATUS_CODE" -eq 403 ]; then
+            echo "❌ Token is valid but does not have permission to access the repository."
+            cat response.txt
+            exit 1
+          elif [ "$STATUS_CODE" -eq 404 ]; then
+            echo "❌ Repository not found OR token does not have access to it."
+            cat response.txt
+            exit 1
+          elif [ "$STATUS_CODE" -eq 401 ]; then
+            echo "❌ Invalid or expired token."
+            cat response.txt
+            exit 1
+          else
+            echo "❌ Unexpected response: $STATUS_CODE"
+            cat response.txt
+            exit 1
+          fi          
 
       - name: Checkout other private repository
         uses: actions/checkout@v3
