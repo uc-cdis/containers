@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: uc-cdis/base-images
-          token: ${{ secrets.PLANXCYBORG_TOKEN }}
+          token: ${{ secrets.PLANXCYBORG_PAT }}
           path: base-images
 
       - name: Set up Docker Buildx
@@ -61,7 +61,7 @@ jobs:
 
       - name: Trigger `get_layer_info_for_nf_imgs.yml` workflow
         env:
-          GH_TOKEN: ${{ secrets.PLANXCYBORG_TOKEN }}
+          GH_TOKEN: ${{ secrets.PLANXCYBORG_PAT }}
         run: |
               gh api \
               --method POST \
