@@ -1,5 +1,6 @@
 FROM quay.io/cdis/jupyter-superslim-r:fix_al2
 
+USER $NB_USER
 ARG NOTEBOOK_DIR
 
 COPY $NOTEBOOK_DIR/ $HOME/
