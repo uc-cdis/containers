@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:fix_al2
+FROM quay.io/cdis/jupyter-superslim-r:2.1.0
 
 USER $NB_USER
 ARG NOTEBOOK_DIR
