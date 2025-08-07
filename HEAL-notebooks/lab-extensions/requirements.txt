@@ -1,7 +1,0 @@
-pandas
-numpy
-scipy
-jupyterlab-git
-jupyterlab_templates
-jupyterlab_latex
-jupyterlab-spellchecker
