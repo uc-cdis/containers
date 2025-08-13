@@ -1,17 +1,27 @@
-# Wait for license, start jupyter, initialize notebook, remove license
+# Check for license, start jupyter, initialize notebook, remove license
+#
+# Usage:
+# wait_for_license.sh [LICENSE_NAME] [LICENSE_KEY]
+#
+# where
+# LICENSE_NAME is the name of the environment variable with the
+# stata license. Default = 'STATA_WORKSPACE_GEN3_LICENSE'.
+#
+# LICENSE_KEY is the name of the secret key, specified by
+# license.g3auto_key in the hatchery.json. Default = 'stata_license.txt'
 
-echo "Checking for license copied by sidecar"
+LICENSE_VAR=${1:-"STATA_WORKSPACE_GEN3_LICENSE"}
+KEY_VAR=${2:-"stata_license.txt"}
+TARGET_FILE="/usr/local/stata18/stata.lic"
 
-while [ ! -f /usr/local/stata18/stata.lic ];
-do
-    sleep 5
-    echo "Checking for license"
-    if [ -f /data/stata.lic ]; then
-        echo "Found license"
-        mv /data/stata.lic /usr/local/stata18/stata.lic
-        echo "Copied license"
-    fi
-done
+echo "Checking stata license"
+if [[ ! -n "${!LICENSE_VAR}" ]]; then
+  echo "Exiting. Stata license is empty."
+  exit 0
+fi
+
+LICENSE_DATA="${!LICENSE_VAR}"
+echo ${LICENSE_DATA} | jq -r --arg k ${KEY_VAR} '.[$k]' > ${TARGET_FILE}
 
 echo "Received a license. Starting jupyter."
 
@@ -25,6 +35,6 @@ python3 /tmp/setup_licensed_notebook.py
 rm geckodriver*
 
 echo "Init script done."
-rm /usr/local/stata18/stata.lic
+rm ${TARGET_FILE}
 
 while true; do sleep 1; done
