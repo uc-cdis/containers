@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-pystata-user-licensed:feat_heal-nb-update
+FROM quay.io/cdis/jupyter-pystata-user-licensed:3.0.0
 
 USER root
 RUN yum install -y firefox
