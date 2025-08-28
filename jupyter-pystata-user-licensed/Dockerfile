@@ -1,7 +1,6 @@
 
 FROM quay.io/cdis/jupyter-superslim:2.1.0
 
-
 USER root
 
 # This is needed for running stata_setup
