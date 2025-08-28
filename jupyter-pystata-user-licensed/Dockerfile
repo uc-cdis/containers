@@ -1,4 +1,5 @@
-FROM quay.io/cdis/jupyter-superslim:2.0.0
+FROM quay.io/cdis/jupyter-superslim:feat_add-debug-statements
+# TODO: revert back to tag after tests
 
 USER root
 RUN apt-get update
