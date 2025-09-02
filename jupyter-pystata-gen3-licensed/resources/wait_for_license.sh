@@ -11,13 +11,8 @@
 # license.g3auto_key in the hatchery.json. Default = 'stata_license.txt'
 
 LICENSE_VAR=${1:-"STATA_WORKSPACE_GEN3_LICENSE"}
-KEY_VAR=${2:-"stata_license.txt"}
+KEY_VAR=${2:-"stata-license.txt"}
 TARGET_FILE="/usr/local/stata18/stata.lic"
-
-# TODO remove after testing
-echo "Checking env vars"
-printenv
-
 
 echo "Checking stata license"
 if [[ ! -n "${!LICENSE_VAR}" ]]; then
@@ -40,7 +35,6 @@ python3 /tmp/setup_licensed_notebook.py
 rm geckodriver*
 
 echo "Init script done."
-# TODO: uncomment after testing
-# rm ${TARGET_FILE}
+rm ${TARGET_FILE}
 
 while true; do sleep 1; done
