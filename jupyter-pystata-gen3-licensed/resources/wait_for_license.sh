@@ -14,6 +14,11 @@ LICENSE_VAR=${1:-"STATA_WORKSPACE_GEN3_LICENSE"}
 KEY_VAR=${2:-"stata_license.txt"}
 TARGET_FILE="/usr/local/stata18/stata.lic"
 
+# TODO remove after testing
+echo "Checking env vars"
+printenv
+
+
 echo "Checking stata license"
 if [[ ! -n "${!LICENSE_VAR}" ]]; then
   echo "Exiting. Stata license is empty."
@@ -35,6 +40,7 @@ python3 /tmp/setup_licensed_notebook.py
 rm geckodriver*
 
 echo "Init script done."
-rm ${TARGET_FILE}
+# TODO: uncomment after testing
+# rm ${TARGET_FILE}
 
 while true; do sleep 1; done
