@@ -54,7 +54,7 @@ RUN pip3 uninstall -y gen3 || true
 
 # Install everything from requirements.txt
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+# RUN pip3 install --no-cache-dir -r requirements.txt
 
 
 # Install conda (miniconda) for AL2023
