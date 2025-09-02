@@ -49,31 +49,13 @@ COPY $NOTEBOOK_DIR/ $HOME/
 # Switch to root for installations
 USER root
 
-# Install Python packages with dependency resolution fixes
+# Uninstall gen3 if preinstalled
 RUN pip3 uninstall -y gen3 || true
 
-# Install packages in order of dependency complexity to avoid resolution issues
-RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel
+# Install everything from requirements.txt
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Install foundational packages first
-RUN pip3 install --no-cache-dir \
-    numpy>=1.21.0 \
-    scipy>=1.7.0
-
-# Install data science packages
-RUN pip3 install --no-cache-dir \
-    pandas>=1.3.0 \
-    matplotlib>=3.5.0 \
-    seaborn>=0.11.0
-
-# Install Jupyter components
-RUN pip3 install --no-cache-dir \
-    notebook>=6.4.0 \
-    jupyterlab>=3.0.0 \
-    ipykernel>=6.0.0
-
-# Install gen3 last as it may have specific version constraints
-RUN pip3 install --no-cache-dir gen3
 
 # Install conda (miniconda) for AL2023
 # RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
