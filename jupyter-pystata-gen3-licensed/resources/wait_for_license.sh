@@ -20,8 +20,19 @@ if [[ ! -n "${!LICENSE_VAR}" ]]; then
   exit 0
 fi
 
+if echo "${!LICENSE_VAR}" | grep -q "${KEY_VAR}" ; then
+  echo "Found key"
+else
+  echo "Exiting. Environment variable does not contain key ${KEY_VAR}."
+  exit 0
+fi
+
 LICENSE_DATA="${!LICENSE_VAR}"
 echo ${LICENSE_DATA} | jq -r --arg k ${KEY_VAR} '.[$k]' > ${TARGET_FILE}
+
+if [[ ! -f "${TARGET_FILE}" ]]; then
+    echo "Exiting. Did not save license."
+fi
 
 echo "Received a license. Starting jupyter."
 
