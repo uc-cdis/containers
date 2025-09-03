@@ -32,6 +32,7 @@ echo ${LICENSE_DATA} | jq -r --arg k ${KEY_VAR} '.[$k]' > ${TARGET_FILE}
 
 if [[ ! -f "${TARGET_FILE}" ]]; then
     echo "Exiting. Did not save license."
+    exit 0
 fi
 
 echo "Received a license. Starting jupyter."
