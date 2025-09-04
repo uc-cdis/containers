@@ -1,14 +1,4 @@
 # Check for license, start jupyter, initialize notebook, remove license
-#
-# Usage:
-# wait_for_license.sh [LICENSE_NAME] [LICENSE_KEY]
-#
-# where
-# LICENSE_NAME is the name of the environment variable with the
-# stata license. Default = 'STATA_WORKSPACE_GEN3_LICENSE'.
-#
-# LICENSE_KEY is the name of the secret key, specified by
-# license.g3auto_key in the hatchery.json. Default = 'stata_license.txt'
 
 LICENSE_VAR="STATA_WORKSPACE_GEN3_LICENSE"
 KEY_VAR="stata-license.txt"
