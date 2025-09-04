@@ -4,7 +4,7 @@ FROM quay.io/cdis/jupyter-pystata-user-licensed:chore_get-stata-license-from-env
 
 USER root
 RUN yum install -y firefox jq
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.35.0/geckodriver-v0.35.0-linux64.tar.gz
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.35.0-linux64.tar.gz
 RUN tar -xvzf geckodriver*
 RUN mv geckodriver /bin/
 
