@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.common.keys import Keys
@@ -44,3 +45,6 @@ actions.pause(5)
 actions.perform()
 actions.send_keys(Keys.ENTER)
 actions.perform()
+
+# Unset license from inside notebook
+os.environ.pop('STATA_WORKSPACE_GEN3_LICENSE', None)
