@@ -10,8 +10,8 @@
 # LICENSE_KEY is the name of the secret key, specified by
 # license.g3auto_key in the hatchery.json. Default = 'stata_license.txt'
 
-LICENSE_VAR=${1:-"STATA_WORKSPACE_GEN3_LICENSE"}
-KEY_VAR=${2:-"stata-license.txt"}
+LICENSE_VAR=${"STATA_WORKSPACE_GEN3_LICENSE"}
+KEY_VAR=${"stata-license.txt"}
 TARGET_FILE="/usr/local/stata18/stata.lic"
 
 echo "Checking stata license"
