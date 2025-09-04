@@ -38,6 +38,5 @@ rm geckodriver*
 
 echo "Init script done."
 rm ${TARGET_FILE}
-unset ${LICENSE_VAR}
 
 while true; do sleep 1; done
