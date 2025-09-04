@@ -24,6 +24,7 @@ if [[ ! -f "${TARGET_FILE}" ]]; then
     echo "Exiting. Did not save license."
     exit 0
 fi
+unset ${LICENSE_VAR}
 
 echo "Received a license. Starting jupyter."
 
