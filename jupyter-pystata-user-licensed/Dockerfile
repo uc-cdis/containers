@@ -1,6 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim:test_add-debug-statements
-# TODO: revert back to tag after tests
-# FROM quay.io/cdis/jupyter-superslim:2.1.0
+FROM quay.io/cdis/jupyter-superslim:2.1.0
 
 USER root
 
