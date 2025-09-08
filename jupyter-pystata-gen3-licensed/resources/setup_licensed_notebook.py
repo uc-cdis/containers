@@ -1,4 +1,3 @@
-import os
 from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.common.keys import Keys
