@@ -1,6 +1,4 @@
-FROM quay.io/cdis/jupyter-pystata-user-licensed:chore_get-stata-license-from-env
-# TODO: revert back to tag after tests
-# FROM quay.io/cdis/jupyter-pystata-user-licensed:3.0.0
+FROM quay.io/cdis/jupyter-pystata-user-licensed:3.0.0
 
 USER root
 RUN yum install -y firefox jq
