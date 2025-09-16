@@ -46,3 +46,9 @@ fi \n\
 ' | bash
 
 RUN echo 'function ve(){ mkdir virtualenv; cd virtualenv; VENV="$1"; python3 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python -m ipykernel install --user --name=$VENV; deactivate;}' >> ~/.bashrc
+
+# add welcome page - to both generic and tutorial images
+# note: they have the same file name, but they are different files
+# we think we don't need the first line
+# ADD --chown=jovyan:users brh-welcome.html /home/$NB_USER/
+RUN touch /home/$NB_USER/brh-welcome.html
