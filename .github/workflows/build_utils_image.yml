@@ -12,7 +12,7 @@ jobs:
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
       DOCKERFILE_LOCATION: "./utilities/Dockerfile"
-      DOCKERFILE_BUILD_CONTEXT: "./utilites"
+      DOCKERFILE_BUILD_CONTEXT: "./utilities"
       OVERRIDE_REPO_NAME: "utilities"
       # OVERRIDE_TAG_NAME: "vadc-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
     secrets:
