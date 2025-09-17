@@ -1,4 +1,4 @@
-name: Build and push VADC notebook image
+name: Build and push utilities image
 
 on:
   push:
