@@ -7,7 +7,7 @@ on:
     - .github/workflows/build_utils_image.yml
 
 jobs:
-  jupyter-vadc:
+  utils:
     name: Build and Push jupyter-vadc
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
