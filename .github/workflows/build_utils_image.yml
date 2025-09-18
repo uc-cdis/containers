@@ -1,0 +1,23 @@
+name: Build and push utilities image
+
+on:
+  push:
+    paths:
+    - utilities/**
+    - .github/workflows/build_utils_image.yml
+
+jobs:
+  utils:
+    name: Build and Push jupyter-vadc
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      DOCKERFILE_LOCATION: "./utilities/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./utilities"
+      OVERRIDE_REPO_NAME: "utilities"
+      USE_QUAY_ONLY: true
+      # OVERRIDE_TAG_NAME: "vadc-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
