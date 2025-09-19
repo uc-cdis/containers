@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang=en>
+<title>Tutorial Workspace</title>
+<link href="https://fonts.googleapis.com/icon?family=Source+Sans+Pro"
+  rel=stylesheet>
+<style>
+  body {
+    font-family: "Source Sans Pro", sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0 20px 20px 20px;
+    font-size: 14px;
+    line-height: 1.6em;
+    letter-spacing: .02rem
+  }
+
+  h1.header {
+    margin: 20px 10px 16px;
+    border-bottom: solid #421c52 2px;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 2em;
+    letter-spacing: 0;
+    color: #000
+  }
+
+  .content {
+    padding: 10px
+  }
+</style>
+<h1 class=header>Welcome to the BRH Tutorial Workspace</h1>
+<div class=content>
+  <p><strong>This is your personal workspace. No one else can access the data or files here.</strong></p> 
+  <p>You can learn more about using the BRH Workspace in the 
+    <a href=https://uc-cdis.github.io/BRH-documentation/01-home>BRH Documentation</a>.
+  </p>
+  <p><strong>The <code>/pd</code> folder (find it in the panel on the left) is your persistent drive:</strong>
+  </p>
+  <ul>
+    <li>Use this folder to store files (notebooks, data files, etc) that you want to use again later. 
+      The files you save here will still be available when you come back after terminating your workspace session.</li>
+    <li><strong>Any files you create or add outside of this folder will be lost if they are not moved to the <code>/pd</code> 
+      before your workspace session terminates.</strong></li>
+    <li>The Tutorial image <code>/pd</code> has a storage capacity limit of 2Gi</li>
+  </ul>
+  <p>The folder <code>/brh.data-commons.org</code> in the <code>/data</code> folder will host any data files you have downloaded to the workspace through the <a
+    href=https://brh.data-commons.org/discovery>BRH Discovery Page</a>. Move these files to the <code>/pd</code> directory if you want to access them again after you terminate your workspace session.
+  </p>
+<h2 class=header>Get started with Data Exploration</h2>
+  <p>Open a new "Launcher" tab by clicking the <code>+</code> next to <code>tutorial-welcome.html</code> tab at the 
+    top of this document.
+  </p>
+  <p>From the Launcher tab, you can open: a new, empty Jupyter notebook; open a new code console or terminal window; or, 
+    create several types of files (text, Markdown, Python). For notebooks or files - remember to move the file into the 
+    <code>/pd</code> drive if you want to access them in a later workspace session.
+  </p>
+  <p>You can learn <a href=https://uc-cdis.github.io/BRH-documentation/11-downloading_data_files>how to download data files through the BRH discovery page in our documentation</a>.
+  </p>
+  <p>Install software tools by using <code>pip install</code> (Python) or <code>CRAN</code> (R). 
+    If you have a requirements text, you can install them with <code>pip install -r requirements.txt</code>.
+    You can view all pre-installed software packages by opening a terminal window and using the command <code>pip list</code>
+  </p>
+  <p>Find some examples of analyses that can be done in the BRH Workspace on the  
+    <a href=https://brh.data-commons.org/resource-browser>BRH Example Analyses page</a>.
+  </p>
+  <p>If the locally-stored files you wish to analyze are large in number and/or size, you may need to zip them before 
+    uploading to a workspace. Once in a workspace, files can be unzipped using the python library 
+    <a href=https://docs.python.org/3/library/zipfile.html>zipfile</a>.
+  </p>
+  
+<h2 class=header>Using the Tutorial Notebooks</h2>
+  <p>The tutorial notebooks in the panel on the left provide examples of analyses that can be done in the BRH Workspace. 
+    (You can also see the tutorial analyses on the 
+    <a href=https://brh.data-commons.org/resource-browser>BRH Example Analyses page</a>.) 
+  </p>
+  <p>The tutorials are read-only; you can run the notebook cells to see the output, but you cannot update any cells 
+    in these notebooks. However, you can create copies of these tutorials that can be edited and customized. 
+    Right-click on the notebook in the left panel, then select Duplicate. The copy will be editable, not read-only. 
+    If you want to save this notebook and your edits, move it to the <code>/pd</code>. 
+  </p>
+  <p><strong>Note:</strong>The Tutorial Jupyter Lab image is currently sized for small analyses and testing. 
+    The maximum storage in the <code>/pd</code> (including any notebooks or tools installed) is 2Gi. 
+    If you need a larger image for your analyses, please reach out to the BRH support team at 
+    <a href= "mailto:brhsupport@gen3.org">brhsupport@gen3.org</a> to discuss the possibility of a larger image.
+  </p>
+<h2 class=header>Funding a persistent paymodel</h2>
+  <p>To learn how to fund your workspace after your trial period ends, visit our documentation on 
+    <a href=https://uc-cdis.github.io/BRH-documentation/13-workspace_accounts/#requesting-funding-for-workspace-accounts-through-any-persistent-pay-model>persistent paymodels</a>. 
+  </p>
+</div>
