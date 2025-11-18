@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - jupyterlab-generic/**
-      - .github/workflows/build_push_jupyterlab-generic.yml
+      - .github/workflows/build_push_jupyterlab_generic.yml
   workflow_dispatch:
 
 jobs:
