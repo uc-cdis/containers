@@ -12,13 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # - uses: prewk/s3-cp-action@v2
-      #   with:
-      #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     source: 's3://ctds-stata/StataNow18Linux64.tar.gz'
-      #     dest: './jupyter-pystata-user-licensed/resources/'
-
       - name: Extract branch name
         id: extract_branch
         run: |
