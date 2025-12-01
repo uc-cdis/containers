@@ -5,11 +5,32 @@ analytic software for use from within Gen3 workspaces.
 
 # Usage
 
+Before mounting the bucket, you need to do the following:
+
+1. Install AWS CLI (e.g., using the command line installer available [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+2. Use `aws configure sso` to authenticate. For more information on this step,
+   go to [My FedRAMP apps](https://uchicago-fedramp.okta.com/app/UserHome),
+   click on the CTDS AWS IAM Identity Center card, and under the Bionumbus-Test
+   Environment use the Access keys link.
+
+> [!NOTE]
+> Running `aws configure sso` places temporary credentials in the approprate
+> environment vars, and these are then copied into the container when it is run
+> so that they can be picked up by `s3fs`. To renew them after they have expired,
+> run `aws configure sso` again.
+
 After building and running the image, use
+
+    docker exec -it gen3-workspace-admin bash --init-file /root/setup-env.sh
+
+to install `s3fs-fuse`, mount the S3 bucket, and get a shell from which you can
+use Spack to manage the software repository. To return to the same container at
+a later time and/or to utilize a local software repository (e.g., for testing),
+use the command
 
     docker exec -it gen3-workspace-admin bash --init-file /spack/share/spack/setup-env.sh
 
-to get a shell from which you can use Spack to manage the software repository.
+instead.
 
 ## Installing lmod
 
