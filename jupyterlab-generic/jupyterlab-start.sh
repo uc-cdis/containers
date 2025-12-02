@@ -24,7 +24,8 @@ module load git ripgrep
 module load py-pandas py-scipy
 
 /usr/local/python-venv/bin/jupyter lab \
-    --ip=0.0.0.0 \
+    --ServerApp.ip=0.0.0.0 \
     --KernelSpecManager.ensure_native_kernel=False \
     --ServerApp.quit_button=False \
-    --IdentityProvider.token=""
+    --IdentityProvider.token="" \
+    "$@"
