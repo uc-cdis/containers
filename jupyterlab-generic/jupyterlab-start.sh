@@ -14,9 +14,6 @@
 # ln -s ./pd/.config .
 # ln -s ./pd/.local .
 
-# # Symlink data directory mounted at root
-# ln -s /data .
-
 # Load JupyterLab extension dependencies
 source /apps/lmod/lmod/init/profile
 module load git ripgrep
