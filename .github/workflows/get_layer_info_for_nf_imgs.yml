@@ -45,10 +45,40 @@ jobs:
                 echo "Line $LINENO: Rate limit exceeded, waiting for $wait_time seconds before retrying..." >&2
                 sleep $wait_time
                 wait_time=$((wait_time * 2))  # Exponential backoff
-              else
+                continue
+              fi
+
+              mediaType=$(jq -r '.mediaType // empty' <<<"$response")
+
+              if [ "$mediaType" == "application/vnd.oci.image.index.v1+json" ]; then
+                # Pick the amd64/linux image manifest (ignore attestations)
+                digest=$(jq -r '
+                  .manifests[]
+                  | select(.platform.architecture=="amd64" and .platform.os=="linux")
+                  | .digest
+                ' <<<"$response")
+
+                if [ -z "$digest" ]; then
+                  echo "Line $LINENO: No amd64/linux manifest found in OCI index" >&2
+                  return 1
+                fi
+
+                # Replace tag with digest to form concrete manifest URL
+                resolved_url="$(sed "s|/manifests/.*|/manifests/$digest|" <<<"$url")"
+
+                # Fetch and echo the resolved image manifest
+                response=$(curl -s \
+                  -H "Authorization: Bearer $TOKEN" \
+                  -H "Accept: application/vnd.oci.image.manifest.v1+json" \
+                  "$resolved_url")
+
                 echo "$response"
                 return
               fi
+
+              echo "$response"
+              return
+
             done
 
             echo "Line $LINENO: Failed to fetch manifest after $retries attempts due to rate limiting." >&2
