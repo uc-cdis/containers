@@ -102,7 +102,9 @@ jobs:
             tag_name=$(echo "${image_url}" | sed 's|\(.*\):\(.*\)|\2|')
             echo "$LINENO: manifest_url = $manifest_url, tag_name = $tag_name"
             # Fetch the manifest with retry using exponential backoff
-            response=$(fetch_manifest "$manifest_url" | jq "[.layers[].digest]|.[-1]")
+            response=$(fetch_manifest "$manifest_url")
+            echo "Response from manifest_url:  $response"
+            response=$(echo "${response}" | jq "[.layers[].digest]|.[-1]")
 
             if [ $? -ne 0 ] || [ -z "$response" ]; then
               echo "Line $LINENO: Failed to retrieve valid response from manifest_url -- $manifest_url" >&2
