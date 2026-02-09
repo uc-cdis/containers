@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim:2.1.0
+FROM quay.io/cdis/jupyter-superslim:2.1.1
 
 USER root
 
