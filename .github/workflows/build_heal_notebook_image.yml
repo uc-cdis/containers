@@ -18,6 +18,7 @@ jobs:
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
+          remove-docker-images: 'true'
 
       - name: clean
         run: sudo apt clean
