@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-pystata-user-licensed:3.0.0
+FROM quay.io/cdis/jupyter-pystata-user-licensed:3.1.1
 
 USER root
 RUN yum install -y firefox jq
