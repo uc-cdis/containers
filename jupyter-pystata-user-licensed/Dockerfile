@@ -5,7 +5,9 @@ USER root
 # This is needed for running stata_setup
 RUN yum -y update
 RUN yum install -y \
-	ncurses-compat-libs && \
+	ncurses-compat-libs \
+	gzip \
+	tar && \
     yum clean all
 
 RUN mkdir /usr/local/stata18
