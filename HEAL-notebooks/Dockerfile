@@ -1,11 +1,10 @@
-FROM quay.io/cdis/jupyter-superslim-r:2.1.0
+FROM quay.io/cdis/jupyter-superslim-r:2.1.1
 
 USER $NB_USER
 ARG NOTEBOOK_DIR
 
 COPY $NOTEBOOK_DIR/ $HOME/
 
-RUN pip3 install gen3
 RUN pip3 install heal-sdk
 RUN conda config --append channels conda-forge
 RUN conda install -c plotly plotly
