@@ -16,11 +16,14 @@ ln -s ./pd/.local .
 
 # Load JupyterLab extension dependencies
 source /apps/lmod/lmod/init/profile
-module load git ripgrep
+module load git
+# module load ripgrep
 # Load default modules
-module load py-pandas py-scipy
+module load py-pandas
+# module load py-scipy
 
 /usr/local/python-venv/bin/jupyter lab \
+    --ServerApp.ip=0.0.0.0 \
     --KernelSpecManager.ensure_native_kernel=False \
     --ServerApp.quit_button=False \
     --IdentityProvider.token="" \
