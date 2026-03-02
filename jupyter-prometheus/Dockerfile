@@ -23,6 +23,7 @@ RUN dnf update -y && dnf install -y \
     tar \
     gzip \
     shadow-utils \
+    mount-s3 \
     && dnf clean all
 
 # Install udunits2 from source since it's not in AL2023 repos
