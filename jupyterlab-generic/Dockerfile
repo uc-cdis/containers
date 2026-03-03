@@ -7,7 +7,7 @@ LABEL name="jupyterlab-generic"
 # TODO: git, nodejs, and build are all required only to build jupyterlmod;
 #       these can be dropped once jupyterlmod fix is available in PyPI.
 RUN dnf upgrade --refresh && \
-    dnf install -y python3.13 python3.13-pip git nodejs shadow-utils which && \
+    dnf install -y python3.13 python3.13-pip git nodejs shadow-utils Lmod which && \
     python3.13 -m venv /usr/local/python-venv && \
     source /usr/local/python-venv/bin/activate && \
     pip install --upgrade pip && \
