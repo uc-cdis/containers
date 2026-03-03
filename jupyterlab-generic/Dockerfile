@@ -7,7 +7,7 @@ LABEL name="jupyterlab-generic"
 # TODO: git, nodejs, and build are all required only to build jupyterlmod;
 #       these can be dropped once jupyterlmod fix is available in PyPI.
 RUN dnf upgrade --refresh && \
-    dnf install -y python3.13 python3.13-pip git nodejs shadow-utils Lmod which && \
+    dnf install -y python3.13 python3.13-pip git nodejs shadow-utils which && \
     python3.13 -m venv /usr/local/python-venv && \
     source /usr/local/python-venv/bin/activate && \
     pip install --upgrade pip && \
@@ -16,6 +16,17 @@ RUN dnf upgrade --refresh && \
     pip install jupyterlmod git+https://github.com/pschumm/jupyter-lmod@pschumm/fix_hidden && \
     pip install jupyterlab-git && \
     pip install jupyterlab-search-replace
+
+# Install Lmod v9 from source
+RUN wget https://github.com/TACC/Lmod/archive/refs/tags/9.1.21.tar.gz -O /tmp/lmod.tar.gz && \
+    tar -xzf /tmp/lmod.tar.gz -C /tmp && \
+    cd /tmp/Lmod-9.1.21 && \
+    ./configure --prefix=/usr/local && \
+    make install && \
+    rm -rf /tmp/lmod.tar.gz /tmp/Lmod-9.1.21
+
+# Sanity check
+RUN bash -c 'source /usr/local/lmod/lmod/init/bash && ml --version'
 
 RUN /usr/local/python-venv/bin/jupyter kernelspec remove -y python3
 
@@ -36,7 +47,7 @@ USER jovyan
 WORKDIR /home/jovyan
 
 # Add path to kernels
-ENV JUPYTER_PATH=/apps/share/jupyter
+# ENV JUPYTER_PATH=/apps/share/jupyter
 
 # Enable lmod
 ENV LMOD_CMD=/apps/lmod/lmod/libexec/lmod
