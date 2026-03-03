@@ -29,6 +29,7 @@ _timeit "ln .local"            ln -s ./pd/.local .
 _timeit "source lmod profile"  bash -c 'source /usr/share/lmod/init/bash'
 _timeit "module load git"      bash -c 'source /usr/share/lmod/init/bash && module load git'
 # module load ripgrep
+source /usr/local/lmod/lmod/init/bash
 _timeit "module load py-pandas" bash -c 'source module load py-pandas'
 # module load py-scipy
 
