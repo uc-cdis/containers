@@ -7,7 +7,9 @@ LABEL name="jupyterlab-generic"
 # TODO: git, nodejs, and build are all required only to build jupyterlmod;
 #       these can be dropped once jupyterlmod fix is available in PyPI.
 RUN dnf upgrade --refresh && \
-    dnf install -y python3.13 python3.13-pip git nodejs shadow-utils which && \
+    dnf install -y python3.13 python3.13-pip git nodejs shadow-utils which \
+    # Lmod build dependencies
+    lua lua-devel tcl wget tar gzip gcc procps-ng bc lua-posix && \
     python3.13 -m venv /usr/local/python-venv && \
     source /usr/local/python-venv/bin/activate && \
     pip install --upgrade pip && \
@@ -18,12 +20,12 @@ RUN dnf upgrade --refresh && \
     pip install jupyterlab-search-replace
 
 # Install Lmod v9 from source
-RUN wget https://github.com/TACC/Lmod/archive/refs/tags/9.1.21.tar.gz -O /tmp/lmod.tar.gz && \
+RUN wget https://github.com/TACC/Lmod/archive/refs/tags/9.1.2.tar.gz -O /tmp/lmod.tar.gz && \
     tar -xzf /tmp/lmod.tar.gz -C /tmp && \
-    cd /tmp/Lmod-9.1.21 && \
-    ./configure --prefix=/usr/local && \
+    cd /tmp/Lmod-9.1.2 && \
+    ./configure --prefix=/usr/local --with-fastTCLInterp=no && \
     make install && \
-    rm -rf /tmp/lmod.tar.gz /tmp/Lmod-9.1.21
+    rm -rf /tmp/lmod.tar.gz /tmp/Lmod-9.1.2
 
 # Sanity check
 RUN bash -c 'source /usr/local/lmod/lmod/init/bash && ml --version'
