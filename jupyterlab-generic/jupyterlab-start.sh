@@ -26,11 +26,11 @@ _timeit "ln .ipython"          ln -s ./pd/.ipython .
 _timeit "ln .config"           ln -s ./pd/.config .
 _timeit "ln .local"            ln -s ./pd/.local .
 
-_timeit "source lmod profile"  bash -c 'source /usr/share/lmod/init/bash'
-_timeit "module load git"      bash -c 'source /usr/share/lmod/init/bash && module load git'
+_timeit "source lmod profile"  bash -c 'source /usr/local/lmod/lmod/init/bash'
+_timeit "module load git"      bash -c 'source /usr/local/lmod/lmod/init/bash && module load git'
 # module load ripgrep
 source /usr/local/lmod/lmod/init/bash
-_timeit "module load py-pandas" bash -c 'source module load py-pandas'
+_timeit "module load py-pandas" bash -c 'source /usr/local/lmod/lmod/init/bash && module load py-pandas'
 # module load py-scipy
 
 echo "[TIMER] Starting jupyter lab..." >&2
