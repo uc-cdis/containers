@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
 
-# # Symlink config files for persistence
-test -f ./pd/.bash_profile || touch ./pd/.bash_profile
-test -f ./pd/.bashrc || touch ./pd/.bashrc
-test -d ./pd/.jupyter || mkdir ./pd/.jupyter
-test -d ./pd/.ipython || mkdir ./pd/.ipython
-test -d ./pd/.config || mkdir ./pd/.config
-test -d ./pd/.local || mkdir ./pd/.local
-ln -s ./pd/.bash_profile .
-ln -s ./pd/.bashrc .
-ln -s ./pd/.jupyter .
-ln -s ./pd/.ipython .
-ln -s ./pd/.config .
-ln -s ./pd/.local .
+# Symlink config files for persistence
+if [[ -d "./pd " ]]; then
+    test -f ./pd/.bash_profile || touch ./pd/.bash_profile
+    test -f ./pd/.bashrc || touch ./pd/.bashrc
+    test -d ./pd/.jupyter || mkdir ./pd/.jupyter
+    test -d ./pd/.ipython || mkdir ./pd/.ipython
+    test -d ./pd/.config || mkdir ./pd/.config
+    test -d ./pd/.local || mkdir ./pd/.local
+    test -d ./pd/.R || mkdir ./pd/.R
+    test -d ./pd/.ado || mkdir ./pd/.ado
+    ln -s ./pd/.bash_profile .
+    ln -s ./pd/.bashrc .
+    ln -s ./pd/.jupyter .
+    ln -s ./pd/.ipython .
+    ln -s ./pd/.config .
+    ln -s ./pd/.local .
+    ln -s ./pd/R .
+    ln -s ./pd/ado .
+fi
 
 # Load JupyterLab extension dependencies
 source /apps/lmod/lmod/init/profile
