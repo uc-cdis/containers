@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:2.1.1
+FROM quay.io/cdis/jupyter-superslim-r:chore_update-script
 
 USER $NB_USER
 ARG NOTEBOOK_DIR
