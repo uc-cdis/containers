@@ -13,7 +13,7 @@ jobs:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          # root-reserve-mb: 30000
+          root-reserve-mb: 30000
           swap-size-mb: 1024
           remove-dotnet: 'true'
           remove-android: 'true'
@@ -29,7 +29,11 @@ jobs:
         id: extract_branch
 
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+            HEAL-notebooks
 
       - name: Get changed files
         id: get_changed_files
