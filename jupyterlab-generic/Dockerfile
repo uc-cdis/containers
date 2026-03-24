@@ -22,7 +22,7 @@ RUN dnf upgrade --refresh && \
 RUN ln -s /usr/bin/python3.14 /usr/bin/python3 && \
     ln -s /usr/bin/python3.14 /usr/bin/python
 
-# RUN /usr/local/python-venv/bin/jupyter kernelspec remove -y python3
+RUN /usr/local/python-venv/bin/jupyter kernelspec remove -y python3
 
 COPY jupyterlab-start.sh .
 RUN chmod +x jupyterlab-start.sh
