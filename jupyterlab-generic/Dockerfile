@@ -40,9 +40,6 @@ RUN groupadd -g 1010 jovyan && \
 USER jovyan
 WORKDIR /home/jovyan
 
-# Add path to kernels
-# ENV JUPYTER_PATH=/apps/share/jupyter
-
 # Enable lmod
 ENV LMOD_CMD=/apps/lmod/lmod/libexec/lmod
 ENV MODULEPATH=/apps/lmod/lmod/modulefiles
