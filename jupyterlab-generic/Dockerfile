@@ -6,6 +6,8 @@ LABEL name="jupyterlab-generic"
 
 # TODO: git, nodejs, and build are all required only to build jupyterlmod;
 #       these can be dropped once jupyterlmod fix is available in PyPI.
+# TODO: frictionless install can be removed after it is installed by
+#       spack in the software-library bucket.
 RUN dnf upgrade --refresh && \
     dnf install -y python3.14 python3.14-pip git nodejs shadow-utils which && \
     python3.14 -m venv /usr/local/python-venv && \
@@ -16,6 +18,7 @@ RUN dnf upgrade --refresh && \
     pip install jupyterlmod git+https://github.com/pschumm/jupyter-lmod@pschumm/fix_hidden && \
     pip install jupyterlab-git && \
     pip install jupyterlab-search-replace && \
+    pip install frictionless && \
     pip install ipykernel==6.31.0 && \
     python3.14 -m ipykernel install --name "Python-3.14.0" --display-name "Python 3.14 (ipykernel)"
 
