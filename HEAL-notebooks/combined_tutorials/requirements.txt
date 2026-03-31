@@ -3,6 +3,6 @@ seaborn==0.13.2
 openpyxl==3.1.5
 pyreadstat==1.2.7
 scikit-learn==1.6.0
-r-sf
-r-tidygeocoder
-r-tmap
+#r-sf
+#r-tidygeocoder
+#r-tmap
