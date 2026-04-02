@@ -25,12 +25,12 @@ RUN ln -s /usr/bin/python3.14 /usr/bin/python3 && \
 RUN /usr/local/python-venv/bin/jupyter kernelspec remove -y python3
 
 # This is needed for running stata_setup
-RUN yum -y update
-RUN yum install -y \
+RUN dnf -y update
+RUN dnf install -y \
 	ncurses-compat-libs \
 	gzip \
 	tar && \
-    yum clean all
+    dnf clean all
 
 # stata
 RUN mkdir /usr/local/stata18
