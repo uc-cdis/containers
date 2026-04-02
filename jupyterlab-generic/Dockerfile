@@ -24,6 +24,15 @@ RUN ln -s /usr/bin/python3.14 /usr/bin/python3 && \
 
 RUN /usr/local/python-venv/bin/jupyter kernelspec remove -y python3
 
+# stata
+RUN mkdir /usr/local/stata18
+COPY ./resources/StataNow18Linux64.tar.gz /tmp/StataNow18Linux64.tar.gz
+RUN cd /usr/local/stata18 && tar -xvf /tmp/StataNow18Linux64.tar.gz
+
+ENV PATH=$PATH:/usr/local/stata18
+RUN cd /usr/local/stata18 && \
+	{ echo y; echo y; echo y; } | ./install
+
 COPY jupyterlab-start.sh .
 RUN chmod +x jupyterlab-start.sh
 
