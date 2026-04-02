@@ -24,6 +24,14 @@ RUN ln -s /usr/bin/python3.14 /usr/bin/python3 && \
 
 RUN /usr/local/python-venv/bin/jupyter kernelspec remove -y python3
 
+# This is needed for running stata_setup
+RUN yum -y update
+RUN yum install -y \
+	ncurses-compat-libs \
+	gzip \
+	tar && \
+    yum clean all
+
 # stata
 RUN mkdir /usr/local/stata18
 COPY ./resources/StataNow18Linux64.tar.gz /tmp/StataNow18Linux64.tar.gz
