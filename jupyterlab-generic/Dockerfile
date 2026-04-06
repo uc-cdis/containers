@@ -24,6 +24,14 @@ RUN ln -s /usr/bin/python3.14 /usr/bin/python3 && \
 
 RUN /usr/local/python-venv/bin/jupyter kernelspec remove -y python3
 
+# This is needed for running stata_setup
+RUN dnf -y update
+RUN dnf install -y \
+	ncurses-compat-libs \
+	gzip \
+	tar && \
+    dnf clean all
+
 COPY jupyterlab-start.sh .
 RUN chmod +x jupyterlab-start.sh
 
