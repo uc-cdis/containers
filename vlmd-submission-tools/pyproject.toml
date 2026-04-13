@@ -18,7 +18,7 @@ vlmd-submission-tools = 'vlmd_submission_tools.__main__:main'
 
 [tool.poetry.dependencies]
 python = "^3.9"
-requests = "^2.27.1"
+requests = "^2.32.4"
 PyYAML = "^6.0"
 urllib3 = ">=1.26.9"
 heal-sdk = ">=1.0.1"
