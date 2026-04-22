@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx:stable-trixie
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
