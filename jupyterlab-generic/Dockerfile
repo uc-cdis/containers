@@ -4,6 +4,14 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2023-minimal
 LABEL maintainer="Center for Translational Data Science (CTDS)"
 LABEL name="jupyterlab-generic"
 
+# This is needed for running stata_setup
+RUN yum -y update
+RUN yum install -y \
+	ncurses-compat-libs \
+	gzip \
+	tar && \
+    yum clean all
+
 # TODO: git, nodejs, and build are all required only to build jupyterlmod;
 #       these can be dropped once jupyterlmod fix is available in PyPI.
 # TODO: frictionless install can be removed after it is installed by
@@ -21,6 +29,13 @@ RUN dnf upgrade --refresh && \
     pip install frictionless && \
     pip install ipykernel==6.31.0 && \
     python3.14 -m ipykernel install --name "Python-3.14.0" --display-name "Python 3.14 (ipykernel)"
+
+# This is needed for running stata_setup
+RUN dnf install -y \
+	ncurses-compat-libs \
+	gzip \
+	tar && \
+    dnf clean all
 
 RUN ln -s /usr/bin/python3.14 /usr/bin/python3 && \
     ln -s /usr/bin/python3.14 /usr/bin/python
@@ -42,6 +57,8 @@ RUN groupadd -g 1010 jovyan && \
     usermod --shell /bin/bash jovyan
 USER jovyan
 WORKDIR /home/jovyan
+
+RUN pip install --user stata_setup
 
 # Enable lmod
 ENV LMOD_CMD=/apps/lmod/lmod/libexec/lmod
