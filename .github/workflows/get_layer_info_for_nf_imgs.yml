@@ -29,7 +29,7 @@ jobs:
           if [ -z "$layer_json" ]; then
             layer_json="{}"
           fi
-          echo "Line: $LINENO layer_json=$layer_json"
+          echo "Line $LINENO: layer_json=$layer_json"
           # Function to fetch the manifest with retry logic for rate limiting
           fetch_manifest() {
             local url=$1
@@ -45,34 +45,67 @@ jobs:
                 echo "Line $LINENO: Rate limit exceeded, waiting for $wait_time seconds before retrying..." >&2
                 sleep $wait_time
                 wait_time=$((wait_time * 2))  # Exponential backoff
-              else
+                continue
+              fi
+
+              mediaType=$(jq -r '.mediaType // empty' <<<"$response")
+
+              if [ "$mediaType" == "application/vnd.oci.image.index.v1+json" ]; then
+                # Pick the amd64/linux image manifest (ignore attestations)
+                digest=$(jq -r '
+                  .manifests[]
+                  | select(.platform.architecture=="amd64" and .platform.os=="linux")
+                  | .digest
+                ' <<<"$response")
+
+                if [ -z "$digest" ]; then
+                  echo "Line $LINENO: No amd64/linux manifest found in OCI index" >&2
+                  return 1
+                fi
+
+                # Replace tag with digest to form concrete manifest URL
+                resolved_url="$(sed "s|/manifests/.*|/manifests/$digest|" <<<"$url")"
+
+                # Fetch and echo the resolved image manifest
+                response=$(curl -s \
+                  -H "Authorization: Bearer $TOKEN" \
+                  -H "Accept: application/vnd.oci.image.manifest.v1+json" \
+                  "$resolved_url")
+
                 echo "$response"
                 return
               fi
+
+              echo "$response"
+              return
+
             done
 
             echo "Line $LINENO: Failed to fetch manifest after $retries attempts due to rate limiting." >&2
             return 1
           }
 
+          echo "Line $LINENO: started reading lines from script"
           while IFS= read -r image_url; do
             # Ignore lines that start with #
-              if [[ "$image_url" == \#* ]]; then
-              echo "Line_$LINENO: Skipping this line -- $image_url"
-                continue
-              fi
+            if [[ "$image_url" == \#* ]]; then
+            echo "Line $LINENO: Skipping this line -- $image_url"
+              continue
+            fi
 
             # Strip the first * if a line starts with *
-              if [[ "$image_url" == \** ]]; then
-              echo "Line_$LINENO: Stripping * from this line -- $image_url"
-                image_url=$(echo "${image_url:1}"| sed 's/^[ \t]*//;s/[ \t]*$//')
-              fi
-            echo "Line $LINENO: started reading lines from script"
+            if [[ "$image_url" == \** ]]; then
+            echo "Line $LINENO: Stripping * from this line -- $image_url"
+              image_url=$(echo "${image_url:1}"| sed 's/^[ \t]*//;s/[ \t]*$//')
+            fi
+
             manifest_url=$(echo "${image_url}" | sed 's|public\.ecr\.aws/\(.*\):\(.*\)|https://public.ecr.aws/v2/\1/manifests/\2|')
             tag_name=$(echo "${image_url}" | sed 's|\(.*\):\(.*\)|\2|')
-            echo "$LINENO: manifest_url = $manifest_url, tag_name = $tag_name"
+            echo "Line $LINENO: manifest_url = $manifest_url - tag_name = $tag_name"
             # Fetch the manifest with retry using exponential backoff
-            response=$(fetch_manifest "$manifest_url" | jq "[.layers[].digest]|.[-1]")
+            response=$(fetch_manifest "$manifest_url")
+            echo "Response from manifest_url: $response"
+            response=$(echo "${response}" | jq "[.layers[].digest]|.[-1]")
 
             if [ $? -ne 0 ] || [ -z "$response" ]; then
               echo "Line $LINENO: Failed to retrieve valid response from manifest_url -- $manifest_url" >&2
@@ -94,7 +127,7 @@ jobs:
           done <<< "$url_list"
 
           if [ -n "$layer_json" ]; then
-            echo "$layer_json" >  $output_file_name
+            echo "$layer_json" > $output_file_name
           fi
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5

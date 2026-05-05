@@ -1,36 +1,45 @@
 # Use the specified base image
-FROM nvcr.io/nvidia/cuda:12.3.1-base-ubuntu22.04
+FROM nvcr.io/nvidia/cuda:12.3.1-base-ubuntu22.04 AS openssl-builder
 
-RUN apt-get purge -y --auto-remove openssl && apt-get autoremove && apt-get autoclean
+# Install build deps only
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        wget \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get -y upgrade && apt install -y wget
-
-RUN apt install -y build-essential && \
-    apt-get install -y python3 && \
-    apt-get install -y python3-pip
-
-# install openssl 3.0.8 as it is required for FIPS compliance.
 WORKDIR /tmp
 RUN wget https://www.openssl.org/source/openssl-3.0.8.tar.gz && \
-    tar -xzvf openssl-3.0.8.tar.gz && \
-    rm openssl-3.0.8.tar.gz
+    tar -xzf openssl-3.0.8.tar.gz
 
 WORKDIR /tmp/openssl-3.0.8
-RUN ./Configure enable-fips && \
-    make && \
-    make install
+RUN ./Configure enable-fips && make -j$(nproc) && make install_sw install_ssldirs
 
-# Changing adding `/usr/local/lib` as a prefix to LD_LIBRARY_PATH will
-# give precedence to OpenSSL 3.0.8 library files over the 3.0.2
+FROM nvcr.io/nvidia/cuda:12.3.1-base-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install runtime deps only
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+        libglib2.0-0 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy OpenSSL runtime artifacts only
+COPY --from=openssl-builder /usr/local/ssl /usr/local/ssl
+COPY --from=openssl-builder /usr/local/lib /usr/local/lib
+COPY --from=openssl-builder /usr/local/lib64 /usr/local/lib64
+COPY --from=openssl-builder /usr/local/bin/openssl /usr/local/bin/openssl
+
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:$LD_LIBRARY_PATH
+ENV OPENSSL_CONF=/usr/local/ssl/openssl.cnf
 
-# Make config changes ti ensure FIPS compliance
-RUN sed -i 's$# .include fipsmodule.cnf$.include /usr/local/ssl/fipsmodule.cnf$g' /usr/local/ssl/openssl.cnf
-RUN sed -i 's$providers = provider_sect$providers = provider_sect\nalg_section = algorithm_sect$g' /usr/local/ssl/openssl.cnf
-RUN sed -i 's$# fips = fips_sect$fips = fips_sect$g' /usr/local/ssl/openssl.cnf
-RUN sed -i -e 's$# activate = 1$activate = 1 \n\n[algorithm_sect]\ndefault_properties = fips=yes$g' /usr/local/ssl/openssl.cnf
-
-
-# Clean up the temporary directory
+# FIPS config
+RUN sed -i 's$# .include fipsmodule.cnf$.include /usr/local/ssl/fipsmodule.cnf$g' /usr/local/ssl/openssl.cnf && \
+    sed -i 's$providers = provider_sect$providers = provider_sect\nalg_section = algorithm_sect$g' /usr/local/ssl/openssl.cnf && \
+    sed -i 's$# fips = fips_sect$fips = fips_sect$g' /usr/local/ssl/openssl.cnf && \
+    sed -i -e 's$# activate = 1$activate = 1 \n\n[algorithm_sect]\ndefault_properties = fips=yes$g' /usr/local/ssl/openssl.cnf
 WORKDIR /
-RUN rm -rf /tmp/openssl-3.0.8
