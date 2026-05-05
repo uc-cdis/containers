@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:2.2.0
+FROM quay.io/cdis/jupyter-superslim-heal:feat_heal-superslim
 
 USER $NB_USER
 ARG NOTEBOOK_DIR
