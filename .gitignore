@@ -1,2 +1,7 @@
 .vscode/*
 .DS_store
+HEAL-notebooks/combined_tutorials/*.zip
+HEAL-notebooks/combined_tutorials/*.csv
+HEAL-notebooks/combined_tutorials/*.tsv
+HEAL-notebooks/combined_tutorials/*.xlsx
+HEAL-notebooks/combined_tutorials/*.txt
