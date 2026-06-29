@@ -1,0 +1,17 @@
+# Foundational packages
+numpy
+scipy
+
+# Data science packages
+pandas
+matplotlib
+seaborn
+
+# Jupyter components
+notebook
+jupyterlab
+ipykernel
+
+# Domain-specific
+gen3
+SigProfilerAssignment
