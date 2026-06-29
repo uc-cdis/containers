@@ -25,22 +25,25 @@ RUN useradd -m -s /bin/bash jovyan
 ENV HOME=/home/jovyan
 WORKDIR $HOME
 
-# Copy requirements and compile packages directly under Python 3.14
+# Add the user local binary path to environment PATH so CLI tools work out-of-the-box
+ENV PATH="/home/jovyan/.local/bin:${PATH}"
+
+# Switch to the secure non-root context early to ensure native user ownership
+USER jovyan
+
+# Copy requirements and compile packages directly into the jovyan home directory
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --user --no-cache-dir --upgrade pip setuptools wheel && \
+    pip3 install --user --no-cache-dir -r requirements.txt
 
-# Install reference genome GRCh38
-RUN python3 -c "from SigProfilerMatrixGenerator import install as gen; gen.install('GRCh38', rsync=False, bash=True)"
+# Pre-download and cache genomic index sequences natively using the CLI interface
+RUN SigProfilerMatrixGenerator install GRCh38
 
-# Fix directory ownership rights for the jovyan user runtime
-RUN chown -R jovyan:jovyan $HOME
+# Create the missing validation marker file to fix the library's internal status bug
+RUN touch /home/jovyan/.local/lib/python3.14/site-packages/SigProfilerMatrixGenerator/references/chromosomes/tsb/GRCh38/RefGen_Ver.txt
 
 # Expose standard Jupyter runtime port for Gen3 proxy routing
 EXPOSE 8888
-
-# Switch to the secure non-root context
-USER jovyan
 
 # Start Jupyter Lab when the Gen3 workspace pod initializes
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--AllowRoot=False"]

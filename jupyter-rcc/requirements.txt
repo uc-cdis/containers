@@ -1,17 +1,18 @@
 # Foundational packages
-numpy
-scipy
+numpy>=2.0.0
+scipy>=1.12.0
 
 # Data science packages
-pandas
-matplotlib
-seaborn
+pandas>=2.2.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
 
 # Jupyter components
-notebook
-jupyterlab
-ipykernel
+notebook>=7.1.0
+jupyterlab>=4.1.0
+ipykernel>=6.29.0
+nbclient>=0.10.0
 
 # Domain-specific
 gen3
-SigProfilerAssignment
+SigProfilerAssignment>=1.1.3
