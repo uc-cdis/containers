@@ -25,22 +25,24 @@ RUN useradd -m -s /bin/bash jovyan
 ENV HOME=/home/jovyan
 WORKDIR $HOME
 
-# Add the user local binary path to environment PATH so CLI tools work out-of-the-box
+# Define custom reference genome storage directory path
+ENV SIGPROFILERMATRIXGENERATOR_VOLUME="/home/jovyan/shared_genomes"
+RUN mkdir -p /home/jovyan/shared_genomes && chown -R jovyan:jovyan /home/jovyan
+
+# Add user binary paths to environment PATH so CLI commands execute globally
 ENV PATH="/home/jovyan/.local/bin:${PATH}"
 
-# Switch to the secure non-root context early to ensure native user ownership
+# Switch to secure user context early to enforce user execution ownership
 USER jovyan
 
-# Copy requirements and compile packages directly into the jovyan home directory
+# Copy requirements and compile packages
 COPY requirements.txt .
 RUN pip3 install --user --no-cache-dir --upgrade pip setuptools wheel && \
     pip3 install --user --no-cache-dir -r requirements.txt
 
 # Pre-download and cache genomic index sequences natively using the CLI interface
+# This saves the files directly to  the custom /home/jovyan/shared_genomes path
 RUN SigProfilerMatrixGenerator install GRCh38
-
-# Create the missing validation marker file to fix the library's internal status bug
-RUN touch /home/jovyan/.local/lib/python3.14/site-packages/SigProfilerMatrixGenerator/references/chromosomes/tsb/GRCh38/RefGen_Ver.txt
 
 # Expose standard Jupyter runtime port for Gen3 proxy routing
 EXPOSE 8888
