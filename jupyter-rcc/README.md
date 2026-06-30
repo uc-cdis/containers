@@ -1,17 +1,17 @@
 # Gen3 Workspace Container for RCC (Python 3.14 + SigProfilerMatrixGenerator)
 
-This repository contains the infrastructure configurations for deploying a custom JupyterLab environment for Gen3 Workspaces. It runs on a rootless **Python 3.14-slim** base image, implements dynamic symbolic linking to handle reference genome mounting without disk bloat, and complies with Gen3 Hatchery security policies (`UID 1010` / `GID 101`).
+This repository contains the infrastructure configurations for deploying a custom JupyterLab environment for Gen3 Workspaces. It runs on a rootless **Python 3.14-slim** base image, isolates reference genomes completely inside the private container image to protect multi-workspace storage health, and complies with Gen3 Hatchery security policies (`UID 1010` / `GID 101`).
 
 ---
 
 ## 🏗️ Architecture Overview
 
-When Gen3 initializes a workspace pod, it mounts an external Kubernetes Persistent Volume Claim (PVC) directly onto `/home/jovyan/pd`. This process **masks/hides** any data built into that directory within the image layers during the `docker build` phase.
+When Gen3 initializes a workspace pod, it mounts an external Kubernetes Persistent Volume Claim (PVC) directly onto `/home/jovyan/pd`. This PVC is linked to the user's account and persists across all workspace types they open (including Generic R/Python workspaces).
 
-To bypass this limitation without wasting massive amounts of storage or slowing down startup times with copy commands (`cp`), this image utilizes an intentional dual-stage layout:
-1. **Build Phase:** Reference genomes (`GRCh38`) are pre-downloaded natively into an ephemeral home directory staging path (`/home/jovyan/reference_genomes`).
-2. **Runtime Phase:** The custom `/usr/local/bin/start-notebook.sh` entrypoint fires instantly *after* the PVC mount is secured, clearing stale targets and dropping a zero-byte symbolic link (`/home/jovyan/pd/reference_genomes` ➡️ `/home/jovyan/reference_genomes`).
-3. **Execution Routing:** The script intelligently handles commands. If passed Gen3 infrastructure flags, it provisions JupyterLab. If passed administrative commands (like `/bin/bash`), it provisions an interactive test shell.
+To prevent multi-tenant configuration drift or dead link corruption on the user's shared storage drive, this image utilizes an completely isolated data design:
+1. **Build Phase:** Reference genomes (`GRCh38`) are pre-downloaded natively into a private, rootless home directory cache path (`/home/jovyan/reference_genomes`).
+2. **Runtime Isolation:** The genome data remains strictly within the container image layer. No data, links, or file modifications are pushed onto the shared `/home/jovyan/pd` drive, ensuring your other workspace types remain unaffected.
+3. **Execution Routing:** The wrapper script handles terminal customization (injecting `git`, username prompt settings, and tab-autocomplete components) and manages commands dynamically based on whether flags or interactive utilities are called.
 
 ---
 
@@ -31,13 +31,9 @@ To open an interactive container shell to manually audit paths and bypass Jupyte
 docker run -it gen3-rcc-pilot:latest /bin/bash
 ```
 
-Inside this terminal session, run the following to verify that the entrypoint automatically dropped the symbolic link onto your simulated runtime layout:
+Inside this terminal session, run the following to verify that your data resides safely in the container's isolated local layer:
 ```bash
-ls -la /home/jovyan/pd/
-```
-*Expected Output:*
-```text
-lrwxrwxrwx 1 jovyan jovyan   30 Jun 30 12:00 reference_genomes -> /home/jovyan/reference_genomes
+ls -la /home/jovyan/reference_genomes/
 ```
 
 ---
@@ -79,7 +75,7 @@ except Exception as e:
 # ==========================================
 print("\n[Step 2] Executing Direct Chromosome Content Extraction...")
 
-custom_volume = os.environ.get("SIGPROFILERMATRIXGENERATOR_VOLUME", "/home/jovyan/pd/reference_genomes")
+custom_volume = os.environ.get("SIGPROFILERMATRIXGENERATOR_VOLUME", "/home/jovyan/reference_genomes")
 chr1_file = os.path.join(custom_volume, "tsb", "GRCh38", "1.txt")
 
 if os.path.exists(chr1_file):
@@ -133,17 +129,18 @@ To integrate this image with your live environment, add the following configurat
   "name": "RCC pilot",
   "image": "://amazonaws.com",
   "env": {
-    "FRAME_ANCESTORS": "https://data-commons.org"
+    "FRAME_ANCESTORS": "https://planx-pla.net"
   },
   "args": [
     "--ip=0.0.0.0",
     "--port=8888",
     "--no-browser",
-    "--allow-root=false",
     "--ServerApp.base_url=/lw-workspace/proxy/",
     "--ServerApp.default_url=/lab",
-    "--ServerApp.password=",
-    "--ServerApp.token=",
+    "--ServerApp.password",
+    "",
+    "--ServerApp.token",
+    "",
     "--ServerApp.shutdown_no_activity_timeout=5400",
     "--ServerApp.quit_button=false"
   ],
@@ -161,5 +158,5 @@ To integrate this image with your live environment, add the following configurat
 ```
 
 ### Deployment Checklist
-* **ECR Registration:** Ensure the `"image"` path is updated to target your active AWS Elastic Container Registry location.
-* **Arguments Formats:** Both `--allow-root=false` and `--ServerApp.quit_button=false` use required lowercase switches to maintain full compatibility with modern Jupyter Server CLI parsing schemas.
+* **ECR Registration:** Ensure the `"image"` path matches your production build pipeline destination registry.
+* **Arguments Check:** `--allow-root` is entirely removed from the array to prevent parsing crashes, and empty initialization components (`password`, `token`) are properly separated onto unique configuration entries to maintain Hatchery string integrity.

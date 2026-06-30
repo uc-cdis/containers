@@ -30,7 +30,7 @@ except Exception as e:
 # ==========================================
 print("\n[Step 2] Executing Direct Chromosome Content Extraction...")
 
-custom_volume = os.environ.get("SIGPROFILERMATRIXGENERATOR_VOLUME", "/home/jovyan/pd/reference_genomes")
+custom_volume = os.environ.get("SIGPROFILERMATRIXGENERATOR_VOLUME", "/home/jovyan/reference_genomes")
 chr1_file = os.path.join(custom_volume, "tsb", "GRCh38", "1.txt")
 
 if os.path.exists(chr1_file):
