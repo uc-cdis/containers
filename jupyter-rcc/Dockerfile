@@ -1,7 +1,6 @@
 # Base the image on official Python 3.14
 FROM python:3.14-slim
 
-# Swtich to root for installation
 USER root
 
 # Install essential system build toolchains and dependencies
@@ -29,13 +28,21 @@ ENV HOME=/home/jovyan
 WORKDIR $HOME
 
 # Setup default placeholder directories and fix base permissions
-RUN mkdir -p /home/jovyan/pd/reference_genomes && chown -R jovyan:jovyan /home/jovyan
+RUN mkdir -p /home/jovyan/pd && chown -R jovyan:jovyan /home/jovyan
 
 # Add user binary paths to environment PATH so CLI commands execute globally
 ENV PATH="/home/jovyan/.local/bin:${PATH}"
 
-# Create a thin compatibility wrapper script for Gen3's "start-notebook.sh" command
-RUN echo '#!/bin/bash\nexec jupyter lab "$@"' > /usr/local/bin/start-notebook.sh && \
+# Create startup wrapper that ensures refenerce_genome mapping happens before Jupyter spins up
+RUN echo '#!/bin/bash\n\
+rm -rf /home/jovyan/pd/reference_genomes\n\
+ln -sf /home/jovyan/reference_genomes /home/jovyan/pd/reference_genomes\n\
+if [ "$1" = "start-notebook.sh" ]; then shift; fi\n\
+if [ $# -eq 0 ] || [[ "$1" == --* ]]; then\n\
+    exec jupyter lab "$@"\n\
+else\n\
+    exec "$@"\n\
+fi' > /usr/local/bin/start-notebook.sh && \
     chmod +x /usr/local/bin/start-notebook.sh
 
 # Switch to the secure Gen3 user context permanently for all subsequent build steps
