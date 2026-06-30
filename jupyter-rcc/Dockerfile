@@ -60,6 +60,9 @@ RUN SigProfilerMatrixGenerator install GRCh38
 # Establish the production environment variable location for runtime user sessions
 ENV SIGPROFILERMATRIXGENERATOR_VOLUME="/home/jovyan/pd/reference_genomes"
 
+# Force JupyterLab terminal interface to spawn full Bash shell sessions instead of basic /bin/sh
+ENV SHELL="/bin/bash"
+
 # Expose standard Jupyter runtime port for Gen3 proxy routing
 EXPOSE 8888
 
