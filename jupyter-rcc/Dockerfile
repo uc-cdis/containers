@@ -1,6 +1,7 @@
 # Base the image on official Python 3.14
 FROM python:3.14-slim
 
+# Swtich to root for installation
 USER root
 
 # Install essential system build toolchains and dependencies
