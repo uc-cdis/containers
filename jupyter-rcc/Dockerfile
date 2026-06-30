@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tar \
     gzip \
     git \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # For Gen3 workspaces create the jovyan group with GID 101, then create user jovyan with UID 1010 and group name jovyan
