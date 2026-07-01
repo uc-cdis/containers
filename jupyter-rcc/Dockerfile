@@ -3,7 +3,7 @@ FROM python:3.14-slim
 
 USER root
 
-# Install essential system build toolchains, dependencies, and git CLI tools
+# Install essential system build toolchains, dependencies, git, and curl
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tar \
     gzip \
     git \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # For Gen3 workspaces create the jovyan group with GID 101, then create user jovyan with UID 1010 and group name jovyan
@@ -35,54 +36,11 @@ RUN mkdir -p /home/jovyan/pd && chown -R jovyan:jovyan /home/jovyan
 ENV PATH="/home/jovyan/.local/bin:${PATH}"
 
 # =========================================================================
-# CREATE A STARTUP WRAPPER SCRIPT
-# This script acts as a traffic controller whenever the container initializes.
-# It prepares the user environment and decides whether to launch JupyterLab
-# or run custom commands (like /bin/bash for local tests).
+# IMPORT AND AUTHORIZE THE STARTUP WRAPPER SCRIPT
+# Copy the script into a global system directory path and make it executable
 # =========================================================================
-RUN echo '#!/bin/bash\n\
-# -------------------------------------------------------------------------\n\
-# STEP 1: RESTORE TERMINAL ENVIRONMENT & AUTOCOMPLETION\n\
-# When Gen3 mounts persistent volumes, home profiles can sometimes be missing.\n\
-# If .bashrc does not exist, copy the default system templates from /etc/skel.\n\
-# This fixes the broken terminal prompt, restoring username, host, and tab-autocomplete.\n\
-# -------------------------------------------------------------------------\n\
-if [ ! -f "/home/jovyan/.bashrc" ]; then \n\
-    cp /etc/skel/.bash* /home/jovyan/ 2>/dev/null || true; \n\
-fi\n\
-\n\
-# -------------------------------------------------------------------------\n\
-# STEP 2: SANITIZE KUBERNETES / GEN3 STORAGE ARGUMENTS\n\
-# Some cluster orchestrators append the name of this script to the argument list.\n\
-# If the first argument ($1) is "start-notebook.sh", remove it ("shift") \n\
-# so it does not get passed to Jupyter and cause a startup flag error.\n\
-# -------------------------------------------------------------------------\n\
-if [ "$1" = "start-notebook.sh" ]; then \n\
-    shift; \n\
-fi\n\
-\n\
-# -------------------------------------------------------------------------\n\
-# STEP 3: DETECT RUNTIME MODE (PRODUCTION VS LOCAL TESTING)\n\
-# We check if there are zero arguments ($# -eq 0) OR if the first argument \n\
-# looks like a Jupyter configuration flag (starts with "--", like --ip=0.0.0.0).\n\
-# -------------------------------------------------------------------------\n\
-if [ $# -eq 0 ] || [[ "$1" == --* ]]; then\n\
-    # MODE A: PRODUCTION MODE (Gen3 Environment)\n\
-    # Launch the JupyterLab server app and seamlessly inject all the \n\
-    # system flags ("$@") provided by the Gen3 Hatchery configuration block.\n\
-    exec jupyter lab "$@"\n\
-else\n\
-    # MODE B: TESTING MODE (Local Desktop / Manual Debugging)\n\
-    # If the user passed a direct command (like /bin/bash or python3 script.py),\n\
-    # bypass Jupyter entirely and execute the user command directly instead.\n\
-    exec "$@"\n\
-fi' > /usr/local/bin/start-notebook.sh && \
-    # -------------------------------------------------------------------------\n\
-    # STEP 4: AUTHORIZE SCRIPT EXECUTION\n\
-    # Grant executable permissions (+x) to the script. Without this line,\n\
-    # Linux will block the container from running it, causing a crash.\n\
-    # -------------------------------------------------------------------------\n\
-    chmod +x /usr/local/bin/start-notebook.sh
+COPY start-notebook.sh /usr/local/bin/start-notebook.sh
+RUN chmod +x /usr/local/bin/start-notebook.sh
 
 # Switch to the secure Gen3 user context permanently for all subsequent build steps
 USER jovyan
