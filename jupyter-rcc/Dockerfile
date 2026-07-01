@@ -36,11 +36,24 @@ RUN mkdir -p /home/jovyan/pd && chown -R jovyan:jovyan /home/jovyan
 ENV PATH="/home/jovyan/.local/bin:${PATH}"
 
 # =========================================================================
-# IMPORT AND AUTHORIZE THE STARTUP WRAPPER SCRIPT
-# Copy the script into a global system directory path and make it executable
+# SYSTEM STARTUP WRAPPER ASSEMBLY
+# This block creates and registers /usr/local/bin/start-notebook.sh.
+# 1) It copies basic skeletal files (.bashrc) if missing to fix the prompt.
+# 2) It shifts away redundant script name arguments added by Kubernetes.
+# 3) It routes execution to JupyterLab or passes manual testing commands.
 # =========================================================================
-COPY start-notebook.sh /usr/local/bin/start-notebook.sh
-RUN chmod +x /usr/local/bin/start-notebook.sh
+RUN echo '#!/bin/bash\n\
+if [ ! -f "/home/jovyan/.bashrc" ]; then \n\
+    cp /etc/skel/.bash* /home/jovyan/ 2>/dev/null || true; \n\
+fi\n\
+if [ "$1" = "start-notebook.sh" ]; then \n\
+    shift; \n\
+fi\n\
+if [ $# -eq 0 ] || [[ "$1" == --* ]]; then\n\
+    exec jupyter lab "$@"\n\
+else\n\
+    exec "$@"\n\
+fi' > /usr/local/bin/start-notebook.sh && chmod +x /usr/local/bin/start-notebook.sh
 
 # Switch to the secure Gen3 user context permanently for all subsequent build steps
 USER jovyan
