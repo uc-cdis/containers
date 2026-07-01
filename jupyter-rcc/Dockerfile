@@ -36,53 +36,10 @@ RUN mkdir -p /home/jovyan/pd && chown -R jovyan:jovyan /home/jovyan
 ENV PATH="/home/jovyan/.local/bin:${PATH}"
 
 # =========================================================================
-# CREATE A STARTUP WRAPPER SCRIPT
-# This script acts as a traffic controller whenever the container initializes.
-# It prepares the user environment and decides whether to launch JupyterLab
-# or run custom commands (like /bin/bash for local tests).
-# Using the clean, safe Here-Doc format to prevent text-mangling issues.
+# IMPORT AND AUTHORIZE THE STARTUP WRAPPER SCRIPT
+# Copy the script into a global system directory path and make it executable
 # =========================================================================
-RUN cat << 'EOF' > /usr/local/bin/start-notebook.sh
-#!/bin/bash
-# -------------------------------------------------------------------------
-# STEP 1: RESTORE TERMINAL ENVIRONMENT & AUTOCOMPLETION
-# When Gen3 mounts persistent volumes, home profiles can sometimes be missing.
-# If .bashrc does not exist, copy the default system templates from /etc/skel.
-# This fixes the broken terminal prompt, restoring username, host, and tab-autocomplete.
-# -------------------------------------------------------------------------
-if [ ! -f "/home/jovyan/.bashrc" ]; then
-    cp /etc/skel/.bash* /home/jovyan/ 2>/dev/null || true
-fi
-
-# -------------------------------------------------------------------------
-# STEP 2: SANITIZE KUBERNETES / GEN3 STORAGE ARGUMENTS
-# Some cluster orchestrators append the name of this script to the argument list.
-# If the first argument ($1) is "start-notebook.sh", remove it ("shift")
-# so it does not get passed to Jupyter and cause a startup flag error.
-# -------------------------------------------------------------------------
-if [ "$1" = "start-notebook.sh" ]; then
-    shift
-fi
-
-# -------------------------------------------------------------------------
-# STEP 3: DETECT RUNTIME MODE (PRODUCTION VS LOCAL TESTING)
-# We check if there are zero arguments ($# -eq 0) OR if the first argument
-# looks like a Jupyter configuration flag (starts with "--", like --ip=0.0.0.0).
-# -------------------------------------------------------------------------
-if [ $# -eq 0 ] || [[ "$1" == --* ]]; then
-    # MODE A: PRODUCTION MODE (Gen3 Environment)
-    # Launch the JupyterLab server app and seamlessly inject all the
-    # system flags ("$@") provided by the Gen3 Hatchery configuration block.
-    exec jupyter lab "$@"
-else
-    # MODE B: TESTING MODE (Local Desktop / Manual Debugging)
-    # If the user passed a direct command (like /bin/bash or python3 script.py),
-    # bypass Jupyter entirely and execute the user command directly instead.
-    exec "$@"
-fi
-EOF
-
-# Grant executable permissions to the startup script
+COPY start-notebook.sh /usr/local/bin/start-notebook.sh
 RUN chmod +x /usr/local/bin/start-notebook.sh
 
 # Switch to the secure Gen3 user context permanently for all subsequent build steps
