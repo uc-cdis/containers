@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 # Install IRkernel and register it for JupyterLab globally
-RUN R -e "install.packages('IRkernel', repos='https://r-project.org')" && \
+RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
 
