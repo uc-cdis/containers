@@ -23,10 +23,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     r-base \
     libzmq3-dev \
+    less \
+    vim \
     && rm -rf /var/lib/apt/lists/*
 
 
+# needs jupyterlab for IRkernel
+RUN pip3 install jupyterlab
+
 # Install IRkernel and register it for JupyterLab globally
+# needs to be root user to install packages
 RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 

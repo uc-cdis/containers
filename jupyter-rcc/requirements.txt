@@ -9,7 +9,6 @@ seaborn>=0.13.0
 
 # Jupyter components
 notebook>=7.1.0
-jupyterlab>=4.1.0
 ipykernel>=6.29.0
 nbclient>=0.10.0
 
