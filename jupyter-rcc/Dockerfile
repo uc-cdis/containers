@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gzip \
     git \
     curl \
+    r-base \
+    libzmq3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # For Gen3 workspaces create the jovyan group with GID 101, then create user jovyan with UID 1010 and group name jovyan
@@ -49,6 +51,11 @@ USER jovyan
 COPY requirements.txt .
 RUN pip3 install --user --no-cache-dir --upgrade pip setuptools wheel && \
     pip3 install --user --no-cache-dir -r requirements.txt
+
+
+# Install IRkernel and register it for JupyterLab globally
+RUN R -e "install.packages('IRkernel', repos='https://r-project.org')" && \
+    R -e "IRkernel::installspec(user = FALSE)"
 
 # Pre-download genomes directly into the safe internal home directory path
 ENV SIGPROFILERMATRIXGENERATOR_VOLUME="/home/jovyan/reference_genomes"
