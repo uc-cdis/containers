@@ -7,6 +7,7 @@ USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
+    make \
     libxml2-dev \
     libssl-dev \
     libcurl4-openssl-dev \
@@ -21,6 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     r-base \
+    libzmq3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 
