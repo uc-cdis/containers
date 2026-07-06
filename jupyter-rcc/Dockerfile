@@ -7,6 +7,7 @@ USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
+    make \
     libxml2-dev \
     libssl-dev \
     libcurl4-openssl-dev \
@@ -20,7 +21,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gzip \
     git \
     curl \
+    r-base \
+    libzmq3-dev \
+    less \
+    vim \
     && rm -rf /var/lib/apt/lists/*
+
+
+# needs jupyterlab for IRkernel
+RUN pip3 install jupyterlab
+
+# Install IRkernel and register it for JupyterLab globally
+# needs to be root user to install packages
+RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org')" && \
+    R -e "IRkernel::installspec(user = FALSE)"
+
 
 # For Gen3 workspaces create the jovyan group with GID 101, then create user jovyan with UID 1010 and group name jovyan
 RUN groupadd -g 101 jovyan && \
@@ -49,6 +64,7 @@ USER jovyan
 COPY requirements.txt .
 RUN pip3 install --user --no-cache-dir --upgrade pip setuptools wheel && \
     pip3 install --user --no-cache-dir -r requirements.txt
+
 
 # Pre-download genomes directly into the safe internal home directory path
 ENV SIGPROFILERMATRIXGENERATOR_VOLUME="/home/jovyan/reference_genomes"
