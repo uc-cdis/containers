@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     r-base \
+    r-cran-tidyverse \
     libzmq3-dev \
     less \
     vim \
@@ -53,7 +54,7 @@ RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
 
 # Install IRkernel and register it for JupyterLab globally
 # needs to be root user to install packages
-RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org')" && \
+RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org'); if (!requireNamespace('IRkernel', quietly=TRUE)) quit(status=1, save='no')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
 
