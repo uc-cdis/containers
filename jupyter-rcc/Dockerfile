@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     r-base \
+    r-cran-tidyverse \
     libzmq3-dev \
     less \
     vim \
@@ -31,9 +32,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # needs jupyterlab for IRkernel
 RUN pip3 install jupyterlab
 
+# RESTRICT DOWNLOADS / EXPORT (so no data leaves the workspace)
+#   1. Disable the plugins that let users pull data out of the workspace:
+#        - filebrowser-extension:download -> "Download" in the file browser
+#          right-click context menu
+#        - docmanager-extension:download  -> "Download" in the File menu for
+#          the currently open document
+#        - notebook-extension:export      -> "Save and Export Notebook As..."
+#          (PDF / HTML / etc.) in the notebook File menu
+#   2. LOCK them. On JupyterLab >= 4.1 a merely-disabled plugin can be
+#      re-enabled by the user via Settings / Extension Manager, so locking is
+#      REQUIRED to actually keep these entries gone. (The old restricted-download
+#      image predated 4.1 and did not need this step.)
+
+RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
+                                 @jupyterlab/filebrowser-extension:download \
+                                 @jupyterlab/notebook-extension:export && \
+    jupyter labextension lock    @jupyterlab/docmanager-extension:download \
+                                 @jupyterlab/filebrowser-extension:download \
+                                 @jupyterlab/notebook-extension:export
+
 # Install IRkernel and register it for JupyterLab globally
 # needs to be root user to install packages
-RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org')" && \
+RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org'); if (!requireNamespace('IRkernel', quietly=TRUE)) quit(status=1, save='no')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
 
