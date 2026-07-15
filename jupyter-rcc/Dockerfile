@@ -3,11 +3,40 @@ FROM python:3.14-slim
 
 USER root
 
-# Install essential system build toolchains, dependencies, git, and curl
+# =========================================================================
+# SYSTEM PACKAGES
+#
+# Three groups here:
+#   1. Base build toolchain / utilities (unchanged).
+#   2. Dev libraries needed to COMPILE CRAN packages from source. These are
+#      required not because the image itself compiles them, but because users
+#      install their own packages from CRAN at runtime, and CRAN only ships
+#      source for Linux. Without these, common packages fail to build:
+#        libuv1-dev      -> fs        (fs >= 2.x needs system libuv)
+#        libgit2-dev     -> gert      (devtools dependency)
+#        libicu-dev      -> stringi
+#        font/image libs -> ragg, textshaping, systemfonts (ggplot2 rendering)
+#        gfortran        -> minqa, lme4 and many stats packages (Fortran source)
+#        libblas/lapack  -> RcppArmadillo and other linear-algebra packages
+#   3. Requested R packages that Debian ships as prebuilt binaries. Using apt
+#      here avoids source compilation entirely (fast, and no build failures).
+#      NOTE: r-cran-devtools also pulls in binary gert/fs/usethis, which are
+#      exactly the packages that fail to compile from CRAN. r-cran-survey and
+#      friends are here because they are tableone's dependencies, and building
+#      survey from CRAN drags in minqa/RcppArmadillo. r-cran-r.utils is needed
+#      for data.table::fread() to read gzipped files (.maf.gz, .vcf.gz, etc).
+#
+# Packages already provided by r-cran-tidyverse (dplyr, lubridate, stringr,
+# magrittr, broom) are listed anyway for documentation; apt will no-op them.
+# 'coxph' is not a package -- it is a function in the 'survival' package.
+# =========================================================================
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
+    gfortran \
     make \
+    libblas-dev \
+    liblapack-dev \
     libxml2-dev \
     libssl-dev \
     libcurl4-openssl-dev \
@@ -26,8 +55,39 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzmq3-dev \
     less \
     vim \
+    libuv1-dev \
+    libgit2-dev \
+    libicu-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    r-cran-devtools \
+    r-cran-broom \
+    r-cran-survival \
+    r-cran-data.table \
+    r-cran-dplyr \
+    r-cran-lubridate \
+    r-cran-magrittr \
+    r-cran-mass \
+    r-cran-pbapply \
+    r-cran-reshape2 \
+    r-cran-stringi \
+    r-cran-stringr \
+    r-cran-sqldf \
+    r-cran-testthat \
+    r-cran-rjava \
+    r-cran-survey \
+    r-cran-e1071 \
+    r-cran-zoo \
+    r-cran-gmodels \
+    r-cran-nlme \
+    r-cran-labelled \
+    r-cran-r.utils \
     && rm -rf /var/lib/apt/lists/*
-
 
 # needs jupyterlab for IRkernel
 RUN pip3 install jupyterlab
@@ -57,6 +117,17 @@ RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
 RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org'); if (!requireNamespace('IRkernel', quietly=TRUE)) quit(status=1, save='no')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
+# =========================================================================
+# R PACKAGES NOT PACKAGED BY DEBIAN -- installed from CRAN (compiled)
+#   comorbidity, fst, tableone : no r-cran-* equivalent exists
+#   xlsx                       : needs rJava (installed above via apt)
+# install.packages() only warns on failure, so verify explicitly and fail
+# the build if anything did not install.
+# =========================================================================
+RUN R -e "pkgs <- c('comorbidity','fst','tableone','xlsx'); \
+          install.packages(pkgs, repos='https://cloud.r-project.org'); \
+          missing <- setdiff(pkgs, rownames(installed.packages())); \
+          if (length(missing)) { cat('FAILED TO INSTALL:', paste(missing, collapse=', '), '\n'); quit(status=1, save='no') }"
 
 # For Gen3 workspaces create the jovyan group with GID 101, then create user jovyan with UID 1010 and group name jovyan
 RUN groupadd -g 101 jovyan && \
@@ -70,6 +141,25 @@ RUN mkdir -p /home/jovyan/pd && chown -R jovyan:jovyan /home/jovyan
 
 # Add user binary paths to environment PATH so CLI commands execute globally
 ENV PATH="/home/jovyan/.local/bin:${PATH}"
+
+# =========================================================================
+# R USER LIBRARY ON THE PERSISTENT DRIVE
+#
+# Lets users run install.packages('foo') / library('foo') with no setup:
+#   - /usr/local/lib/R/site-library is root-owned and NOT writable by jovyan,
+#     so without this R errors out ("lib is not writable") in the IRkernel.
+#   - /home/jovyan/pd is the only persistent path, so packages survive restarts.
+#   - Because R_LIBS_USER is an env var, it is applied when the R process
+#     starts and lands FIRST in .libPaths(). This matters: setting
+#     .libPaths() from inside a notebook is too late, since IRkernel has
+#     already loaded rlang/cli/vctrs from site-library by then, which causes
+#     "namespace 'rlang' is already loaded, but >= x.y.z is required" errors.
+#
+# The directory itself is created in start-notebook.sh, not here: pd is a
+# runtime mount (anything created at build time is masked), and R silently
+# ignores R_LIBS_USER if the directory does not exist.
+# =========================================================================
+ENV R_LIBS_USER="/home/jovyan/pd/r_libraries"
 
 # =========================================================================
 # IMPORT AND AUTHORIZE THE STARTUP WRAPPER SCRIPT
@@ -86,12 +176,10 @@ COPY requirements.txt .
 RUN pip3 install --user --no-cache-dir --upgrade pip setuptools wheel && \
     pip3 install --user --no-cache-dir -r requirements.txt
 
-
 # Pre-download genomes directly into the safe internal home directory path
 ENV SIGPROFILERMATRIXGENERATOR_VOLUME="/home/jovyan/reference_genomes"
 RUN SigProfilerMatrixGenerator install GRCh38 && \
     SigProfilerMatrixGenerator install GRCh37
-
 
 # Force JupyterLab terminal interface to spawn full Bash shell sessions instead of basic /bin/sh
 ENV SHELL="/bin/bash"
