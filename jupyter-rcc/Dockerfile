@@ -18,6 +18,8 @@ USER root
 #        font/image libs -> ragg, textshaping, systemfonts (ggplot2 rendering)
 #        gfortran        -> minqa, lme4 and many stats packages (Fortran source)
 #        libblas/lapack  -> RcppArmadillo and other linear-algebra packages
+#        libpoppler-cpp-dev -> pdftools
+#        libmagick++-dev    -> magick (ImageMagick bindings)
 #   3. Requested R packages that Debian ships as prebuilt binaries. Using apt
 #      here avoids source compilation entirely (fast, and no build failures).
 #      NOTE: r-cran-devtools also pulls in binary gert/fs/usethis, which are
@@ -29,6 +31,8 @@ USER root
 # Packages already provided by r-cran-tidyverse (dplyr, lubridate, stringr,
 # magrittr, broom) are listed anyway for documentation; apt will no-op them.
 # 'coxph' is not a package -- it is a function in the 'survival' package.
+# 'grid' is not listed because it is a base R package shipped with r-base-core;
+# library(grid) works with no installation.
 # =========================================================================
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
@@ -65,6 +69,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     libtiff5-dev \
     libjpeg-dev \
+    libpoppler-cpp-dev \
+    libmagick++-dev \
     r-cran-devtools \
     r-cran-broom \
     r-cran-survival \
@@ -87,6 +93,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     r-cran-nlme \
     r-cran-labelled \
     r-cran-r.utils \
+    r-cran-pdftools \
+    r-cran-jpeg \
+    r-cran-png \
+    r-cran-magick \
     && rm -rf /var/lib/apt/lists/*
 
 # needs jupyterlab for IRkernel
