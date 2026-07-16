@@ -5,6 +5,7 @@ ARG NOTEBOOK_DIR
 
 COPY $NOTEBOOK_DIR/ $HOME/
 
+RUN if [ -d $HOME/img ]; then rm -rf $HOME/img; fi
 RUN pip3 install heal-sdk
 RUN conda config --append channels conda-forge
 RUN conda install -c plotly plotly
