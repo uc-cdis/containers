@@ -5,7 +5,11 @@ ARG NOTEBOOK_DIR
 
 COPY $NOTEBOOK_DIR/ $HOME/
 
+# clean things up
+USER root
 RUN if [ -d $HOME/img ]; then rm -rf $HOME/img; fi
+USER $NB_USER
+
 RUN pip3 install heal-sdk
 RUN conda config --append channels conda-forge
 RUN conda install -c plotly plotly
