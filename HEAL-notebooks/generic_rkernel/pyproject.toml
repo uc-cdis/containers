@@ -4,7 +4,6 @@ version = "1.0.0"
 description = "HEAL Generic Jupyter Notebook"
 authors = ["CTDS UChicago <cdis@uchicago.edu>"]
 license = "Apache-2.0"
-repository = "https://github.com/uc-cdis/jupyter-superslim"
 include = []
 package-mode = false
 
