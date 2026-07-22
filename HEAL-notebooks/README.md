@@ -18,12 +18,8 @@ Pushing to a directory within `HEAL-notebooks` automatically generates an image 
 
 All contents within the directory will be copied into the home directory of the image as well.
 
-If the directory contains a list of dependencies in `requirements.txt`, then those dependencies will be installed
-automatically (and the `requirements.txt` file won't be included in the image).
-
-We're currently switching to the 'combined_tutorials' directory for all HEAL tutorial notebooks. We're keeping the
-individual notebook directories for now incase they may be needed in the near future. Please apply all tutorial notebook
-updates to the 'combined_tutorials' directory.
+If the directory contains a list of dependencies in `pyproject.toml` and `poetry.lock`, then those dependencies will be installed
+automatically (and the `pyproject.toml` and `poetry.lock` files won't be included in the image).
 
 ## Adding a Notebook
 
