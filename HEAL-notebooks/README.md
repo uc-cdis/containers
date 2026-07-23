@@ -48,7 +48,8 @@ The directory in the containers repo is now:
 │   │   ├── data
 │   │   │   └── my.csv
 │   │   ├── plain_notebook.ipynb
-│   │   └── requirements.txt
+│   │   ├── pyproject.toml
+│   │   └── poetry.lock
 │   └── README.md
 ```
 So running
