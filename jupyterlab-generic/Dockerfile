@@ -56,4 +56,7 @@ ENV LMOD_MODULERC=/apps/lmod/lmod/.modulerc.lua
 # Make sure bash is the default shell within JupyterLab terminal
 ENV SHELL=/bin/bash
 
+# Add user binary paths to environment PATH so CLI commands execute globally
+ENV PATH="/home/jovyan/.local/bin:${PATH}"
+
 CMD ["/jupyterlab-start.sh"]
