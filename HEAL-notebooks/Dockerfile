@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-heal:feat_heal-superslim
+FROM quay.io/cdis/jupyter-superslim-r:3.0.0
 
 USER $NB_USER
 ARG NOTEBOOK_DIR
@@ -10,17 +10,17 @@ USER root
 RUN if [ -d $HOME/img ]; then rm -rf $HOME/img; fi
 USER $NB_USER
 
-RUN pip3 install heal-sdk
 RUN conda config --append channels conda-forge
-RUN conda install -c plotly plotly
+RUN conda install --quiet --yes -c conda-forge nodejs
 
 
 RUN printf '\n\
-if [ -f $HOME/requirements.txt ]; then \n\
-    echo "Will install requirements.txt" \n\
-    conda install --file $HOME/requirements.txt \n\
-    rm $HOME/requirements.txt \n\
+if [[ -f $HOME/pyproject.toml && -f $HOME/poetry.lock ]]; then \n\
+    echo "Will install packages using Poetry" \n\
+    poetry config virtualenvs.create false \n \
+    poetry install -vv --no-interaction \n\
+    rm $HOME/pyproject.toml $HOME/poetry.lock \n\
 else \n\
-    echo "No dependencies to install." \n\
+    echo "No packages to install." \n\
 fi \n\
 ' | bash
