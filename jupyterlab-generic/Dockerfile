@@ -58,5 +58,7 @@ ENV SHELL=/bin/bash
 
 # Add user binary paths to environment PATH so CLI commands execute globally
 ENV PATH="/home/jovyan/.local/bin:${PATH}"
+# Add the user path to PYTHONPATH for user installed modules
+ENV PYTHONPATH="/home/jovyan/.local/lib/python3.14/site-packages:${PYTHONPATH}"
 
 CMD ["/jupyterlab-start.sh"]
