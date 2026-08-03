@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "HEAL Generic Jupyter Notebook"
-version = "1.0.0"
+version = "1.0.1"
 description = "HEAL Generic Jupyter Notebook"
 authors = ["CTDS UChicago <cdis@uchicago.edu>"]
 license = "Apache-2.0"
