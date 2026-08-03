@@ -26,10 +26,6 @@ RUN dnf upgrade --refresh && \
 RUN ln -s /usr/bin/python3.14 /usr/local/bin/python3 && \
 ln -s /usr/bin/python3.14 /usr/local/bin/python
 
-COPY jupyterlab-start.sh .
-RUN chmod +x jupyterlab-start.sh && \
-    chown ${NB_USER}:${NB_USER} /jupyterlab-start.sh
-
 # Create non-root user
 RUN groupadd -g ${NB_GID} ${NB_USER} && \
     useradd -u ${NB_UID} -g ${NB_USER} -M ${NB_USER} && \
@@ -38,6 +34,10 @@ RUN groupadd -g ${NB_GID} ${NB_USER} && \
     chmod 700 ${HOME} && \
     usermod -d ${HOME} ${NB_USER} && \
     usermod --shell /bin/bash ${NB_USER}
+
+COPY jupyterlab-start.sh .
+RUN chmod +x jupyterlab-start.sh && \
+    chown ${NB_USER}:${NB_USER} /jupyterlab-start.sh
 
 USER ${NB_USER}
 WORKDIR ${HOME}
