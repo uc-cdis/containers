@@ -4,7 +4,7 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2023-minimal
 LABEL maintainer="Center for Translational Data Science (CTDS)"
 LABEL name="jupyterlab-generic"
 
-# Configure environment for NB_USER since we are using generic amazonlinux base image
+# Configure environment for NB_USER since we are using generic amazonlinux base image,
 # similar to https://github.com/uc-cdis/jupyter-superslim/Dockerfile
 ARG NB_USER="jovyan"
 ARG NB_UID="1010"
@@ -26,7 +26,7 @@ RUN dnf upgrade --refresh && \
 RUN ln -s /usr/bin/python3.14 /usr/local/bin/python3 && \
 ln -s /usr/bin/python3.14 /usr/local/bin/python
 
-# Create non-root user
+# Create non-root user NB_USER
 RUN groupadd -g ${NB_GID} ${NB_USER} && \
     useradd -u ${NB_UID} -g ${NB_USER} -M ${NB_USER} && \
     mkdir -p ${HOME} && \
@@ -41,7 +41,6 @@ RUN chmod +x jupyterlab-start.sh && \
 
 USER ${NB_USER}
 WORKDIR ${HOME}
-RUN echo "NB_USER is $NB_USER"
 
 # Install Python/Jupyter packages as NB_USER
 RUN python3.14 -m pip install --user --upgrade pip setuptools wheel && \
