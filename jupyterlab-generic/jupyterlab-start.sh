@@ -20,11 +20,19 @@ if [[ -d "./pd " ]]; then
     ln -s ./pd/ado .
 fi
 
+# Check if LMOD default modules has been set
+if [[ -z "$LMOD_SYSTEM_DEFAULT_MODULES" ]]; then
+    echo "Setting LMOD default modules"
+    export LMOD_SYSTEM_DEFAULT_MODULES="py-numpy:py-pandas:py-matplotlib:py-scikit-learn:py-heal-sdk:py-gen3-sdk"
+fi
+
 # Load JupyterLab extension dependencies
 source /apps/lmod/lmod/init/profile
 module load git ripgrep
 # Load default modules
-module load py-pandas py-scipy
+module load "${LMOD_SYSTEM_DEFAULT_MODULES}"
+
+
 
 /home/jovyan/.local/bin/jupyter lab \
     --ServerApp.ip=0.0.0.0 \
