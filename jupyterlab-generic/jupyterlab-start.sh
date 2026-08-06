@@ -26,7 +26,7 @@ module load git ripgrep
 # Load default modules
 module load py-pandas py-scipy
 
-/usr/local/python-venv/bin/jupyter lab \
+/home/jovyan/.local/bin/jupyter lab \
     --ServerApp.ip=0.0.0.0 \
     --KernelSpecManager.ensure_native_kernel=False \
     --ServerApp.quit_button=False \
