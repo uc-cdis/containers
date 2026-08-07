@@ -28,9 +28,12 @@ fi
 
 # Load JupyterLab extension dependencies
 source /apps/lmod/lmod/init/profile
-module load git ripgrep
 # Load default modules
-module load "${LMOD_SYSTEM_DEFAULT_MODULES}"
+# https://lmod.readthedocs.io/en/latest/070_standard_modules.html
+module --initial_load --no_redirect restore
+
+module load git ripgrep
+
 
 
 
