@@ -28,14 +28,21 @@ fi
 
 # Load JupyterLab extension dependencies
 source /apps/lmod/lmod/init/profile
-# Load default modules
-# https://lmod.readthedocs.io/en/latest/070_standard_modules.html
-module --initial_load --no_redirect restore
+
+have_defaults=1
+IFS=':' read -r -a default_modules <<< "$LMOD_SYSTEM_DEFAULT_MODULES"
+echo "Checking for default modules: ${default_modules[@]}"
+for default_module in "${default_modules[@]}"; do
+    module is-loaded "$default_module" >/dev/null 2>&1 || have_defaults=0
+done
+# similar to https://lmod.readthedocs.io/en/latest/070_standard_modules.html
+if [ "$have_defaults" -eq 1 ]; then
+    module refresh
+else
+    module --initial_load --no_redirect restore
+fi
 
 module load git ripgrep
-
-
-
 
 /home/jovyan/.local/bin/jupyter lab \
     --ServerApp.ip=0.0.0.0 \
