@@ -37,8 +37,10 @@ for default_module in "${default_modules[@]}"; do
 done
 # similar to https://lmod.readthedocs.io/en/latest/070_standard_modules.html
 if [ "$have_defaults" -eq 1 ]; then
+    echo "Running module refresh"
     module refresh
 else
+    echo "Running module restore"
     module --initial_load --no_redirect restore
 fi
 
