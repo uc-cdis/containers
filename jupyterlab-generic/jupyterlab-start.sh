@@ -23,7 +23,7 @@ fi
 # Check if LMOD default modules has been set
 if [[ -z "$LMOD_SYSTEM_DEFAULT_MODULES" ]]; then
     echo "Setting LMOD default modules"
-    export LMOD_SYSTEM_DEFAULT_MODULES="py-numpy:py-pandas:py-matplotlib:py-scikit-learn:py-heal-sdk:py-gen3-sdk"
+    export LMOD_SYSTEM_DEFAULT_MODULES="py-numpy:py-pandas:py-matplotlib:py-scikit-learn:py-heal-sdk:py-gen3"
 fi
 
 # Load JupyterLab extension dependencies
