@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+pwd
+cd /home/jovyan
 
 # Symlink config files for persistence
 if [[ -d "./pd " ]]; then
