@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 pwd
 cd /home/jovyan
+ls -al
 
 # Symlink config files for persistence
 if [[ -d "./pd " ]]; then
