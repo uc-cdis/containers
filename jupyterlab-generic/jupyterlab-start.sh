@@ -4,6 +4,7 @@ cd /home/jovyan
 
 # Symlink config files for persistence
 if [[ -d "./pd " ]]; then
+    echo "Linking files to home"
     test -f ./pd/.bash_profile || touch ./pd/.bash_profile
     test -f ./pd/.bashrc || touch ./pd/.bashrc
     test -d ./pd/.jupyter || mkdir ./pd/.jupyter
