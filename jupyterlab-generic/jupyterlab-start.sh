@@ -4,7 +4,7 @@ cd /home/jovyan
 ls -al
 
 # Symlink config files for persistence
-if [[ -d "./pd " ]]; then
+if [[ -d "./pd" ]]; then
     echo "Linking files to home"
     test -f ./pd/.bash_profile || touch ./pd/.bash_profile
     test -f ./pd/.bashrc || touch ./pd/.bashrc
