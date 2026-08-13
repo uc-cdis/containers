@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Symlink config files for persistence
-if [[ -d "./pd " ]]; then
+if [[ -d "./pd" ]]; then
     test -f ./pd/.bash_profile || touch ./pd/.bash_profile
     test -f ./pd/.bashrc || touch ./pd/.bashrc
     test -d ./pd/.jupyter || mkdir ./pd/.jupyter
