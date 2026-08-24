@@ -50,24 +50,6 @@ The `pd/r_libraries` and `pd/py_libraries` directories are created at startup
 by `start-notebook.sh` (they cannot be created at build time because `pd` is a
 runtime mount).
 
-## Build / test locally
-
-```bash
-docker build -t jupyter-genomics:test .
-
-# start it, mounting a fake persistent drive
-mkdir -p /tmp/fakepd
-docker run --rm -p 8899:8888 -v /tmp/fakepd:/home/jovyan/pd \
-    jupyter-genomics:test --ip=0.0.0.0 --IdentityProvider.token=''
-# open http://localhost:8899/lab
-```
-
-Verify persistence paths resolve:
-
-```bash
-docker run --rm -v /tmp/fakepd:/home/jovyan/pd jupyter-genomics:test \
-    bash -c 'echo "R:"; R -e ".libPaths()" -q; echo "PY:"; python3 -c "import site; print(site.getusersitepackages())"'
-```
 
 ## CI
 
