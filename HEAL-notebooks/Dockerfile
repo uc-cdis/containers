@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:3.0.0
+FROM quay.io/cdis/jupyter-superslim-r:3.1.0
 
 USER $NB_USER
 ARG NOTEBOOK_DIR
