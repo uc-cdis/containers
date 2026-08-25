@@ -28,37 +28,82 @@
     padding: 10px
   }
 </style>
-<h1 class=header>Welcome to the Nextflow Workspace</h1>
+<h1 class=header>Welcome to the BRH Nextflow Workspace</h1>
 <div class=content>
-  <p><strong>This is your personal workspace. The "pd" folder represents your
-      persistent drive:</strong></p>
+  <p><strong>This is your personal workspace. No one else can access the data or files here.</strong></p> 
+  <p>You can learn more about using the BRH Workspace in the 
+    <a href=https://uc-cdis.github.io/BRH-documentation/01-home>BRH Documentation</a>.
+  </p>
+  <p><strong>The <code>/pd</code> folder (find it in the panel on the left) is your persistent drive:</strong>
+  </p>
   <ul>
-    <li>The files you save here will still be available when you come back
-      after terminating your workspace session.
-    <li>Any personal files outside of this folder will be lost.
+    <li>Use this folder to store files (notebooks, data files, etc) that you want to use again later. 
+      The files you save here will still be available when you come back after terminating your workspace session.</li>
+    <li><strong>Any files you create or add outside of this folder will be lost if they are not moved to the <code>/pd</code> 
+      before your workspace session terminates.</strong></li>
+    <li>The Nextflow image <code>/pd</code> has a storage capacity limit of 10Gi</li>
   </ul>
-  <h2 class=header>Get started with Nextflow</h2>
-  <p>If you are new to Nextflow, visit <a
-      href=https://www.nextflow.io>nextflow.io</a> for detailed information. 
-    You can also learn more about using Nextflow in BRH Workspace in the <a
-      href=https://uc-cdis.github.io/BRH-documentation/01-home/>BRH Documentation</a>. 
+  <p>The folder <code>/brh.data-commons.org</code> in the <code>/data</code> folder will host any data files you have 
+    downloaded to the workspace through the <a href=https://brh.data-commons.org/discovery>BRH Discovery Page</a>. 
+    Move these files to the <code>/pd</code> directory if you want to access them again after you terminate your workspace session.
   </p>
-  <p>This workspace is set up to run Nextflow workflows in AWS Batch. Your
-    Nextflow configuration must include the Batch queue (in your config file, 
-    <code>process.queue</code>), IAM role ARN (<code>aws.batch.jobRole</code>), and work
-    directory (<code>workDir</code>) that were created for you automatically. The sample config
-    file is already configured with these settings. It will allow you to run simple workflows and can be adapted to your
-    needs. To get started:
+<h2 class=header>Get started with Data Exploration</h2>
+  <p>Open a new "Launcher" tab by clicking the <code>+</code> next to <code>nextflow-welcome.html</code> tab at the 
+    top of this document.
+  </p>
+  <p>From the Launcher tab, you can open: a new, empty Jupyter notebook; open a new code console or terminal window; or, 
+    create several types of files (text, Markdown, Python). For notebooks or files - remember to move the file into the 
+    <code>/pd</code> drive if you want to access them in a later workspace session.
+  </p>
+  <p>You can learn <a href=https://uc-cdis.github.io/BRH-documentation/11-downloading_data_files>how to download data files 
+    through the BRH discovery page in our documentation</a>.
+  </p>
+  <p>Install software tools by using <code>pip install</code> (Python) or <code>CRAN</code> (R). 
+    If you have a requirements text, you can install them with <code>pip install -r requirements.txt</code>.
+    You can view all pre-installed software packages by opening a terminal window and using the command <code>pip list</code>
+  </p>
+  <p>There are some Nextflow examples that can be run without external containers in the 
+    <a href=https://uc-cdis.github.io/BRH-documentation/nextflow-tutorial-workflows/#notebooks-with-no-containers>BRH documentation</a>. 
+    Find other examples of analyses that can be done in the BRH Workspace on the 
+    <a href=https://brh.data-commons.org/resource-browser>BRH Example Analyses page</a>.
+  </p>
+  <p>If the locally-stored files you wish to analyze are large in number and/or size, you may need to zip them before 
+    uploading to a workspace. Once in a workspace, files can be unzipped using the python library 
+    <a href=https://docs.python.org/3/library/zipfile.html>zipfile</a>.
+  </p>
+  
+<h2 class=header>Get started with Nextflow</h2>
+  <p><strong>Note:</strong> The Nextflow CPU image is currently sized for smaller analyses and testing. 
+    The maximum storage in the <code>/pd</code> (including any notebooks or tools installed) is 10Gi. 
+    If you need a larger image for your analyses, please reach out to the BRH support team at 
+    <a href= "mailto:brhsupport@gen3.org">brhsupport@gen3.org</a> to discuss the possibility of a larger image.
+  </p>
+  <p>If you are new to Nextflow, visit <a href=https://www.nextflow.io>nextflow.io</a> for detailed information. 
+    You can also learn more about using Nextflow in BRH Workspace in the <a
+      href=https://uc-cdis.github.io/BRH-documentation/01-home>BRH Documentation</a>. 
+  </p>
+  <p>This workspace is set up to run Nextflow workflows in AWS Batch. 
+    Your Nextflow configuration must include:
   </p>
   <ul>
-    <li>If you want your <code>nextflow.config</code> file to persist, first double-click on the "pd" folder.
-    <li>Open a new "Launcher" tab by clicking the + next to <code>nextflow-welcome.html</code>
-    <li> Scroll down until you see the option for terminal. Click to open a terminal.
-    <li>You can find your sample configuration file in the "data" directory.
-      Copy it to a new "nextflow.config" file by running this command in the
-      terminal: <code>cp
-      ../data/sample-nextflow-config.txt ./nextflow.config</code>
-    <li>Launch a Hello World workflow by running this command in the terminal:
-      <code>nextflow run hello</code>
+    <li>the Batch queue (in your config file, <code>process.queue</code>),</li>
+    <li>IAM role ARN (<code>aws.batch.jobRole</code>), and </li>
+    <li>work directory (<code>workDir</code>)</li> 
+  </ul>
+  <p><strong>These were created for you automatically, and the sample config file is already configured with these settings.</strong> 
+    It will allow you to run simple workflows and can be adapted to your needs. 
+  </p>
+  <p>To get started:
+  </p>
+  <ul>
+    <li>If you want your <code>nextflow.config</code> file to persist, first double-click on the <code>/pd</code> folder.</li>
+    <li>Open a new "Launcher" tab by clicking the <code>+</code> next to <code>nextflow-welcome.html</code></li>
+    <li> Scroll down until you see the option for terminal. Click to open a terminal.</li>
+    <li>You can find your sample configuration file in the <code>/data</code> directory.
+      Copy it to a new <code>nextflow.config</code> file by running this command in the terminal: </li>
+      <code>cp ../data/sample-nextflow-config.txt ./nextflow.config</code>. 
+      Because you opened the <code>/pd</code> folder before you ran the command, it will save your config in the <code>/pd</code>.</li>
+    <li>Launch a <code>Hello World</code> workflow by running this command in the terminal:
+      <code>nextflow run hello</code></li>
   </ul>
 </div>

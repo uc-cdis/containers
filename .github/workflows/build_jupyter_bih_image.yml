@@ -1,0 +1,22 @@
+name: Build and Push Jupyter-BIH image
+
+on:
+  push:
+    paths:
+    - jupyter-bih/**
+    - .github/workflows/build_jupyter_bih_image.yml
+
+jobs:
+  jupyter-midrc-bih:
+    name: Build and Push jupyter-bih image
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      DOCKERFILE_LOCATION: "./jupyter-bih/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./jupyter-bih"
+      OVERRIDE_REPO_NAME: "jupyter-notebook"
+      OVERRIDE_TAG_NAME: "bih-$(echo ${GITHUB_REF#refs/*/} | tr / _)"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
