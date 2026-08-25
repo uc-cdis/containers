@@ -51,6 +51,8 @@ python3.14 -m pip install --user \
     jupyterlmod \
     git+https://github.com/pschumm/jupyter-lmod@pschumm/fix_hidden && \
 python3.14 -m pip install --user jupyterlab-git \
+    jupyter-archive \
+    lckr-jupyterlab-variableinspector \
     jupyterlab-search-replace \
     ipykernel==6.31.0 && \
 python3.14 -m ipykernel install --user \
