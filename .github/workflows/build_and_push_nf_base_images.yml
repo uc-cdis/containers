@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          path: containers       
+          path: containers
 
       - name: Checkout other private repository
         uses: actions/checkout@v3
@@ -46,16 +46,14 @@ jobs:
               echo "Building an image present in $dir"
               image_name=nextflow-approved/public
               tag_name=$(basename "$dir")
-              docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
-              docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
+              docker buildx build --push --platform linux/amd64 -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
               echo "Built an image with name --> $image_name:$tag_name"
 
               for dir in containers/nextflow-base-images/*/;do
                   echo "Building an image present in $dir"
                   image_name=nextflow-approved/public
                   tag_name=$(basename "$dir")
-                  docker build -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
-                  docker push public.ecr.aws/u5x5h6w3/$image_name:$tag_name
+                  docker buildx build --push --platform linux/amd64 -t public.ecr.aws/u5x5h6w3/$image_name:$tag_name $dir
                   echo "Built an image with name --> $image_name:$tag_name"
               done
 
