@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# copied from jupyterlab-generic
 
 # Symlink config files for persistence
 if [[ -d "./pd" ]]; then
