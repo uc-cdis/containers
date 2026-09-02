@@ -93,7 +93,7 @@ jobs:
             ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
             ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
             ${{ steps.sanitize_name.outputs.image_name }}__latest
-          dockerfiles: ./HEAL-notebooks/Dockerfile
+          dockerfiles: ./HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}/Dockerfile
           build-args:
             NOTEBOOK_DIR=HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}
 
