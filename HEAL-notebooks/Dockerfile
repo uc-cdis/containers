@@ -3,7 +3,8 @@ FROM quay.io/cdis/jupyter-superslim-r:3.1.0
 USER $NB_USER
 ARG NOTEBOOK_DIR
 
-COPY $NOTEBOOK_DIR/ $HOME/
+COPY . $HOME/
+RUN ls $HOME
 
 # clean things up
 USER root
