@@ -1,10 +1,14 @@
 FROM quay.io/cdis/jupyter-superslim-r:3.1.0
 
+# To build locally, specify the Dockerfile and the notebook subdirectory.
+# For example, run this in the HEAL-notebooks directory:
+#   docker build -t some_tag -f Dockerfile generic_rkernel
+
 USER $NB_USER
 ARG NOTEBOOK_DIR
 
+# Available files are limited to notebook subdirectory
 COPY . $HOME/
-RUN ls $HOME
 
 # clean things up
 USER root
