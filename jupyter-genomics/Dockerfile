@@ -1,5 +1,5 @@
-# Base the image on official Python 3.14
-FROM python:3.14-slim
+# Base the image on jupyterlab-generic
+FROM quay.io/cdis/jupyterlab-generic:master
 
 USER root
 
@@ -25,48 +25,48 @@ USER root
 #   libpoppler-cpp-dev -> pdftools
 #   libmagick++-dev    -> magick (ImageMagick bindings)
 # =========================================================================
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN dnf install -y \
     gcc \
-    g++ \
-    gfortran \
+    gcc-c++ \
+    gcc-gfortran \
     make \
-    libblas-dev \
-    liblapack-dev \
-    libxml2-dev \
-    libssl-dev \
-    libcurl4-openssl-dev \
-    libssh2-1-dev \
-    zlib1g-dev \
-    libgsl-dev \
+    blas-devel \
+    lapack-devel \
+    libxml2-devel \
+    openssl-devel \
+    libcurl-devel \
+    libssh2-devel \
+    zlib-devel \
+    gsl-devel \
     ghostscript \
     unzip \
     wget \
     tar \
     gzip \
     git \
-    curl \
-    r-base \
-    libzmq3-dev \
+    R-core-devel \
+    zeromq-devel \
     less \
-    vim \
-    libuv1-dev \
-    libgit2-dev \
-    libicu-dev \
-    libfontconfig1-dev \
-    libharfbuzz-dev \
-    libfribidi-dev \
-    libfreetype6-dev \
-    libpng-dev \
-    libtiff5-dev \
-    libjpeg-dev \
-    libpoppler-cpp-dev \
-    libmagick++-dev \
-    && rm -rf /var/lib/apt/lists/*
+    vim-enhanced \
+    libuv-devel \
+    libgit2-devel \
+    libicu-devel \
+    fontconfig-devel \
+    harfbuzz-devel \
+    fribidi-devel \
+    freetype-devel \
+    libpng-devel \
+    libtiff-devel \
+    libjpeg-turbo-devel \
+    poppler-cpp-devel \
+    ImageMagick-c++-devel \
+    && dnf clean all
 
-# JupyterLab + a Python kernel (ipykernel) + classic notebook frontend.
+# Install classic notebook frontend.
 # notebook pulls in nbclient and the rest of the runtime, so it is not listed
 # separately.
-RUN pip3 install jupyterlab notebook ipykernel
+# JupyterLab + a Python kernel (ipykernel) already installed in base image
+RUN pip3 install notebook
 
 # RESTRICT DOWNLOADS / EXPORT (so no data leaves the workspace)
 #   1. Disable the plugins that let users pull data out of the workspace:
@@ -91,9 +91,6 @@ RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
 RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org'); if (!requireNamespace('IRkernel', quietly=TRUE)) quit(status=1, save='no')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
-# For Gen3 workspaces create the jovyan group with GID 101, then create user jovyan with UID 1010 and group name jovyan
-RUN groupadd -g 101 jovyan && \
-    useradd -m -s /bin/bash -u 1010 -g jovyan jovyan
 
 ENV HOME=/home/jovyan
 WORKDIR $HOME
@@ -159,3 +156,6 @@ EXPOSE 8888
 
 # Start notebook using standard entrypoint form to properly inherit Gen3 command/args array
 ENTRYPOINT ["start-notebook.sh"]
+
+# Clear the inherited CMD from the base image and use the Entrypoint defined above by default
+CMD []
