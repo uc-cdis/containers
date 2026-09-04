@@ -39,7 +39,7 @@ fi
 # -------------------------------------------------------------------------
 if [ $# -eq 0 ] || [[ "$1" == --* ]]; then
     # MODE A: PRODUCTION MODE (Gen3 Environment)
-    exec jupyter lab "$@"
+    exec /jupyterlab-start.sh "$@"
 else
     # MODE B: TESTING MODE (Local Desktop / Manual Debugging)
     exec "$@"
