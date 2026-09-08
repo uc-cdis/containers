@@ -1,7 +1,7 @@
 # Core build tools
-pip>=21.0
-setuptools>=57.0
-wheel>=0.36
+# pip>=21.0
+# setuptools>=57.0
+# wheel>=0.36
 
 # Foundational packages
 numpy>=1.21.0
@@ -16,6 +16,7 @@ seaborn>=0.11.0
 notebook>=6.4.0
 jupyterlab>=3.0.0
 ipykernel>=6.0.0
+nbclient>0.7.1
 
 # Domain-specific
 gen3

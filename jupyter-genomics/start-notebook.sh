@@ -19,6 +19,15 @@ mkdir -p "${R_LIBS_USER:-/home/jovyan/pd/r_libraries}" 2>/dev/null \
     || echo "WARNING: could not create R library dir ${R_LIBS_USER}"
 
 # -------------------------------------------------------------------------
+# STEP 2b: ENSURE THE PYTHON USER BASE EXISTS ON THE PERSISTENT DRIVE
+# PYTHONUSERBASE is set in the Dockerfile so that `pip install --user` writes
+# to pd and `import` reads from it. Like R_LIBS_USER, pd is only mounted at
+# runtime, so the directory must be created here. Non-fatal on failure.
+# -------------------------------------------------------------------------
+mkdir -p "${PYTHONUSERBASE:-/home/jovyan/pd/py_libraries}" 2>/dev/null \
+    || echo "WARNING: could not create Python user base ${PYTHONUSERBASE}"
+
+# -------------------------------------------------------------------------
 # STEP 3: SANITIZE KUBERNETES / GEN3 STORAGE ARGUMENTS
 # -------------------------------------------------------------------------
 if [ "$1" = "start-notebook.sh" ]; then
@@ -30,7 +39,7 @@ fi
 # -------------------------------------------------------------------------
 if [ $# -eq 0 ] || [[ "$1" == --* ]]; then
     # MODE A: PRODUCTION MODE (Gen3 Environment)
-    exec jupyter lab "$@"
+    exec /jupyterlab-start.sh "$@"
 else
     # MODE B: TESTING MODE (Local Desktop / Manual Debugging)
     exec "$@"
