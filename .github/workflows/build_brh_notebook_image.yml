@@ -87,6 +87,16 @@ jobs:
           echo "::set-output name=image_name::$IMAGE_NAME"
 
       - if: ${{ steps.parse_image.outputs.build_target }}
+        name: Select Dockerfile
+        id: select_dockerfile
+        run: |
+          if [ -f "./BRH-notebooks/${{ steps.parse_image.outputs.build_target }}/Dockerfile" ]; then
+            echo "dockerfile=./BRH-notebooks/${{ steps.parse_image.outputs.build_target }}/Dockerfile"  >> $GITHUB_OUTPUT
+          else
+            echo "dockerfile=./BRH-notebooks/Dockerfile" >> $GITHUB_OUTPUT
+          fi
+
+      - if: ${{ steps.parse_image.outputs.build_target }}
         name: Build image
         id: build-image
         uses: redhat-actions/buildah-build@v2
@@ -96,7 +106,8 @@ jobs:
             ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
             ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
             ${{ steps.sanitize_name.outputs.image_name }}__latest
-          dockerfiles: ./BRH-notebooks/Dockerfile
+          context: ./BRH-notebooks/${{ steps.parse_image.outputs.build_target }}
+          dockerfiles: ${{ steps.select_dockerfile.outputs.dockerfile }}
           build-args:
             NOTEBOOK_DIR=BRH-notebooks/${{ steps.parse_image.outputs.build_target }}
 
