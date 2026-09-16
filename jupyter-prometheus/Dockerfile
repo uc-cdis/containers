@@ -1,11 +1,22 @@
-FROM quay.io/cdis/jupyterlab-generic:master
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023-minimal
+
+ARG NB_USER="jovyan"
+ARG NB_UID="1010"
+ENV NB_USER="${NB_USER}" \
+    NB_UID="${NB_UID}" \
+    HOME="/home/${NB_USER}"
 
 USER root
 
-# Install system dependencies
-RUN dnf update -y && dnf install -y \
+RUN ln -s /usr/bin/python3.14 /usr/local/bin/python3 && \
+    ln -s /usr/bin/python3.14 /usr/local/bin/python
+
+RUN dnf upgrade --refresh && \
+    dnf install -y \
+    ca-certificates \
     gcc-c++ \
     ghostscript-devel \
+    git \
     gsl-devel \
     gzip \
     libcurl-devel \
@@ -15,34 +26,44 @@ RUN dnf update -y && dnf install -y \
     openssl-devel \
     python3.14 \
     python3.14-pip \
-    python3.14-setuptools \
     python3.14-pip-wheel \
+    python3.14-setuptools \
+    shadow-utils \
     tar \
     unzip \
     wget \
-    zlib-devel \
-    && dnf clean all
+    which \
+    zlib-devel && \
+    dnf clean all
 
-# Install udunits2 from source since it's not in AL2023 repos
-# RUN wget -q https://artifacts.unidata.ucar.edu/repository/downloads-udunits/2.2.28/udunits-2.2.28.tar.gz && \
-#     tar -xzf udunits-2.2.28.tar.gz && \
-#     cd udunits-2.2.28 && \
-#     ./configure --prefix=/usr/local && \
-#     make && make install && \
-#     cd .. && rm -rf udunits-2.2.28* && \
-#     echo "/usr/local/lib" >> /etc/ld.so.conf.d/udunits2.conf && \
-#     ldconfig
+
+RUN useradd -u ${NB_UID} -m ${NB_USER}
 
 USER jovyan
+WORKDIR ${HOME}
+ENV SHELL=/bin/bash
+ENV PATH="${HOME}/.local/bin:${PATH}"
 
 # Install everything from requirements.txt
 COPY requirements.txt .
 RUN pip3.14 install --no-cache-dir -r requirements.txt
+RUN rm ${HOME}/requirements.txt
+
+RUN python3.14 -m pip install --user \
+    jupyterlab \
+    ipykernel
+
+RUN python -m ipykernel install --user --name=python3.14 --display-name "Python 3.14"
 
 # Copy notebook directory
-COPY combined_demos/ $HOME/
+COPY combined_demos $HOME/combined_demos
+COPY run.sh /run.sh
+
+USER root
+RUN chmod +x /run.sh
+USER jovyan
 
 # Add virtual environment function to bashrc
 RUN echo 'function ve(){ mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python3.14 -m ipykernel install --user --name=$VENV; deactivate; }' >> /home/jovyan/.bashrc
 
-# WORKDIR $HOME
+CMD ["/run.sh"]
