@@ -57,10 +57,12 @@ RUN python -m ipykernel install --user --name=python3.14 --display-name "Python 
 
 # Copy notebook directory
 COPY combined_demos $HOME/combined_demos
-COPY run.sh /run.sh
 
 USER root
+COPY run.sh /run.sh
 RUN chmod +x /run.sh
+COPY start-notebook.sh /usr/local/bin/start-notebook.sh
+RUN chmod +x /usr/local/bin/start-notebook.sh
 USER jovyan
 
 # Add virtual environment function to bashrc
