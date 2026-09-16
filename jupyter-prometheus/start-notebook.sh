@@ -2,7 +2,6 @@
 set -e  # Exit instantly if any single setup command fails
 
 /home/jovyan/.local/bin/jupyter lab \
-    --ServerApp.ip=0.0.0.0 \
     --KernelSpecManager.ensure_native_kernel=False \
     --ServerApp.quit_button=False \
     --IdentityProvider.token="" \
