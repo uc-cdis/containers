@@ -27,6 +27,10 @@ Create a new directory within `HEAL-notebooks`
 
 Add any files and/or nested directories needed to run the notebook.
 
+Omit a `Dockerfile` if the default file, `HEAL-notebooks/Dockerfile`, is sufficient.
+Otherwise, include a custom `Dockerfile` in the new directory. It should include steps to copy
+files into the workspace as needed.
+
 Push all changes within the new directory to github
 
 Ex:
@@ -77,7 +81,19 @@ will look like this:
   then the `push-image` workflow will exit without updating images.
 
 - This workflow should support building most, but not all notebook images. Notebooks with non-standard
-  dependencies will require their own Dockerfiles and should not be stored in this directory.
+  dependencies will require their own Dockerfiles. A custom Dockerfile can be included
+  in the Notebook subdirectory.
+
+- The standard `HEAL-notebooks/Dockerfile` can be built locally by specifying the Dockerfile and the
+  notebook subdirectory. For example, run the following from `HEAL-notebooks` to build the `generic_rkernel`
+  workspace image:
+  ```bash
+  docker build -t some_tag -f Dockerfile generic_rkernel
+  ```
+  A custom `Dockerfile` can be built locally with a standard build command in the notebook subdirectory:
+  ```bash
+  docker build -t some_tag .
+  ```
 
 - There must be at least 2 commits on the working branch in order to trigger a build (so that the
   workflow can detect changes).
