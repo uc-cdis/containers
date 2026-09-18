@@ -84,6 +84,16 @@ jobs:
           echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
       - if: ${{ steps.parse_image.outputs.build_target }}
+        name: Select Dockerfile
+        id: select_dockerfile
+        run: |
+          if [ -f "./HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}/Dockerfile" ]; then
+            echo "dockerfile=./HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}/Dockerfile"  >> $GITHUB_OUTPUT
+          else
+            echo "dockerfile=./HEAL-notebooks/Dockerfile" >> $GITHUB_OUTPUT
+          fi
+
+      - if: ${{ steps.parse_image.outputs.build_target }}
         name: Build image
         id: build-image
         uses: redhat-actions/buildah-build@v2
@@ -93,7 +103,8 @@ jobs:
             ${{ steps.sanitize_name.outputs.image_name }}__${{ steps.extract_branch.outputs.branch }}
             ${{ steps.sanitize_name.outputs.image_name }}__${{ github.sha }}
             ${{ steps.sanitize_name.outputs.image_name }}__latest
-          dockerfiles: ./HEAL-notebooks/Dockerfile
+          context: ./HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}
+          dockerfiles: ${{ steps.select_dockerfile.outputs.dockerfile }}
           build-args:
             NOTEBOOK_DIR=HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}
 
