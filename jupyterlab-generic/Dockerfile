@@ -16,9 +16,11 @@ ENV NB_USER="${NB_USER}" \
 
 # TODO: git, nodejs, and build are all required only to build jupyterlmod;
 #       these can be dropped once jupyterlmod fix is available in PyPI.
+# ncurses-compat-libs provides libncurses.so.5/libtinfo.so.5, required to load
+# Stata's shared library (used by the nbstata kernel).
 RUN dnf upgrade --refresh && \
     dnf install -y python3.14 python3.14-pip git \
-        shadow-utils which ca-certificates && \
+        shadow-utils which ca-certificates ncurses-compat-libs && \
     curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
     dnf install -y nodejs && \
     dnf clean all
