@@ -16,9 +16,11 @@ ENV NB_USER="${NB_USER}" \
 
 # TODO: git, nodejs, and build are all required only to build jupyterlmod;
 #       these can be dropped once jupyterlmod fix is available in PyPI.
+# ncurses-compat-libs provides libncurses.so.5/libtinfo.so.5, required to load
+# Stata's shared library (used by the nbstata kernel).
 RUN dnf upgrade --refresh && \
     dnf install -y python3.14 python3.14-pip git \
-        shadow-utils which ca-certificates && \
+        shadow-utils which ca-certificates ncurses-compat-libs && \
     curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
     dnf install -y nodejs && \
     dnf clean all
@@ -58,6 +60,17 @@ python3.14 -m pip install --user jupyterlab-git \
 python3.14 -m ipykernel install --user \
     --name "Python-3.14.0" \
     --display-name "Python 3.14 (ipykernel)"
+
+# Install nbstata (Stata kernel) and jupyterlab_stata_highlight3 (Stata syntax
+# highlighting for JupyterLab 4). Stata itself is not in the image; it is provided
+# at runtime via lmod, and nbstata locates it on PATH once the module is loaded.
+# The installer writes a config with an empty stata_dir when Stata is not found,
+# so remove it (and ~/.config if left empty) to keep PATH discovery and the
+# ~/.config persistence symlink in jupyterlab-start.sh working.
+RUN python3.14 -m pip install --user nbstata jupyterlab_stata_highlight3 && \
+    python3.14 -m nbstata.install --user && \
+    rm -rf ${HOME}/.config/nbstata && \
+    rmdir --ignore-fail-on-non-empty ${HOME}/.config
 
 EXPOSE 8888
 
