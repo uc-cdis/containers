@@ -20,6 +20,11 @@ if [[ -d "./pd" ]]; then
     ln -s ./pd/ado .
 fi
 
+# Symlink Stata license if present
+if [[ -f "./pd/stata.lic" ]]; then
+    ln -s ./pd/stata.lic /home/jovyan/stata.lic
+fi
+
 # Check if LMOD default modules has been set
 if [[ -z "$LMOD_SYSTEM_DEFAULT_MODULES" ]]; then
     echo "Setting LMOD default modules"
