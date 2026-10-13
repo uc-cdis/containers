@@ -22,7 +22,7 @@ fi
 
 # Symlink Stata license if present
 if [[ -f "./pd/stata.lic" ]]; then
-    ln -s ./pd/stata.lic /home/jovyan/stata.lic
+    ln -sf ./pd/stata.lic /home/jovyan/stata.lic
 fi
 
 # Check if LMOD default modules has been set
