@@ -133,6 +133,18 @@ ENV R_LIBS_USER="/home/jovyan/pd/r_libraries"
 ENV PYTHONUSERBASE="/home/jovyan/pd/py_libraries"
 ENV PATH="/home/jovyan/pd/py_libraries/bin:${PATH}"
 
+# Moving PYTHONUSERBASE off ~/.local hides the base image's Jupyter install:
+# jupyterlab-generic installs JupyterLab and its extensions with `pip --user`
+# into ~/.local, and Jupyter locates some of those files via USER_BASE.
+# - JUPYTERLAB_DIR: without it JupyterLab falls back to
+#   /usr/local/share/jupyter/lab (created by `pip3 install notebook` above, but
+#   with no built assets) and fails with "application assets not found".
+# - JUPYTER_CONFIG_PATH: without it ~/.local/etc/jupyter is not searched, so
+#   the server extensions enabled there (jupyterlab-git, jupyterlmod, terminals,
+#   lsp, archive, search-replace) are silently not loaded.
+ENV JUPYTERLAB_DIR="/home/jovyan/.local/share/jupyter/lab"
+ENV JUPYTER_CONFIG_PATH="/home/jovyan/.local/etc/jupyter"
+
 # =========================================================================
 # IMPORT AND AUTHORIZE THE STARTUP WRAPPER SCRIPT
 # Copy the script into a global system directory path and make it executable
