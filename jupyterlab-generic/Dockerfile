@@ -62,8 +62,9 @@ python3.14 -m ipykernel install --user \
     --display-name "Python 3.14 (ipykernel)"
 
 # Install nbstata (Stata kernel) and jupyterlab_stata_highlight3 (Stata syntax
-# highlighting for JupyterLab 4). Stata itself is not in the image; it is provided
-# at runtime via lmod, and nbstata locates it on PATH once the module is loaded.
+# highlighting for JupyterLab 4). Stata itself is not in the image; it comes from
+# the software library mounted at /apps/stata, which jupyterlab-start.sh adds to
+# PATH so nbstata can find it.
 # The installer writes a config with an empty stata_dir when Stata is not found,
 # so remove it (and ~/.config if left empty) to keep PATH discovery and the
 # ~/.config persistence symlink in jupyterlab-start.sh working.
