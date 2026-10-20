@@ -51,6 +51,9 @@ fi
 
 module load git ripgrep
 
+# Stata from the software library (mounted at /apps), for the nbstata kernel
+export PATH="${PATH}:/apps/stata"
+
 /home/jovyan/.local/bin/jupyter lab \
     --ServerApp.ip=0.0.0.0 \
     --KernelSpecManager.ensure_native_kernel=False \
