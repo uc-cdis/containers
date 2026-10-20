@@ -20,6 +20,11 @@ if [[ -d "./pd" ]]; then
     ln -s ./pd/ado .
 fi
 
+# Symlink Stata license if present
+if [[ -f "./pd/stata.lic" ]]; then
+    ln -sf ./pd/stata.lic /home/jovyan/stata.lic
+fi
+
 # Check if LMOD default modules has been set
 if [[ -z "$LMOD_SYSTEM_DEFAULT_MODULES" ]]; then
     echo "Setting LMOD default modules"
@@ -45,6 +50,9 @@ else
 fi
 
 module load git ripgrep
+
+# Stata from the software library (mounted at /apps), for the nbstata kernel
+export PATH="${PATH}:/apps/stata"
 
 /home/jovyan/.local/bin/jupyter lab \
     --ServerApp.ip=0.0.0.0 \
