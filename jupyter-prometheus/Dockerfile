@@ -35,6 +35,8 @@ RUN dnf update -y && dnf install -y \
 
 USER jovyan
 
+ENV JUPYTERLAB_SETTINGS_DIR=/home/jovyan/pd/.jupyter/lab/user-settings
+
 # Install everything from requirements.txt
 COPY requirements.txt .
 RUN pip3.14 install --no-cache-dir -r requirements.txt
@@ -43,6 +45,7 @@ RUN pip3.14 install --no-cache-dir -r requirements.txt
 COPY combined_demos/ $HOME/
 
 # Add virtual environment function to bashrc
-RUN echo 'function ve(){ mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python3.14 -m ipykernel install --user --name=$VENV; deactivate; }' >> /home/jovyan/.bashrc
+RUN echo 'function ve(){ mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python3.14 -m ipykernel install --user --name=$VENV; deactivate; }' >> /home/jovyan/.bashrc \
+    echo '[ -f ~/pd/.bashrc ] && . ~/pd/.bashrc' >> /home/jovyan/.bashrc
 
 # WORKDIR $HOME
