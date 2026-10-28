@@ -24,19 +24,14 @@ RUN dnf update -y && dnf install -y \
     zlib-devel \
     && dnf clean all
 
-# Install udunits2 from source since it's not in AL2023 repos
-# RUN wget -q https://artifacts.unidata.ucar.edu/repository/downloads-udunits/2.2.28/udunits-2.2.28.tar.gz && \
-#     tar -xzf udunits-2.2.28.tar.gz && \
-#     cd udunits-2.2.28 && \
-#     ./configure --prefix=/usr/local && \
-#     make && make install && \
-#     cd .. && rm -rf udunits-2.2.28* && \
-#     echo "/usr/local/lib" >> /etc/ld.so.conf.d/udunits2.conf && \
-#     ldconfig
+RUN echo '[ -n "$BASH_VERSION" ] && case $- in *i*) [ -f ~/.bashrc ] && . ~/.bashrc;; esac' \
+    > /etc/profile.d/zz-load-bashrc.sh
 
 USER jovyan
 
 ENV JUPYTERLAB_SETTINGS_DIR=/home/jovyan/pd/.jupyter/lab/user-settings
+ENV JUPYTERLAB_WORKSPACES_DIR=/home/jovyan/pd/.jupyter/lab/workspaces
+ENV PYTHONPATH="/home/jovyan/pd/py_libraries:${PYTHONPATH}"
 
 # Install everything from requirements.txt
 COPY requirements.txt .
@@ -46,7 +41,5 @@ RUN pip3.14 install --no-cache-dir -r requirements.txt
 COPY combined_demos/ $HOME/
 
 # Add virtual environment function to bashrc
-RUN echo 'function ve(){ mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python3.14 -m ipykernel install --user --name=$VENV; deactivate; }' >> /home/jovyan/.bashrc \
+RUN echo 'function ve(){ mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python3.14 -m ipykernel install --user --name=$VENV; deactivate; }' >> /home/jovyan/.bashrc && \
     echo '[ -f ~/pd/.bashrc ] && . ~/pd/.bashrc' >> /home/jovyan/.bashrc
-
-# WORKDIR $HOME
