@@ -24,7 +24,14 @@ RUN dnf update -y && dnf install -y \
     zlib-devel \
     && dnf clean all
 
-RUN echo '[ -n "$BASH_VERSION" ] && case $- in *i*) [ -f ~/.bashrc ] && . ~/.bashrc;; esac' \
+# Define the ve helper system-wide so the image doesn't create ~/.bashrc;
+# that lets jupyterlab-start.sh link ~/.bashrc into pd
+RUN echo 've() { mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv "$VENV" --system-site-packages; . "$VENV/bin/activate"; python3.14 -m ipykernel install --user --name="$VENV"; deactivate; }' \
+    > /etc/profile.d/ve.sh
+
+# Terminals are login shells and the base image's .bash_profile (in pd) is empty,
+# so load ~/.bashrc from here
+RUN echo '[ -n "$BASH_VERSION" ] && shopt -q login_shell && case $- in *i*) [ -f ~/.bashrc ] && . ~/.bashrc;; esac' \
     > /etc/profile.d/zz-load-bashrc.sh
 
 USER jovyan
@@ -39,7 +46,3 @@ RUN pip3.14 install --no-cache-dir -r requirements.txt
 
 # Copy notebook directory
 COPY combined_demos/ $HOME/
-
-# Add virtual environment function to bashrc
-RUN echo 'function ve(){ mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python3.14 -m ipykernel install --user --name=$VENV; deactivate; }' >> /home/jovyan/.bashrc && \
-    echo '[ -f ~/pd/.bashrc ] && . ~/pd/.bashrc' >> /home/jovyan/.bashrc
