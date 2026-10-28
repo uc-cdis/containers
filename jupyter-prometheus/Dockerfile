@@ -17,6 +17,7 @@ RUN dnf update -y && dnf install -y \
     python3.14-pip \
     python3.14-setuptools \
     python3.14-pip-wheel \
+    python3.14-devel \
     tar \
     unzip \
     wget \
