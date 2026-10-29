@@ -24,26 +24,35 @@ RUN dnf update -y && dnf install -y \
     zlib-devel \
     && dnf clean all
 
-# Install udunits2 from source since it's not in AL2023 repos
-# RUN wget -q https://artifacts.unidata.ucar.edu/repository/downloads-udunits/2.2.28/udunits-2.2.28.tar.gz && \
-#     tar -xzf udunits-2.2.28.tar.gz && \
-#     cd udunits-2.2.28 && \
-#     ./configure --prefix=/usr/local && \
-#     make && make install && \
-#     cd .. && rm -rf udunits-2.2.28* && \
-#     echo "/usr/local/lib" >> /etc/ld.so.conf.d/udunits2.conf && \
-#     ldconfig
+# Define the ve helper system-wide so the image doesn't create ~/.bashrc;
+# that lets jupyterlab-start.sh link ~/.bashrc into pd
+RUN echo 've() { mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv "$VENV" --system-site-packages; . "$VENV/bin/activate"; python3.14 -m ipykernel install --user --name="$VENV"; deactivate; }' \
+    > /etc/profile.d/ve.sh
+
+# Terminals are login shells and the base image's .bash_profile (in pd) is empty,
+# so load ~/.bashrc from here
+RUN echo '[ -n "$BASH_VERSION" ] && shopt -q login_shell && case $- in *i*) [ -f ~/.bashrc ] && . ~/.bashrc;; esac' \
+    > /etc/profile.d/zz-load-bashrc.sh
 
 USER jovyan
 
+# Persist JupyterLab settings and layouts in pd
+ENV JUPYTERLAB_SETTINGS_DIR=/home/jovyan/pd/.jupyter/lab/user-settings
+ENV JUPYTERLAB_WORKSPACES_DIR=/home/jovyan/pd/.jupyter/lab/workspaces
+
 # Install everything from requirements.txt
+# (must come before PYTHONUSERBASE is set, or these would install into pd
+# and be hidden when pd is mounted)
 COPY requirements.txt .
 RUN pip3.14 install --no-cache-dir -r requirements.txt
 
 # Copy notebook directory
 COPY combined_demos/ $HOME/
 
-# Add virtual environment function to bashrc
-RUN echo 'function ve(){ mkdir -p virtualenv; cd virtualenv; VENV="$1"; python3.14 -m venv $VENV --system-site-packages; source $VENV/bin/activate; python3.14 -m ipykernel install --user --name=$VENV; deactivate; }' >> /home/jovyan/.bashrc
-
-# WORKDIR $HOME
+# Persist user-installed Python packages in pd, same as jupyter-genomics:
+# `pip install --user <pkg>` goes to pd/py_libraries and CLI tools land on PATH
+ENV PYTHONUSERBASE="/home/jovyan/pd/py_libraries"
+ENV PATH="/home/jovyan/pd/py_libraries/bin:${PATH}"
+# Keep JupyterLab finding the base image's install in ~/.local
+ENV JUPYTERLAB_DIR="/home/jovyan/.local/share/jupyter/lab"
+ENV JUPYTER_CONFIG_PATH="/home/jovyan/.local/etc/jupyter"
