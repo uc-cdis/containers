@@ -36,13 +36,23 @@ RUN echo '[ -n "$BASH_VERSION" ] && shopt -q login_shell && case $- in *i*) [ -f
 
 USER jovyan
 
+# Persist JupyterLab settings and layouts in pd
 ENV JUPYTERLAB_SETTINGS_DIR=/home/jovyan/pd/.jupyter/lab/user-settings
 ENV JUPYTERLAB_WORKSPACES_DIR=/home/jovyan/pd/.jupyter/lab/workspaces
-ENV PYTHONPATH="/home/jovyan/pd/py_libraries:${PYTHONPATH}"
 
 # Install everything from requirements.txt
+# (must come before PYTHONUSERBASE is set, or these would install into pd
+# and be hidden when pd is mounted)
 COPY requirements.txt .
 RUN pip3.14 install --no-cache-dir -r requirements.txt
 
 # Copy notebook directory
 COPY combined_demos/ $HOME/
+
+# Persist user-installed Python packages in pd, same as jupyter-genomics:
+# `pip install --user <pkg>` goes to pd/py_libraries and CLI tools land on PATH
+ENV PYTHONUSERBASE="/home/jovyan/pd/py_libraries"
+ENV PATH="/home/jovyan/pd/py_libraries/bin:${PATH}"
+# Keep JupyterLab finding the base image's install in ~/.local
+ENV JUPYTERLAB_DIR="/home/jovyan/.local/share/jupyter/lab"
+ENV JUPYTER_CONFIG_PATH="/home/jovyan/.local/etc/jupyter"
