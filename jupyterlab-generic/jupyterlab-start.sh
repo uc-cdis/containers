@@ -51,6 +51,13 @@ fi
 
 module load git ripgrep
 
+# `module load` puts the software library (/apps) at the front of PYTHONPATH, so packages
+# users `pip install` were shadowed by older software-library copies. Put the user's pip folder
+# back in front (wherever PYTHONUSERBASE points: ~/.local, or ~/pd/py_libraries in child images).
+USER_SITE="$(python3.14 -m site --user-site)"
+mkdir -p "$USER_SITE"
+export PYTHONPATH="${USER_SITE}:${PYTHONPATH}"
+
 # Stata from the software library (mounted at /apps), for the nbstata kernel
 export PATH="${PATH}:/apps/stata"
 
