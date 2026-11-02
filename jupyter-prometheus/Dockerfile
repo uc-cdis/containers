@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyterlab-generic:feat_alphagenome-notebook
+FROM quay.io/cdis/jupyterlab-generic:master
 
 USER root
 
