@@ -50,6 +50,27 @@ The `pd/r_libraries` and `pd/py_libraries` directories are created at startup
 by `start-notebook.sh` (they cannot be created at build time because `pd` is a
 runtime mount).
 
+## Persistent tool config
+
+`PD=/home/jovyan/pd` is set, and other user-level tool state also lives on it:
+
+| What | Location |
+| --- | --- |
+| Jupyter kernels (`ipykernel install --user`, etc.) | `pd/jupyter/kernels` (`~/.local/share/jupyter/kernels` is a symlink to it) |
+| `git config --global` | `pd/.config/git/config` (`GIT_CONFIG_GLOBAL`) |
+| `gh` | `pd/.config/gh` (`GH_CONFIG_DIR`) |
+| pre-commit | `pd/.cache/pre-commit` (`PRE_COMMIT_HOME`) |
+| uv Pythons / tools / cache | `pd/.uv/{python,tools,cache}`, executables in `pd/.uv/bin` |
+| Your own binaries | `pd/tools/bin` |
+
+`uv` itself is installed in the image (`/usr/local/bin/uv`). The kernels the
+image ships (Python, R, Stata) live in `/usr/local/share/jupyter/kernels`, so
+they update with the image.
+
+On `PATH`, `pd/.uv/bin`, `pd/tools/bin` and `pd/py_libraries/bin` come first,
+ahead of software-library modules, so a tool on `pd` overrides one of the same
+name from `/apps`.
+
 
 ## CI
 

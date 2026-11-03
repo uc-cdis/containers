@@ -86,6 +86,11 @@ RUN jupyter labextension disable @jupyterlab/docmanager-extension:download \
                                  @jupyterlab/filebrowser-extension:download \
                                  @jupyterlab/notebook-extension:export
 
+# uv / uvx, from the official image. Pinned so builds are reproducible; bump
+# the tag to upgrade. Users' uv data (Pythons, tools, cache) lives on pd, see
+# the UV_* variables below.
+COPY --from=ghcr.io/astral-sh/uv:0.13.7 /uv /uvx /usr/local/bin/
+
 # Install IRkernel and register it for JupyterLab globally.
 # needs to be root user to install packages
 RUN R -e "install.packages('IRkernel', repos='https://cloud.r-project.org'); if (!requireNamespace('IRkernel', quietly=TRUE)) quit(status=1, save='no')" && \
@@ -146,11 +151,83 @@ ENV JUPYTERLAB_DIR="/home/jovyan/.local/share/jupyter/lab"
 ENV JUPYTER_CONFIG_PATH="/home/jovyan/.local/etc/jupyter"
 
 # =========================================================================
+# TOOL CONFIG AND DATA ON THE PERSISTENT DRIVE
+#
+# Point user-level tool state at pd so it survives restarts. Env vars rather
+# than symlinks, because the default locations mostly can't be symlinked:
+#   - uv defaults to ~/.local/share/uv and ~/.local/bin, but ~/.local holds
+#     the image's JupyterLab install and must stay in the image.
+#   - pre-commit defaults to ~/.cache, which also holds pip's cache.
+#   - `git config --global` writes ~/.gitconfig, which isn't on pd.
+# GH_CONFIG_DIR matches gh's default (~/.config is symlinked to pd/.config by
+# /jupyterlab-start.sh) but is set explicitly so it doesn't depend on that.
+# UV_ROOT is not a uv variable, only a shorthand for the ones below.
+#
+# PATH order: uv tools, then pd/tools/bin, then pd/py_libraries/bin (above).
+# /jupyterlab-start.sh is patched below to restore this order after
+# `module load`, so pd overrides the software library.
+# =========================================================================
+ENV PD="/home/jovyan/pd"
+ENV GH_CONFIG_DIR="${PD}/.config/gh" \
+    GIT_CONFIG_GLOBAL="${PD}/.config/git/config" \
+    PRE_COMMIT_HOME="${PD}/.cache/pre-commit" \
+    UV_ROOT="${PD}/.uv"
+ENV UV_PYTHON_INSTALL_DIR="${UV_ROOT}/python" \
+    UV_CACHE_DIR="${UV_ROOT}/cache" \
+    UV_TOOL_DIR="${UV_ROOT}/tools" \
+    UV_TOOL_BIN_DIR="${UV_ROOT}/bin" \
+    UV_PYTHON_BIN_DIR="${UV_ROOT}/bin"
+ENV PATH="${UV_TOOL_BIN_DIR}:${PD}/tools/bin:${PATH}"
+
+# =========================================================================
 # IMPORT AND AUTHORIZE THE STARTUP WRAPPER SCRIPT
 # Copy the script into a global system directory path and make it executable
 # =========================================================================
 COPY start-notebook.sh /usr/local/bin/start-notebook.sh
 RUN chmod +x /usr/local/bin/start-notebook.sh
+
+# Drop the base image's R/ado setup from /jupyterlab-start.sh.
+# The base script creates empty pd/.R and pd/.ado directories
+# (`test -d ./pd/.R || mkdir ./pd/.R`) and symlinks ~/R and ~/ado into pd
+# (`ln -s ./pd/R .`). ado is Stata's add-on package directory, and this image
+# has no use for it or for the R symlink. The grep fails the build if any of
+# these lines are still there after sed (for example, because the base image
+# changed how it writes them), so the removal can't silently stop working.
+RUN sed -i -E \
+        -e '/^[[:space:]]*test -d \.\/pd\/\.(R|ado) \|\| mkdir \.\/pd\/\.(R|ado)[[:space:]]*$/d' \
+        -e '/^[[:space:]]*ln -s \.\/pd\/(R|ado) \.[[:space:]]*$/d' \
+        /jupyterlab-start.sh && \
+    ! grep -nE '(mkdir \./pd/\.(R|ado)|ln -s \./pd/(R|ado))( |$)' /jupyterlab-start.sh
+
+# Let tools on pd override the software library.
+# /jupyterlab-start.sh runs `module load` after the container starts, which
+# prepends /apps/... to PATH and so would shadow anything in the pd bin dirs.
+# Re-prepend the pd bin dirs right before it launches JupyterLab, so the
+# server, its kernels and its terminals all see pd first. The grep fails the
+# build if the launch line moved and the insert did not happen.
+RUN sed -i \
+        '/^\/home\/jovyan\/\.local\/bin\/jupyter lab/i export PATH="${UV_TOOL_BIN_DIR}:${PD}/tools/bin:${PYTHONUSERBASE}/bin:${PATH}"' \
+        /jupyterlab-start.sh && \
+    grep -qxF 'export PATH="${UV_TOOL_BIN_DIR}:${PD}/tools/bin:${PYTHONUSERBASE}/bin:${PATH}"' /jupyterlab-start.sh
+
+# =========================================================================
+# USER JUPYTER KERNELS ON THE PERSISTENT DRIVE
+#
+# `ipykernel install --user` (and similar) writes kernelspecs to
+# ~/.local/share/jupyter/kernels, which is in the image and lost on restart.
+# The base image also installs its own kernels there (Python 3.14, nbstata).
+#   1. Move the image's kernels to the system kernel dir (where IRkernel is),
+#      so they stay owned by the image and update with it. `cp -a` overwrites
+#      on a name clash, keeping the old precedence (user dir used to win).
+#   2. Replace the user kernel dir with a symlink into pd. It dangles at build
+#      time; start-notebook.sh creates the target once pd is mounted.
+# =========================================================================
+RUN mkdir -p /usr/local/share/jupyter/kernels && \
+    cp -a /home/jovyan/.local/share/jupyter/kernels/. /usr/local/share/jupyter/kernels/ && \
+    chown -R root:root /usr/local/share/jupyter/kernels && \
+    rm -rf /home/jovyan/.local/share/jupyter/kernels && \
+    ln -s /home/jovyan/pd/jupyter/kernels /home/jovyan/.local/share/jupyter/kernels && \
+    chown -h jovyan:jovyan /home/jovyan/.local/share/jupyter/kernels
 
 # Switch to the secure Gen3 user context permanently for all subsequent build steps
 USER jovyan

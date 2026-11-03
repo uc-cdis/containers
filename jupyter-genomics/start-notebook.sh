@@ -28,6 +28,19 @@ mkdir -p "${PYTHONUSERBASE:-/home/jovyan/pd/py_libraries}" 2>/dev/null \
     || echo "WARNING: could not create Python user base ${PYTHONUSERBASE}"
 
 # -------------------------------------------------------------------------
+# STEP 2c: ENSURE OTHER PERSISTENT DIRECTORIES EXIST
+#   - jupyter/kernels: ~/.local/share/jupyter/kernels is a symlink to it
+#     (set up in the Dockerfile), so `ipykernel install --user` needs it.
+#   - .config/git: `git config --global` fails if the parent directory of
+#     GIT_CONFIG_GLOBAL does not exist.
+#   - tools/bin: on PATH for user-provided binaries.
+# Non-fatal on failure, like the steps above.
+# -------------------------------------------------------------------------
+PD="${PD:-/home/jovyan/pd}"
+mkdir -p "$PD/jupyter/kernels" "$(dirname "${GIT_CONFIG_GLOBAL:-$PD/.config/git/config}")" "$PD/tools/bin" 2>/dev/null \
+    || echo "WARNING: could not create persistent directories under $PD"
+
+# -------------------------------------------------------------------------
 # STEP 3: SANITIZE KUBERNETES / GEN3 STORAGE ARGUMENTS
 # -------------------------------------------------------------------------
 if [ "$1" = "start-notebook.sh" ]; then
