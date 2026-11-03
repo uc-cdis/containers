@@ -39,6 +39,7 @@ jobs:
           context: ./jupyterlab-generic
           file: "./jupyterlab-generic/Dockerfile"
           push: true
+          provenance: false
           tags: |
             quay.io/cdis/jupyterlab-generic:${{ env.IMAGE_TAG }}
           labels: ${{ steps.meta.outputs.labels }}

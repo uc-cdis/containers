@@ -20,7 +20,7 @@ ENV NB_USER="${NB_USER}" \
 # Stata's shared library (used by the nbstata kernel).
 RUN dnf upgrade --refresh && \
     dnf install -y python3.14 python3.14-pip git \
-        shadow-utils which ca-certificates ncurses-compat-libs && \
+        shadow-utils which ca-certificates ncurses-compat-libs vim-minimal && \
     curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
     dnf install -y nodejs && \
     dnf clean all
