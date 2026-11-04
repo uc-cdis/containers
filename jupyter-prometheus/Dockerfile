@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyterlab-generic:master
+FROM quay.io/cdis/jupyterlab-generic:drb-jupyter-persistance
 
 USER root
 
