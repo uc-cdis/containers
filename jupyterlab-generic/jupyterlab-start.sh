@@ -2,7 +2,7 @@
 
 # Symlink config files for persistence
 if [[ -d "./pd" ]]; then
-    test -f ./pd/.bash_profile || touch ./pd/.bash_profile
+    test -s ./pd/.bash_profile || echo '[ -f ~/.bashrc ] && . ~/.bashrc' > ./pd/.bash_profile
     test -f ./pd/.bashrc || touch ./pd/.bashrc
     test -d ./pd/.jupyter || mkdir ./pd/.jupyter
     test -d ./pd/.ipython || mkdir ./pd/.ipython
@@ -16,8 +16,8 @@ if [[ -d "./pd" ]]; then
     ln -s ./pd/.ipython .
     ln -s ./pd/.config .
     ln -s ./pd/.local .
-    ln -s ./pd/R .
-    ln -s ./pd/ado .
+    ln -s ./pd/.R .
+    ln -s ./pd/.ado .
 fi
 
 # Symlink Stata license if present
