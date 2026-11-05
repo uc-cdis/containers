@@ -87,11 +87,13 @@ jobs:
         name: Select Dockerfile
         id: select_dockerfile
         run: |
-          if [ -f "./HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}/Dockerfile" ]; then
-            echo "dockerfile=./HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}/Dockerfile"  >> $GITHUB_OUTPUT
-          else
-            echo "dockerfile=./HEAL-notebooks/Dockerfile" >> $GITHUB_OUTPUT
+          # Every image directory must provide its own Dockerfile; there is no shared default
+          DOCKERFILE="./HEAL-notebooks/${{ steps.parse_image.outputs.build_target }}/Dockerfile"
+          if [ ! -f "$DOCKERFILE" ]; then
+            echo "::error::$DOCKERFILE not found. Each HEAL-notebooks subdirectory must contain its own Dockerfile."
+            exit 1
           fi
+          echo "dockerfile=$DOCKERFILE" >> $GITHUB_OUTPUT
 
       - if: ${{ steps.parse_image.outputs.build_target }}
         name: Build image

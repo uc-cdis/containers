@@ -1,18 +1,20 @@
 FROM quay.io/cdis/jupyter-superslim-r:3.1.0
 
-# To build locally, specify the Dockerfile and the notebook subdirectory.
-# For example, run this in the HEAL-notebooks directory:
-#   docker build -t some_tag -f Dockerfile generic_rkernel
+# To build locally, run this in the HEAL-notebooks/generic_rkernel directory:
+#   docker build -t some_tag .
+
+# Make the base image's start-notebook.sh launch `jupyter lab` instead of `jupyter notebook`
+ENV JUPYTER_ENABLE_LAB=1
 
 USER $NB_USER
 ARG NOTEBOOK_DIR
 
-# Available files are limited to notebook subdirectory
+# Available files are limited to this directory (the build context)
 COPY . $HOME/
 
 # clean things up
 USER root
-RUN if [ -d $HOME/img ]; then rm -rf $HOME/img; fi
+RUN rm -rf $HOME/img $HOME/Dockerfile
 USER $NB_USER
 
 RUN conda config --append channels conda-forge
