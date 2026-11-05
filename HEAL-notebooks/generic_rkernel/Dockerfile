@@ -9,8 +9,10 @@ ENV JUPYTER_ENABLE_LAB=1
 USER $NB_USER
 ARG NOTEBOOK_DIR
 
-# Available files are limited to this directory (the build context)
-COPY . $HOME/
+# Available files are limited to this directory (the build context).
+# COPY creates files as root regardless of USER, so chown them to the notebook user
+# so that notebooks can be edited and saved.
+COPY --chown=${NB_UID}:${NB_GID} . $HOME/
 
 # clean things up
 USER root
