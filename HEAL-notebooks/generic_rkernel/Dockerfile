@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyter-superslim-r:3.1.0
+FROM quay.io/cdis/jupyter-superslim-r:fix_jupyter-update
 
 # To build locally, run this in the HEAL-notebooks/generic_rkernel directory:
 #   docker build -t some_tag .
