@@ -21,15 +21,32 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
+          # full history so we can diff against the previous push or the default branch
+          fetch-depth: 0
           sparse-checkout: |
             .github
             HEAL-notebooks
 
       - name: Get changed files
         id: get_changed_files
-        uses: jitterbit/get-changed-files@v1
-        with:
-          format: 'json'
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if [[ "$BEFORE" =~ ^0+$ ]] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            # First push of a new branch (before = 000...0), or the previous head no longer
+            # exists (force push): compare against where the branch forked from the default branch
+            echo "No usable previous commit ($BEFORE); comparing against origin/$DEFAULT_BRANCH"
+            BASE="origin/$DEFAULT_BRANCH"
+          else
+            BASE="$BEFORE"
+          fi
+          # three-dot diff = changes on AFTER since its merge base with BASE
+          # --no-renames so a moved file counts as added at its new path
+          CHANGES=$(git diff --name-only --no-renames --diff-filter=AM "${BASE}...${AFTER}" | jq -R . | jq -cs .)
+          echo "Changed files: $CHANGES"
+          echo "added_modified=$CHANGES" >> "$GITHUB_OUTPUT"
 
       - name: Determine image to build
         id: parse_image
