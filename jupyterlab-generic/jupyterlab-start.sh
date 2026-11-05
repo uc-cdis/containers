@@ -2,7 +2,7 @@
 
 # Symlink config files for persistence
 if [[ -d "./pd" ]]; then
-    test -f ./pd/.bash_profile || touch ./pd/.bash_profile
+    test -s ./pd/.bash_profile || echo '[ -f ~/.bashrc ] && . ~/.bashrc' > ./pd/.bash_profile
     test -f ./pd/.bashrc || touch ./pd/.bashrc
     test -d ./pd/.jupyter || mkdir ./pd/.jupyter
     test -d ./pd/.ipython || mkdir ./pd/.ipython
@@ -16,8 +16,8 @@ if [[ -d "./pd" ]]; then
     ln -s ./pd/.ipython .
     ln -s ./pd/.config .
     ln -s ./pd/.local .
-    ln -s ./pd/R .
-    ln -s ./pd/ado .
+    ln -s ./pd/.R .
+    ln -s ./pd/.ado .
 fi
 
 # Symlink Stata license if present
@@ -53,10 +53,12 @@ module load git ripgrep
 
 # `module load` puts the software library (/apps) at the front of PYTHONPATH, so packages
 # users `pip install` were shadowed by older software-library copies. Put the user's pip folder
-# back in front (wherever PYTHONUSERBASE points: ~/.local, or ~/pd/py_libraries in child images).
+# back in front (wherever PYTHONUSERBASE points: ~/.local, or ~/pd/py_libraries in child images),
+# then the packages installed in the image (~/.local), so the image's packages still come before
+# the software library when PYTHONUSERBASE points to pd.
 USER_SITE="$(python3.14 -m site --user-site)"
 mkdir -p "$USER_SITE"
-export PYTHONPATH="${USER_SITE}:${PYTHONPATH}"
+export PYTHONPATH="${USER_SITE}:${HOME}/.local/lib/python3.14/site-packages:${PYTHONPATH}"
 
 # Stata from the software library (mounted at /apps), for the nbstata kernel
 export PATH="${PATH}:/apps/stata"
