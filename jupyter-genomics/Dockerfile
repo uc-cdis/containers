@@ -155,6 +155,11 @@ RUN chmod +x /usr/local/bin/start-notebook.sh
 # Switch to the secure Gen3 user context permanently for all subsequent build steps
 USER jovyan
 
+# Hide the Stata kernel inherited from jupyterlab-generic for now.
+# TODO - this "kernelspec remove" command below can be commented out to stop removing stata
+# and reinstate it - stata might require a license...so check first.
+RUN jupyter kernelspec remove -y nbstata
+
 # NOTE: no build-time `pip install --user` here. PYTHONUSERBASE points at pd,
 # which is a runtime mount, so anything installed --user at build time would be
 # masked and lost when pd mounts. Users install packages at runtime, where they
