@@ -18,8 +18,10 @@ ENV NB_USER="${NB_USER}" \
 #       these can be dropped once jupyterlmod fix is available in PyPI.
 # ncurses-compat-libs provides libncurses.so.5/libtinfo.so.5, required to load
 # Stata's shared library (used by the nbstata kernel).
+# findutils provides `find`, which the minimal base image lacks and users expect in the
+# terminal (scripts in the software library should not rely on it either way).
 RUN dnf upgrade --refresh && \
-    dnf install -y python3.14 python3.14-pip git \
+    dnf install -y python3.14 python3.14-pip git findutils \
         shadow-utils which ca-certificates ncurses-compat-libs vim-minimal && \
     curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
     dnf install -y nodejs && \
@@ -40,6 +42,9 @@ RUN groupadd -g ${NB_GID} ${NB_USER} && \
 COPY jupyterlab-start.sh .
 RUN chmod +x jupyterlab-start.sh && \
     chown ${NB_USER}:${NB_USER} /jupyterlab-start.sh
+
+# Server-wide Jupyter config: kernels from the software library (see the file)
+COPY jupyter_server_config.py /etc/jupyter/jupyter_server_config.py
 
 USER ${NB_USER}
 WORKDIR ${HOME}
@@ -79,6 +84,13 @@ EXPOSE 8888
 ENV LMOD_CMD=/apps/lmod/lmod/libexec/lmod
 ENV MODULEPATH=/apps/lmod/lmod/modulefiles
 ENV LMOD_MODULERC=/apps/lmod/lmod/.modulerc.lua
+
+# Kernels from the software library: JupyterLab also searches $JUPYTER_PATH/kernels,
+# i.e. /apps/jupyter/kernels/<name>/kernel.json, for kernel specs. All kernels found
+# there are enabled; a child image can hide some by name with
+#   ENV GEN3_DISABLED_KERNELS="r4.5.2,python3.14"
+# (see jupyter_server_config.py)
+ENV JUPYTER_PATH=/apps/jupyter
 
 # Make sure bash is the default shell within JupyterLab terminal
 ENV SHELL=/bin/bash
