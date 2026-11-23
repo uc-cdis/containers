@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyterlab-generic:3.4.0
+FROM quay.io/cdis/jupyterlab-generic:3.6.0
 
 USER $NB_USER
 
