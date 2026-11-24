@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyterlab-generic:wsl-config-test
+FROM quay.io/cdis/jupyterlab-generic@sha256:0976b0227a38ffc6d6b0c327d7e4e8cdb2a06fd1052da57d449a9ddacdc3ae62
 
 USER $NB_USER
 
