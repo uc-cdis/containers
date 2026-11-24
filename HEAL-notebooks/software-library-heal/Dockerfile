@@ -1,4 +1,4 @@
-FROM quay.io/cdis/jupyterlab-generic@sha256:159cf4b861995089e9c3c1f7f5e93ef2d90a59f857008ba79e3c230ef5dff56a
+FROM quay.io/cdis/jupyterlab-generic@sha256:b4033fee8ca9c1c60e4603641c679d6b4c5071e07dd2637c4126e4cd11917ce5
 
 USER $NB_USER
 
