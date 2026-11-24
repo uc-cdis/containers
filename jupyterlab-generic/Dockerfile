@@ -73,10 +73,10 @@ python3.14 -m ipykernel install --user \
 # The installer writes a config with an empty stata_dir when Stata is not found,
 # so remove it (and ~/.config if left empty) to keep PATH discovery and the
 # ~/.config persistence symlink in jupyterlab-start.sh working.
-RUN python3.14 -m pip install --user nbstata jupyterlab_stata_highlight3 && \
-    python3.14 -m nbstata.install --user && \
-    rm -rf ${HOME}/.config/nbstata && \
-    rmdir --ignore-fail-on-non-empty ${HOME}/.config
+# RUN python3.14 -m pip install --user nbstata jupyterlab_stata_highlight3 && \
+#     python3.14 -m nbstata.install --user && \
+#     rm -rf ${HOME}/.config/nbstata && \
+#     rmdir --ignore-fail-on-non-empty ${HOME}/.config
 
 EXPOSE 8888
 
