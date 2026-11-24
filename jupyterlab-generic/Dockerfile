@@ -73,10 +73,10 @@ python3.14 -m ipykernel install --user \
 # The installer writes a config with an empty stata_dir when Stata is not found,
 # so remove it (and ~/.config if left empty) to keep PATH discovery and the
 # ~/.config persistence symlink in jupyterlab-start.sh working.
-# RUN python3.14 -m pip install --user nbstata jupyterlab_stata_highlight3 && \
-#     python3.14 -m nbstata.install --user && \
-#     rm -rf ${HOME}/.config/nbstata && \
-#     rmdir --ignore-fail-on-non-empty ${HOME}/.config
+RUN python3.14 -m pip install --user nbstata jupyterlab_stata_highlight3 && \
+    python3.14 -m nbstata.install --user && \
+    rm -rf ${HOME}/.config/nbstata && \
+    rmdir --ignore-fail-on-non-empty ${HOME}/.config
 
 EXPOSE 8888
 
@@ -90,7 +90,7 @@ ENV LMOD_MODULERC=/apps/lmod/lmod/.modulerc.lua
 # there are enabled; a child image can hide some by name with
 #   ENV GEN3_DISABLED_KERNELS="r4.5.2,python3.14"
 # (see jupyter_server_config.py)
-ENV JUPYTER_PATH=/apps/jupyter
+# ENV JUPYTER_PATH=/apps/jupyter
 
 # Make sure bash is the default shell within JupyterLab terminal
 ENV SHELL=/bin/bash
